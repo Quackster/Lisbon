@@ -174,6 +174,39 @@ public class Room {
     }
 
     /**
+     * Send forward packet to user.
+     *
+     * @param player the packet for the player
+     */
+    public void forward(Player player, boolean ignoreRedirection) {
+        int roomId = this.getId();
+        boolean isPublic = this.isPublicRoom();
+
+        // If you tried to follow someone in arena, send them to lobby.
+        if (this.getData().isGameArena()) {
+            String modelType = this.getData().getGameLobby();
+            roomId = RoomManager.getInstance().getRoomByModel(modelType).getId();
+            isPublic = true;
+        }
+
+        if (isPublic) { // Some weird offset shit required...
+            if (!ignoreRedirection) {
+                Room room = RoomManager.getInstance().getRoomById(roomId);
+
+                if (room.getData().isNavigatorHide()) {
+                    roomId = room.getFollowRedirect();
+                }
+            }
+        }
+
+        if (isPublic) {
+            roomId = roomId + RoomManager.PUBLIC_ROOM_OFFSET;
+        }
+
+        player.send(new ROOMFORWARD(isPublic, roomId));
+    }
+
+    /**
      * Refresh the room rights for the user.
      *
      * @param player the player to refresh the rights for

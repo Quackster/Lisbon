@@ -85,7 +85,9 @@ public class PLACESTUFF implements MessageEvent {
         } else {
             int x = Integer.parseInt(data[1]);
             int y = Integer.parseInt(data[2]);
-            int rotation = rotation = Integer.parseInt(data[5]);
+
+            // skip 3 and 4 as they're dimensions, we don't need 'em since it's server-side variables, never trust the client!
+            int rotation = Integer.parseInt(data[3]);
 
             if (item.hasBehaviour(ItemBehaviour.REDIRECT_ROTATION_0)) {
                 rotation = 0;

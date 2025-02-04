@@ -15,10 +15,11 @@ public class FRIEND_REQUEST extends MessageComposer {
     public void compose(NettyResponse response) {
         response.writeInt(this.requester.getUserId());
         response.writeString(this.requester.getUsername());
+        response.writeString(String.valueOf(this.requester.getUserId()));
     }
 
     @Override
     public short getHeader() {
-        return 132; // "BD"
+        return 132;
     }
 }

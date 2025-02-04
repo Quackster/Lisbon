@@ -80,7 +80,7 @@ public class Kepler {
                     " |_|\\_\\___| .__/|_|\\___|_|   \n" +
                     "          |_|                ");
 
-            log.info("Kepler - Habbo Hotel Emulation (revision " + SERVER_VERSION + ")");
+            log.info("Lisbon - Habbo Hotel V26 Emulation");
 
             if (!Storage.connect()) {
                 return;

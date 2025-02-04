@@ -16,27 +16,22 @@ public class FINDUSER implements MessageEvent {
     public void handle(Player player, NettyRequest reader) {
         String searchQuery = reader.readString();
 
-        // if (player.getVersion() < 23) {
-            int userId = MessengerDao.searchUser(searchQuery);
-            player.send(new MESSENGER_SEARCH(PlayerManager.getInstance().getPlayerData(userId)));
-        /*} else {
-            List<Integer> userList = MessengerDao.search(searchQuery.toLowerCase());
+        List<Integer> userList = MessengerDao.search(searchQuery.toLowerCase());
 
-            List<PlayerDetails> friends = new ArrayList<>();
-            List<PlayerDetails> others = new ArrayList<>();
+        List<PlayerDetails> friends = new ArrayList<>();
+        List<PlayerDetails> others = new ArrayList<>();
 
-            for (int userId : userList) {
-                if (player.getMessenger().hasFriend(userId)) {
-                    friends.add(PlayerManager.getInstance().getPlayerData(userId));
-                } else {
-                    others.add(PlayerManager.getInstance().getPlayerData(userId));
-                }
+        for (int userId : userList) {
+            if (player.getMessenger().hasFriend(userId)) {
+                friends.add(PlayerManager.getInstance().getPlayerData(userId));
+            } else {
+                others.add(PlayerManager.getInstance().getPlayerData(userId));
             }
+        }
 
-            friends.removeIf(playerDetails -> playerDetails.getId() == player.getDetails().getId());
-            others.removeIf(playerDetails -> playerDetails.getId() == player.getDetails().getId());
+        friends.removeIf(playerDetails -> playerDetails.getId() == player.getDetails().getId());
+        others.removeIf(playerDetails -> playerDetails.getId() == player.getDetails().getId());
 
-            player.send(new MESSENGER_SEARCH(friends, others));
-        }*/
+        player.send(new MESSENGER_SEARCH(friends, others));
     }
 }

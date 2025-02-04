@@ -55,7 +55,6 @@ public class FOLLOW_FRIEND implements MessageEvent {
         }
 
         Room friendRoom = friend.getRoomUser().getRoom();
-        player.getMessenger().hasFollowed(friendRoom);
         friendRoom.forward(player, false);
     }
 }
