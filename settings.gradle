@@ -1,2 +1,2 @@
-include 'Kepler-Server'
-project(":Kepler-Server").projectDir = file("Kepler-Server")
+include 'Lisbon-Server'
+project(":Lisbon-Server").projectDir = file("Lisbon-Server")

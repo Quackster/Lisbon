@@ -1,0 +1,26 @@
+package net.h4bbo.lisbon.messages.outgoing.rooms;
+
+import net.h4bbo.lisbon.messages.types.MessageComposer;
+import net.h4bbo.lisbon.server.netty.streams.NettyResponse;
+
+public class FLATPROPERTY extends MessageComposer {
+    private final String property;
+    private final int value;
+
+    public FLATPROPERTY(String property, int value) {
+        this.property = property;
+        this.value = value;
+    }
+
+    @Override
+    public void compose(NettyResponse response) {
+        response.write(this.property);
+        response.write("/");
+        response.write(this.value);
+    }
+
+    @Override
+    public short getHeader() {
+        return 46; // "@n"
+    }
+}
