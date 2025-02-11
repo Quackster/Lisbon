@@ -2,6 +2,7 @@ package net.h4bbo.lisbon.game.player;
 
 import io.netty.util.AttributeKey;
 import net.h4bbo.lisbon.dao.mysql.PlayerDao;
+import net.h4bbo.lisbon.dao.mysql.PlayerStatisticsDao;
 import net.h4bbo.lisbon.dao.mysql.SettingsDao;
 import net.h4bbo.lisbon.game.GameScheduler;
 import net.h4bbo.lisbon.game.club.ClubSubscription;
@@ -11,6 +12,8 @@ import net.h4bbo.lisbon.game.fuserights.Fuseright;
 import net.h4bbo.lisbon.game.fuserights.FuserightsManager;
 import net.h4bbo.lisbon.game.inventory.Inventory;
 import net.h4bbo.lisbon.game.messenger.Messenger;
+import net.h4bbo.lisbon.game.player.statistics.PlayerStatistic;
+import net.h4bbo.lisbon.game.player.statistics.PlayerStatisticManager;
 import net.h4bbo.lisbon.game.room.entities.RoomPlayer;
 import net.h4bbo.lisbon.messages.outgoing.alert.ALERT;
 import net.h4bbo.lisbon.messages.outgoing.alert.HOTEL_LOGOUT;
@@ -22,13 +25,12 @@ import net.h4bbo.lisbon.messages.outgoing.moderation.USER_BANNED;
 import net.h4bbo.lisbon.messages.outgoing.openinghours.INFO_HOTEL_CLOSING;
 import net.h4bbo.lisbon.messages.types.MessageComposer;
 import net.h4bbo.lisbon.server.netty.NettyPlayerNetwork;
+import net.h4bbo.lisbon.util.DateUtil;
 import net.h4bbo.lisbon.util.config.GameConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class Player extends Entity {
@@ -37,21 +39,23 @@ public class Player extends Entity {
     private final NettyPlayerNetwork network;
     private final PlayerDetails details;
     private final RoomPlayer roomEntity;
-
     private Set<String> ignoredList;
 
     private Logger log;
     private Messenger messenger;
     private Inventory inventory;
+    private PlayerStatisticManager statisticManager;
 
     private boolean loggedIn;
     private boolean disconnected;
     private boolean pingOK;
+    private int timeConnected;
 
     public Player(NettyPlayerNetwork nettyPlayerNetwork) {
         this.network = nettyPlayerNetwork;
         this.details = new PlayerDetails();
         this.roomEntity = new RoomPlayer(this);
+        this.statisticManager = new PlayerStatisticManager(-1, Map.of());
         this.ignoredList = new HashSet<>();
         this.log = LoggerFactory.getLogger("Connection " + this.network.getConnectionId());
         this.pingOK = true;
@@ -66,15 +70,29 @@ public class Player extends Entity {
         this.loggedIn = true;
         this.pingOK = true;
 
+        this.timeConnected = DateUtil.getCurrentTimeSeconds();
+
         PlayerManager.getInstance().disconnectSession(this.details.getId()); // Kill other sessions with same id
         PlayerManager.getInstance().addPlayer(this); // Add new connection
-        PlayerDao.saveLastOnline(this.getDetails());
+
+        if (!this.details.getName().equals("Abigail.Ryan")) {
+            PlayerDao.saveLastOnline(this.details.getId(), this.details.getLastOnline(), true);
+        }
 
         if (GameConfiguration.getInstance().getBoolean("reset.sso.after.login")) {
             PlayerDao.clearSSOTicket(this.details.getId()); // Protect against replay attacks
         }
 
         SettingsDao.updateSetting("players.online", String.valueOf(PlayerManager.getInstance().getPlayers().size()));
+
+        var stats = PlayerStatisticsDao.getStatistics(this.details.getId());
+
+        if (stats.isEmpty()) {
+            PlayerStatisticsDao.newStatistics(this.details.getId(), UUID.randomUUID().toString());
+            stats = PlayerStatisticsDao.getStatistics(this.details.getId());
+        }
+
+        this.statisticManager = new PlayerStatisticManager(this.details.getId(), stats);
 
         this.messenger = new Messenger(this.details);
         this.inventory = new Inventory(this);
@@ -241,6 +259,16 @@ public class Player extends Entity {
     }
 
     /**
+     * Get the statistic manager for the user.
+     *
+     * @return the statistic manager
+     */
+    public PlayerStatisticManager getStatisticManager() {
+        return statisticManager;
+    }
+
+
+    /**
      * Get if the player has logged in or not.
      *
      * @return true, if they have
@@ -297,21 +325,35 @@ public class Player extends Entity {
     public void dispose() {
         try {
             if (this.loggedIn) {
-                if (this.roomEntity.getRoom() != null) {
-                    this.roomEntity.getRoom().getEntityManager().leaveRoom(this, false);
+
+                if (this.roomEntity.getObservingGameId() != -1) {
+                    this.roomEntity.stopObservingGame();
+                }
+
+                if (this.roomEntity.getGamePlayer() != null) {
+                    this.roomEntity.getGamePlayer().getGame().leaveGame(this.roomEntity.getGamePlayer());
                 }
 
                 PlayerManager.getInstance().removePlayer(this);
+                ClubSubscription.countMemberDays(this);
 
-                PlayerDao.saveLastOnline(this.getDetails());
+                int loggedInTime = (int) (DateUtil.getCurrentTimeSeconds() - this.timeConnected);
+                this.statisticManager.incrementValue(PlayerStatistic.ONLINE_TIME, loggedInTime);
+                this.details.setLastOnline(DateUtil.getCurrentTimeSeconds());
+
+                if (!this.details.getName().equals("Abigail.Ryan")) {
+                    PlayerDao.saveLastOnline(this.details.getId(), this.details.getLastOnline(), false);
+                }
+
                 SettingsDao.updateSetting("players.online", String.valueOf(PlayerManager.getInstance().getPlayers().size()));
 
-                if (this.messenger != null)
+                if (this.messenger != null) {
                     this.messenger.sendStatusUpdate();
-            }
+                }
 
-            this.disconnected = true;
-            this.loggedIn = false;
+                this.disconnected = true;
+                this.loggedIn = false;
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }

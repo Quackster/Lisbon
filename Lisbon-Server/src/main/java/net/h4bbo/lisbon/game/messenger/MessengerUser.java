@@ -14,7 +14,7 @@ public class MessengerUser {
     private String figure;
     private String sex;
     private String motto;
-    private long lastOnline;
+    private String lastOnline;
     private boolean allowStalking;
     private boolean toRemove;
     private boolean toAdd;
@@ -43,7 +43,7 @@ public class MessengerUser {
         this.username = StringUtil.filterInput(username, true);
         this.figure = StringUtil.filterInput(figure, true);
         this.sex = sex.toLowerCase().equals("f") ? "F" : "M";
-        this.lastOnline = lastOnline;
+        this.lastOnline = DateUtil.getDate(lastOnline, DateUtil.SHORT_DATE); // lastOnline;
         this.motto = StringUtil.filterInput(consoleMotto, true);
         this.allowStalking = allowStalking;
     }
@@ -58,8 +58,8 @@ public class MessengerUser {
 
         if (player != null) {
             this.figure = player.getDetails().getFigure();
-            this.lastOnline = player.getDetails().getLastOnline();
-            this.sex = Character.toString(player.getDetails().getSex());
+            this.lastOnline = player.getDetails().getFormattedLastOnline();
+            this.sex = player.getDetails().getSex();
             this.motto = player.getDetails().getMotto();
             this.allowStalking = player.getDetails().doesAllowStalking();
         }
@@ -76,7 +76,7 @@ public class MessengerUser {
         response.writeString(isOnline ? this.figure : "");
         response.writeInt(0);
         response.writeString(this.motto);
-        response.writeString(DateUtil.getDateAsString(this.lastOnline));
+        response.writeString(this.lastOnline);
     }
 
     public boolean canFollowFriend(Player friend) {
@@ -129,12 +129,12 @@ public class MessengerUser {
         this.motto = motto;
     }
 
-    public long getLastOnline() {
+    public String getLastOnline() {
         return lastOnline;
     }
 
     public void setLastOnline(long lastOnline) {
-        this.lastOnline = lastOnline;
+        this.lastOnline = DateUtil.getDate(lastOnline, DateUtil.SHORT_DATE);
     }
 
     @Override
