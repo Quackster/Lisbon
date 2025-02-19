@@ -1,8 +1,8 @@
 package net.h4bbo.lisbon.game.games.triggers;
 
 import net.h4bbo.lisbon.game.entity.Entity;
-import net.h4bbo.lisbon.game.games.gamehalls.GameTicTacToe;
 import net.h4bbo.lisbon.game.item.Item;
+import net.h4bbo.lisbon.game.games.gamehalls.GameTicTacToe;
 import net.h4bbo.lisbon.game.pathfinder.Position;
 import net.h4bbo.lisbon.game.room.entities.RoomEntity;
 

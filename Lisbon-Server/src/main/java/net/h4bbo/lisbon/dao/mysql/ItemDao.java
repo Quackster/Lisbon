@@ -303,6 +303,25 @@ public class ItemDao {
         return updatedAmount;
     }
 
+    public static void saveTradeBanExpire(int userId, long tradeBanExpiration) {
+        Connection sqlConnection = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            sqlConnection = Storage.getStorage().getConnection();
+            preparedStatement = Storage.getStorage().prepare("UPDATE users SET trade_ban_expiration = ? WHERE id = ?", sqlConnection);
+            preparedStatement.setLong(1, tradeBanExpiration);
+            preparedStatement.setInt(2, userId);
+            preparedStatement.execute();
+
+        } catch (Exception e) {
+            Storage.logError(e);
+        } finally {
+            Storage.closeSilently(preparedStatement);
+            Storage.closeSilently(sqlConnection);
+        }
+    }
+
     /**
      * Update item by item instance.
      *

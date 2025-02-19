@@ -54,6 +54,6 @@ public class CONVERT_FURNI_TO_CREDITS implements MessageEvent {
         player.getDetails().setCredits(currentAmount);
 
         // Send new credit amount
-        player.send(new CREDIT_BALANCE(player.getDetails()));
+        player.send(new CREDIT_BALANCE(player.getDetails().getCredits()));
     }
 }

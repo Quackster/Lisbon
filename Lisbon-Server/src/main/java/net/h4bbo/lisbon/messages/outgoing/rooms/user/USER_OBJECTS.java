@@ -65,10 +65,12 @@ public class USER_OBJECTS extends MessageComposer {
                     response.writeKeyValue("c", states.getDetails().getMotto());
                 }
 
+                /*
                 if (states.getDetails().getShowBadge()) {
                     response.writeKeyValue("b", states.getDetails().getCurrentBadge());
                 }
 
+                 */
                 if (states.getRoom().getModel().getName().startsWith("pool_") ||
                         states.getRoom().getModel().getName().equals("md_a")) {
 

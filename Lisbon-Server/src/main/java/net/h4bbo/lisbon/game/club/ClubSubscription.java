@@ -1,16 +1,20 @@
 package net.h4bbo.lisbon.game.club;
 
+import net.h4bbo.lisbon.dao.mysql.ClubGiftDao;
 import net.h4bbo.lisbon.dao.mysql.CurrencyDao;
 import net.h4bbo.lisbon.dao.mysql.PlayerDao;
 import net.h4bbo.lisbon.dao.mysql.PlayerStatisticsDao;
+import net.h4bbo.lisbon.game.catalogue.CatalogueManager;
 import net.h4bbo.lisbon.game.item.Item;
 import net.h4bbo.lisbon.game.item.ItemManager;
 import net.h4bbo.lisbon.game.player.Player;
 import net.h4bbo.lisbon.game.player.PlayerDetails;
 import net.h4bbo.lisbon.game.player.statistics.PlayerStatistic;
+import net.h4bbo.lisbon.game.player.statistics.PlayerStatisticManager;
 import net.h4bbo.lisbon.messages.outgoing.club.CLUB_INFO;
 import net.h4bbo.lisbon.util.DateUtil;
 import net.h4bbo.lisbon.util.config.GameConfiguration;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.sql.SQLException;
 import java.util.concurrent.TimeUnit;
@@ -123,6 +127,7 @@ public class ClubSubscription {
         PlayerDao.saveSubscription(playerDetails.getId(), playerDetails.getFirstClubSubscription(), playerDetails.getClubExpiration());
         CurrencyDao.decreaseCredits(playerDetails, credits);
 
+        /*
         TransactionDao.createTransaction(
                 playerDetails.getId(),
                 "0",
@@ -134,6 +139,7 @@ public class ClubSubscription {
                 true
         );
 
+         */
         return true;
     }
 
@@ -213,12 +219,13 @@ public class ClubSubscription {
         player.getInventory().addItem(item);
         player.getInventory().getView("new");
 
+        /*
         var catalogueItem = CatalogueManager.getInstance().getCatalogueItem(item.getDefinition().getSprite());
 
         if (catalogueItem != null) {
             TransactionDao.createTransaction(player.getDetails().getId(), item.getDatabaseId() + "", catalogueItem.getId() + "",
                     catalogueItem.getAmount(), "Habbo Club membership gift",  0, 0, true);
-        }
+        }*/
     }
 
     /**

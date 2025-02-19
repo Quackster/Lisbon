@@ -31,6 +31,7 @@ public class GiveBadgeCommand extends Command {
 
     @Override
     public void handleCommand(Entity entity, String message, String[] args) {
+        /*
         // :givebadge Alex NL1
 
         // should refuse to give badges that belong to ranks
@@ -120,6 +121,8 @@ public class GiveBadgeCommand extends Command {
         BadgeDao.addBadge(targetDetails.getId(), badge);
 
         player.send(new CHAT_MESSAGE(CHAT_MESSAGE.ChatMessageType.WHISPER, player.getRoomUser().getInstanceId(), "Badge " + badge + " added to user " + targetDetails.getName()));
+
+         */
     }
 
     @Override

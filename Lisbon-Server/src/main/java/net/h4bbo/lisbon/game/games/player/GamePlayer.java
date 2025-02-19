@@ -1,15 +1,15 @@
 package net.h4bbo.lisbon.game.games.player;
 
-import net.h4bbo.lisbon.game.games.Game;
-import net.h4bbo.lisbon.game.games.GameManager;
-import net.h4bbo.lisbon.game.games.GameObject;
 import net.h4bbo.lisbon.game.games.battleball.BattleBallGame;
 import net.h4bbo.lisbon.game.games.battleball.BattleBallTile;
 import net.h4bbo.lisbon.game.games.battleball.enums.BattleBallPlayerState;
-import net.h4bbo.lisbon.game.games.snowstorm.util.SnowStormAttributes;
+import net.h4bbo.lisbon.game.games.Game;
+import net.h4bbo.lisbon.game.games.GameManager;
+import net.h4bbo.lisbon.game.games.GameObject;
 import net.h4bbo.lisbon.game.games.utils.ScoreReference;
 import net.h4bbo.lisbon.game.pathfinder.Position;
 import net.h4bbo.lisbon.game.player.Player;
+import net.h4bbo.lisbon.game.games.snowstorm.util.SnowStormAttributes;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

@@ -71,6 +71,6 @@ public class BURN_SONG implements MessageEvent {
         JukeboxDao.setBurned(songId, true);
 
         CurrencyDao.decreaseCredits(player.getDetails(), 1);
-        player.send(new CREDIT_BALANCE(player.getDetails()));
+        player.send(new CREDIT_BALANCE(player.getDetails().getCredits()));
     }
 }

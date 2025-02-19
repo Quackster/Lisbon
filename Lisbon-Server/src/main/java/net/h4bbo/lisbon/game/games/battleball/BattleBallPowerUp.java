@@ -12,6 +12,7 @@ import net.h4bbo.lisbon.game.games.battleball.objects.PowerUpUpdateObject;
 import net.h4bbo.lisbon.game.games.battleball.powerups.*;
 import net.h4bbo.lisbon.game.games.player.GamePlayer;
 import net.h4bbo.lisbon.game.games.player.GameTeam;
+import net.h4bbo.lisbon.game.games.utils.ScoreReference;
 import net.h4bbo.lisbon.game.games.utils.TileUtil;
 import net.h4bbo.lisbon.game.pathfinder.Position;
 

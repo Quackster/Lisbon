@@ -66,7 +66,7 @@ public class REDEEM_VOUCHER implements MessageEvent {
         //This voucher gives credits, so increase credits balance
         if (voucher.getCredits() > 0) {
             CurrencyDao.increaseCredits(player.getDetails(), voucher.getCredits());
-            player.send(new CREDIT_BALANCE(player.getDetails()));
+            player.send(new CREDIT_BALANCE(player.getDetails().getCredits()));
         }
     }
 }

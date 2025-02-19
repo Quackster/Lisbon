@@ -48,6 +48,7 @@ public class UPDATE_ACCOUNT implements MessageEvent {
             }
         }
 
+
         String birthday = (String) PlayerManager.getInstance().getRegisterValue(registerValues, "birthday");
         String oldPassword = (String) PlayerManager.getInstance().getRegisterValue(registerValues, "oldpassword");
         String newPassword = (String) PlayerManager.getInstance().getRegisterValue(registerValues, "password");
@@ -60,7 +61,7 @@ public class UPDATE_ACCOUNT implements MessageEvent {
             return;
         }
 
-        if (!PlayerDao.login(player.getDetails().getName(), oldPassword)) {
+        if (!PlayerDao.login(player.getDetails(), player.getDetails().getName(), oldPassword)) {
             player.send(new UPDATE_ACCOUNT_RESPONSE(UPDATE_ACCOUNT_RESPONSE.ResponseType.INCORRECT_PASSWORD));
             return;
         }

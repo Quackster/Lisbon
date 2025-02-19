@@ -3,11 +3,11 @@ package net.h4bbo.lisbon.game.games.snowstorm.messages;
 import net.h4bbo.lisbon.game.games.player.GamePlayer;
 import net.h4bbo.lisbon.game.games.snowstorm.SnowStormGame;
 import net.h4bbo.lisbon.game.games.snowstorm.messages.incoming.SnowStormAttackPlayerMessage;
+import net.h4bbo.lisbon.game.games.snowstorm.util.SnowStormEvent;
+import net.h4bbo.lisbon.game.games.snowstorm.util.SnowStormMessage;
 import net.h4bbo.lisbon.game.games.snowstorm.messages.incoming.SnowStormThrowLocationMessage;
 import net.h4bbo.lisbon.game.games.snowstorm.messages.incoming.SnowStormWalkMessage;
 import net.h4bbo.lisbon.game.games.snowstorm.messages.incoming.SnowstormCreateSnowballMessage;
-import net.h4bbo.lisbon.game.games.snowstorm.util.SnowStormEvent;
-import net.h4bbo.lisbon.game.games.snowstorm.util.SnowStormMessage;
 import net.h4bbo.lisbon.server.netty.streams.NettyRequest;
 
 import java.util.HashMap;
@@ -24,7 +24,7 @@ public class SnowStormMessageHandler {
         this.events.put(SnowStormEvent.THROW_SNOWBALL_AT_PERSON, new SnowStormAttackPlayerMessage());
     }
 
-    public void handleMessage(int messageId, NettyRequest request, SnowStormGame snowStormGame, GamePlayer player) throws Exception {
+    public void handleMessage(int messageId, NettyRequest request, SnowStormGame snowStormGame, GamePlayer player) {
         var event = SnowStormEvent.getEvent(messageId);
         
         if (event != null) {

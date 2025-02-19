@@ -2,8 +2,8 @@ package net.h4bbo.lisbon.game.games.snowstorm.objects;
 
 import net.h4bbo.lisbon.game.games.GameObject;
 import net.h4bbo.lisbon.game.games.enums.GameObjectType;
-import net.h4bbo.lisbon.game.games.snowstorm.SnowStormGame;
 import net.h4bbo.lisbon.game.pathfinder.Position;
+import net.h4bbo.lisbon.game.games.snowstorm.SnowStormGame;
 import net.h4bbo.lisbon.server.netty.streams.NettyResponse;
 
 import java.util.concurrent.atomic.AtomicInteger;

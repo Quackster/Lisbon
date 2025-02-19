@@ -1,10 +1,12 @@
 package net.h4bbo.lisbon.game.player;
 
 import io.netty.util.AttributeKey;
+import net.h4bbo.lisbon.dao.mysql.ItemDao;
 import net.h4bbo.lisbon.dao.mysql.PlayerDao;
 import net.h4bbo.lisbon.dao.mysql.PlayerStatisticsDao;
 import net.h4bbo.lisbon.dao.mysql.SettingsDao;
 import net.h4bbo.lisbon.game.GameScheduler;
+import net.h4bbo.lisbon.game.badges.BadgeManager;
 import net.h4bbo.lisbon.game.club.ClubSubscription;
 import net.h4bbo.lisbon.game.entity.Entity;
 import net.h4bbo.lisbon.game.entity.EntityType;
@@ -44,16 +46,19 @@ public class Player extends Entity {
     private Logger log;
     private Messenger messenger;
     private Inventory inventory;
+    private BadgeManager badgeManager;
     private PlayerStatisticManager statisticManager;
 
     private boolean loggedIn;
     private boolean disconnected;
     private boolean pingOK;
     private int timeConnected;
+    private String lastGift;
 
     public Player(NettyPlayerNetwork nettyPlayerNetwork) {
         this.network = nettyPlayerNetwork;
         this.details = new PlayerDetails();
+        this.badgeManager = new BadgeManager();
         this.roomEntity = new RoomPlayer(this);
         this.statisticManager = new PlayerStatisticManager(-1, Map.of());
         this.ignoredList = new HashSet<>();
@@ -80,19 +85,10 @@ public class Player extends Entity {
         }
 
         if (GameConfiguration.getInstance().getBoolean("reset.sso.after.login")) {
-            PlayerDao.clearSSOTicket(this.details.getId()); // Protect against replay attacks
+            PlayerDao.resetSsoTicket(this.details.getId()); // Protect against replay attacks
         }
 
         SettingsDao.updateSetting("players.online", String.valueOf(PlayerManager.getInstance().getPlayers().size()));
-
-        var stats = PlayerStatisticsDao.getStatistics(this.details.getId());
-
-        if (stats.isEmpty()) {
-            PlayerStatisticsDao.newStatistics(this.details.getId(), UUID.randomUUID().toString());
-            stats = PlayerStatisticsDao.getStatistics(this.details.getId());
-        }
-
-        this.statisticManager = new PlayerStatisticManager(this.details.getId(), stats);
 
         this.messenger = new Messenger(this.details);
         this.inventory = new Inventory(this);
@@ -106,18 +102,51 @@ public class Player extends Entity {
             return;
         }
 
+        /*
+        if (this.details.getMachineId() == null || this.details.getMachineId().isBlank() || !(
+                this.details.getMachineId().length() == 33 &&
+                        this.details.getMachineId().startsWith("#"))) {
+            this.details.setMachineId(this.network.getClientMachineId());
+            this.network.setSaveMachineId(true);
+            PlayerDao.setMachineId(this.details.getId(), this.details.getMachineId());
+        }
+
+        if (this.network.saveMachineId()) {
+            this.send(new UniqueIDMessageEvent(this.network.getClientMachineId()));
+        }
+
+         */
         // Update user IP address
         String ipAddress = NettyPlayerNetwork.getIpAddress(this.getNetwork().getChannel());
+        var latestIp = PlayerDao.getLatestIp(this.details.getId());
 
-        if (!PlayerDao.getLatestIp(this.details.getId()).equals(ipAddress)) {
+        if (latestIp == null || !latestIp.equals(ipAddress)) {
             PlayerDao.logIpAddress(this.getDetails().getId(), ipAddress);
         }
 
-        this.details.loadBadges();
-        this.details.resetNextHandout();
 
+        // Set trade ban back to 0, easier for db querying
+        if (this.details.getTradeBanExpiration() > 0 && !this.details.isTradeBanned()) {
+            this.details.setTradeBanExpiration(0);
+            ItemDao.saveTradeBanExpire(this.details.getId(), 0);
+        }
+
+        var stats = PlayerStatisticsDao.getStatistics(this.details.getId());
+
+        if (stats.isEmpty()) {
+            PlayerStatisticsDao.newStatistics(this.details.getId(), UUID.randomUUID().toString());
+            stats = PlayerStatisticsDao.getStatistics(this.details.getId());
+        }
+
+        this.statisticManager = new PlayerStatisticManager(this.details.getId(), stats);
+
+        this.badgeManager.loadBadges(this);
+        // this.achievementManager.loadAchievements(this.details.getId());
+        this.details.resetNextHandout();
+        // this.refreshJoinedGroups();
+
+        this.send(new RIGHTS(this.getFuserights()));
         this.send(new LOGIN());
-        this.refreshFuserights();
 
         if (GameConfiguration.getInstance().getBoolean("welcome.message.enabled")) {
             String alertMessage = GameConfiguration.getInstance().getString("welcome.message.content");
@@ -135,7 +164,6 @@ public class Player extends Entity {
         }
 
         this.messenger.sendStatusUpdate();
-        ClubSubscription.refreshBadge(this);
     }
 
     /**
@@ -144,18 +172,32 @@ public class Player extends Entity {
     public void refreshClub() {
         if (this.details.hasClubSubscription()) {
             //if (this.getVersion() <= 17) {
-                this.send(new AVAILABLE_SETS("[" + GameConfiguration.getInstance().getString("users.figure.parts.club") + "]"));
-            //}
+            this.send(new AVAILABLE_SETS("[" + GameConfiguration.getInstance().getString("users.figure.parts.club") + "]"));
         }
 
-        ClubSubscription.refreshBadge(this);
+        if (!this.details.hasClubSubscription()) {
+            // If the database still thinks we have Habbo club even after it expired, reset it back to 0.
+            if (this.details.getClubExpiration() > 0) {
+                this.details.setClubExpiration(0);
+                this.send(new RIGHTS(this.getFuserights()));
+                //ClubSubscription.resetClothes(this.details);
+                PlayerDao.saveSubscription(this.details.getId(), this.details.getFirstClubSubscription(), this.details.getClubExpiration());
+            }
+        } else {
+            ClubSubscription.checkBadges(this);
+
+            if (ClubSubscription.isGiftDue(this)) {
+                this.send(new CLUB_GIFT(this.statisticManager.getIntValue(PlayerStatistic.GIFTS_DUE)));
+            }
+        }
+
         ClubSubscription.sendHcDays(this);
     }
 
     /**
      * Send fuseright permissions for player.
      */
-    public void refreshFuserights() {
+    public List<Fuseright> getFuserights() {
         List<Fuseright> fuserights = FuserightsManager.getInstance().getFuserightsForRank(this.details.getRank());
 
         if (this.getDetails().hasClubSubscription()) {
@@ -163,7 +205,7 @@ public class Player extends Entity {
         }
 
         fuserights.removeIf(fuse -> !fuse.getFuseright().startsWith("fuse_"));
-        this.send(new RIGHTS(fuserights));
+        return fuserights;
     }
 
     /**
@@ -221,6 +263,24 @@ public class Player extends Entity {
         return messenger;
     }
 
+    /**
+     * Get the inventory handler for player.
+     *
+     * @return the inventory handler
+     */
+    public Inventory getInventory() {
+        return inventory;
+    }
+
+    /**
+     * Get the badge manager for player.
+     *
+     * @return the badge manager
+     */
+    public BadgeManager getBadgeManager() {
+        return badgeManager;
+    }
+
     @Override
     public PlayerDetails getDetails() {
         return this.details;
@@ -229,10 +289,6 @@ public class Player extends Entity {
     @Override
     public RoomPlayer getRoomUser() {
         return this.roomEntity;
-    }
-
-    public Inventory getInventory() {
-        return inventory;
     }
 
     @Override
@@ -361,6 +417,14 @@ public class Player extends Entity {
 
     public Set<String> getIgnoredList() {
         return ignoredList;
+    }
+
+    public void setLastGift(String nextSpriteGift) {
+        this.lastGift = nextSpriteGift;
+    }
+
+    public String getLastGift() {
+        return lastGift;
     }
 
     /*public int getVersion() {

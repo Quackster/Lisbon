@@ -8,6 +8,6 @@ import net.h4bbo.lisbon.server.netty.streams.NettyRequest;
 public class GETAVAILABLEBADGES implements MessageEvent {
     @Override
     public void handle(Player player, NettyRequest reader) {
-        player.send(new AVAILABLE_BADGES(player.getDetails()));
+        player.send(new AVAILABLE_BADGES(player.getBadgeManager().getBadges(), player.getBadgeManager().getEquippedBadges()));
     }
 }

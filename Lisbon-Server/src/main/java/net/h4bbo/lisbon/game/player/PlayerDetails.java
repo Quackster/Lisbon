@@ -47,22 +47,15 @@ public class PlayerDetails {
 
     // Timestamps
     private long nextHandout;
-    private boolean isCreditsEligible;
     private long lastOnline;
     private long joinDate;
 
-    // Game points
-    private int dailyRespectPoints;
-    private String respectDay;
-    private String previousRespectDay;
-    private int respectPoints;
-    private int respectGiven;
-
     private boolean isOnline;
     private String createdAt;
-    private long totemEffectExpiry;
-    private long tradeBanExpiration;
     private int favouriteGroupId;
+    private boolean receiveNews;
+    private long tradeBanExpiration;
+    private String birthday;
     // private GroupMember groupMember;
 
     public PlayerDetails() {
@@ -87,10 +80,11 @@ public class PlayerDetails {
      * @param allowStalking allow stalking/following
      * @param soundEnabled allow playing sound from client
      */
-    public void fill(int id, String username, String figure, String poolFigure, int pixels, int credits, String email, String motto, String sex, String ssoTicket, int tickets, int film, int rank, long lastOnline, long joinDate, String machineId, long firstClubSubscription,
-                     long clubExpiration, boolean allowStalking, int selectedRoom, boolean allowFriendRequests, boolean onlineStatusVisible, boolean profileVisible, boolean wordFilterEnabled, boolean tradeEnabled, boolean soundEnabled,
-                     boolean isCreditsEligible, int respectCount, String respectDay, int respectPoints, int respectGiven, boolean isOnline, long totemEffectExpiry, long tradeBanExpiration,
-                     int favouriteGroupId, String createdAt) {
+    public void fill(int id, String username, String figure, String poolFigure, int credits, String email, String motto, String sex, String ssoTicket, int tickets, int film, int rank, long lastOnline, long joinDate,
+                     String machineId, long firstClubSubscription,
+                     long clubExpiration, boolean allowStalking, int selectedRoom, boolean allowFriendRequests, boolean onlineStatusVisible,
+                     boolean profileVisible, boolean wordFilterEnabled, boolean tradeEnabled, boolean soundEnabled, long tradeBanExpiration,
+                     boolean receiveNews, boolean isOnline, int favouriteGroupId, String createdAt) {
         this.id = id;
         this.username = StringUtil.filterInput(username, true);
         this.figure = StringUtil.filterInput(figure, true); // Format: hd-180-1.ch-255-70.lg-285-77.sh-295-74.fa-1205-91.hr-125-31.ha-1016-
@@ -100,14 +94,12 @@ public class PlayerDetails {
         this.email = email;
         this.sex = sex.toLowerCase().equals("f") ? "F" : "M";
         this.ssoTicket = ssoTicket;
-        this.pixels = pixels;
         this.lastPixelsTime = DateUtil.getCurrentTimeSeconds() + TimeUnit.MINUTES.toSeconds(15);
         this.credits = credits;
         this.tickets = tickets;
         this.film = film;
         this.rank = PlayerRank.getRankForId(rank);
         this.lastOnline = lastOnline;
-        this.previousRespectDay = respectDay;
         this.joinDate = joinDate;
         this.machineId = machineId;
         this.firstClubSubscription = firstClubSubscription;
@@ -120,15 +112,10 @@ public class PlayerDetails {
         this.wordFilterEnabled = wordFilterEnabled;
         this.tradeEnabled = tradeEnabled;
         this.soundEnabled = soundEnabled;
-        this.isCreditsEligible = isCreditsEligible;
-        this.dailyRespectPoints = respectCount;
-        this.respectDay = respectDay;
-        this.respectPoints = respectPoints;
-        this.respectGiven = respectGiven;
-        this.isOnline = isOnline;
-        this.totemEffectExpiry = totemEffectExpiry;
         this.tradeBanExpiration = tradeBanExpiration;
+        this.isOnline = isOnline;
         this.favouriteGroupId = favouriteGroupId;
+        this.receiveNews = receiveNews;
         this.createdAt = createdAt;
 
         if (this.credits < 0) {
@@ -151,7 +138,6 @@ public class PlayerDetails {
         this.motto = motto;
         this.sex = sex;
         this.createdAt = "";
-        this.respectDay = "";
     }
 
     public boolean hasClubSubscription() {
@@ -218,22 +204,6 @@ public class PlayerDetails {
 
     public void setPoolFigure(String poolFigure) {
         this.poolFigure = poolFigure;
-    }
-
-    public int getPixels() {
-        return pixels;
-    }
-
-    public void setPixels(int pixels) {
-        this.pixels = pixels;
-    }
-
-    public long getLastPixelsTime() {
-        return lastPixelsTime;
-    }
-
-    public void setLastPixelsTime(long lastPixelsTime) {
-        this.lastPixelsTime = lastPixelsTime;
     }
 
     public int getCredits() {
@@ -368,30 +338,6 @@ public class PlayerDetails {
         this.selectedRoomId = selectedRoomId;
     }
 
-    public int getDailyRespectPoints() {
-        return dailyRespectPoints;
-    }
-
-    public void setDailyRespectPoints(int dailyRespectPoints) {
-        this.dailyRespectPoints = dailyRespectPoints;
-    }
-
-    public String getRespectDay() {
-        return respectDay;
-    }
-
-    public void setRespectDay(String respectDay) {
-        this.respectDay = respectDay;
-    }
-
-    public int getRespectPoints() {
-        return respectPoints;
-    }
-
-    public void setRespectPoints(int respectPoints) {
-        this.respectPoints = respectPoints;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -428,22 +374,6 @@ public class PlayerDetails {
         return joinDate;
     }
 
-    public long getTotemEffectExpiry() {
-        return totemEffectExpiry;
-    }
-
-    public void setTotemEffectExpiry(long totemEffectExpiry) {
-        this.totemEffectExpiry = totemEffectExpiry;
-    }
-
-    public int getRespectGiven() {
-        return respectGiven;
-    }
-
-    public void setRespectGiven(int respectGiven) {
-        this.respectGiven = respectGiven;
-    }
-
     public boolean isOnlineStatusVisible() {
         return onlineStatusVisible;
     }
@@ -466,14 +396,6 @@ public class PlayerDetails {
 
     public void setTradeEnabled(boolean tradeEnabled) {
         this.tradeEnabled = tradeEnabled;
-    }
-
-    public boolean isCreditsEligible() {
-        return isCreditsEligible;
-    }
-
-    public void setCreditsEligible(boolean creditsEligible) {
-        isCreditsEligible = creditsEligible;
     }
 
     public long getTradeBanExpiration() {
@@ -535,5 +457,21 @@ public class PlayerDetails {
 */
     public String getIpAddress() {
         return PlayerDao.getLatestIp(this.getId());
+    }
+
+    public boolean isReceiveNews() {
+        return receiveNews;
+    }
+
+    public void setReceiveNews(boolean receiveNews) {
+        this.receiveNews = receiveNews;
+    }
+
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
     }
 }

@@ -5,16 +5,15 @@ import net.h4bbo.lisbon.messages.types.MessageComposer;
 import net.h4bbo.lisbon.server.netty.streams.NettyResponse;
 
 public class CREDIT_BALANCE extends MessageComposer {
-    private final PlayerDetails details;
+    private final int credits;
 
-    public CREDIT_BALANCE(PlayerDetails details) {
-        this.details = details;
+    public CREDIT_BALANCE(int credits) {
+        this.credits = credits;
     }
-
 
     @Override
     public void compose(NettyResponse response) {
-        response.writeString(this.details.getCredits() + ".0");
+        response.writeString(this.credits + ".0");
     }
 
     @Override

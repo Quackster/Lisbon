@@ -1,5 +1,6 @@
 package net.h4bbo.lisbon;
 
+import com.google.gson.Gson;
 import io.netty.util.ResourceLeakDetector;
 import net.h4bbo.lisbon.dao.Storage;
 import net.h4bbo.lisbon.dao.mysql.SettingsDao;
@@ -37,7 +38,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 
 public class Lisbon {
-
+    private static final Gson gson = new Gson();
     private static long startupTime;
 
     private static String serverIP;
@@ -296,6 +297,15 @@ public class Lisbon {
      */
     public static boolean isShuttingdown() {
         return isShutdown;
+    }
+
+    /**
+     * Get gson instance.
+     *
+     * @return the gson instance
+     */
+    public static Gson getGson() {
+        return gson;
     }
 
     /**

@@ -46,8 +46,6 @@ import net.h4bbo.lisbon.messages.incoming.rooms.teleporter.GETDOORFLAT;
 import net.h4bbo.lisbon.messages.incoming.rooms.user.*;
 import net.h4bbo.lisbon.messages.incoming.songs.*;
 import net.h4bbo.lisbon.messages.incoming.trade.*;
-import net.h4bbo.lisbon.messages.incoming.tutorial.GET_TUTORIAL_CONFIGURATION;
-import net.h4bbo.lisbon.messages.incoming.tutorial.SET_TUTORIAL_MODE;
 import net.h4bbo.lisbon.messages.incoming.user.*;
 import net.h4bbo.lisbon.messages.incoming.user.settings.GET_ACCOUNT_PREFERENCES;
 import net.h4bbo.lisbon.messages.incoming.user.settings.GET_SOUND_SETTING;
@@ -78,7 +76,6 @@ public class MessageHandler {
         registerUserPackets();
         registerClubPackets();
         registerWelcomingPartyPackets();
-        registerTutorialPackets();
         registerNavigatorPackets();
         registerRoomPackets();
         registerRoomUserPackets();
@@ -174,14 +171,6 @@ public class MessageHandler {
     private void registerWelcomingPartyPackets() {
         registerEvent(357, new ACCEPT_TUTOR_INVITATION());
         registerEvent(358, new REJECT_TUTOR_INVITATION());
-    }
-
-    /**
-     * Register tutorial packets
-     */
-    private void registerTutorialPackets() {
-        registerEvent(250, new GET_TUTORIAL_CONFIGURATION());
-        registerEvent(249, new SET_TUTORIAL_MODE());
     }
 
     /**

@@ -2,25 +2,29 @@ package net.h4bbo.lisbon.game.games;
 
 import net.h4bbo.lisbon.dao.mysql.GameDao;
 import net.h4bbo.lisbon.game.games.battleball.BattleBallMap;
+import net.h4bbo.lisbon.game.games.enums.GameState;
 import net.h4bbo.lisbon.game.games.enums.GameType;
 import net.h4bbo.lisbon.game.games.history.GameHistory;
 import net.h4bbo.lisbon.game.games.player.GameRank;
 import net.h4bbo.lisbon.game.player.Player;
+import net.h4bbo.lisbon.game.player.statistics.PlayerStatistic;
 import net.h4bbo.lisbon.game.room.models.RoomModel;
+import net.h4bbo.lisbon.log.Log;
+import net.h4bbo.lisbon.util.DateUtil;
 import net.h4bbo.lisbon.util.config.GameConfiguration;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class GameManager {
-    private static final int MAX_HISTORY = 15;
     private static GameManager instance = null;
+
     private ScheduledFuture<?> expiryLoop;
 
     private AtomicInteger gameCounter;
@@ -33,51 +37,50 @@ public class GameManager {
     private List<Game> games;
     private List<BattleBallMap> battleballTileMaps;
 
-    private Map<GameType, List<GameHistory>> lastPlayedGames;
+    private HashMap<GameType, List<GameHistory>> lastPlayedGames;
 
     public GameManager() {
         this.rankList = GameDao.getRanks();
         this.modelList = GameDao.getGameMaps();
         this.spawnList = GameDao.getGameSpawns();
         this.battleballTileMaps = GameDao.getBattleballTileMaps();
-
         this.games = new ArrayList<>();
-
         this.gameCounter = new AtomicInteger(0);
         this.finishedGameCounter = new AtomicInteger(0);
-
-       // this.createExpiryCheckLoop();
         this.refreshPlayedGames();
     }
 
     public void refreshPlayedGames() {
-        if (this.lastPlayedGames == null) {
-            this.lastPlayedGames = new ConcurrentHashMap<>();
-
-            for (GameType gameType : GameType.values()) {
-                this.lastPlayedGames.put(gameType, new CopyOnWriteArrayList<>());
-            }
-        }
+        this.lastPlayedGames = new HashMap<>();//GameDao.getLastPlayedGames();
 
         for (GameType gameType : GameType.values()) {
-            var games = this.lastPlayedGames.get(gameType);
+            this.lastPlayedGames.put(gameType, GameDao.getLastPlayedGames(gameType));
 
-            if (games.size() > GameManager.MAX_HISTORY) {
-                games = games.subList(games.size() - Math.min(games.size(), GameManager.MAX_HISTORY + 1), games.size());
-                this.lastPlayedGames.put(gameType, games);
+            for (var game : this.lastPlayedGames.get(gameType)) {
+                game.setId(this.getGameCounter().getAndIncrement());
             }
         }
     }
 
+    public int getRandomCredits(boolean isWinner) {
+        int maxCredits = 0;
+        int minCredits = 0;
 
-    /**
-     * Recurring task used to clear old games after their listing time has expired.
-     */
-    /*private void createExpiryCheckLoop() {
-        this.expiryLoop = GameScheduler.getInstance().getService().scheduleAtFixedRate(() -> {
-            finishedGames.removeIf(game -> DateUtil.getCurrentTimeSeconds() > game.getExpireTime());
-        }, 0, getListingExpiryTime() / 10, TimeUnit.SECONDS);
-    }*/
+        String[] rangeData = GameConfiguration.getInstance().getString("reward.credits." + (isWinner ? "winner" : "loser") + ".range").split(Pattern.quote("-"));
+
+        try {
+            minCredits = Integer.parseInt(rangeData[0]);
+            maxCredits = Integer.parseInt(rangeData[1]);
+        } catch (Exception ex) {
+            Log.getErrorLogger().error("Error when handling give random credits: " + ex);
+        }
+
+        if (minCredits == maxCredits) {
+            return maxCredits;
+        } else {
+            return ThreadLocalRandom.current().nextInt(minCredits, maxCredits + 1);
+        }
+    }
 
     /**
      * Get the game spawn list by game type, map id and team id
@@ -114,27 +117,6 @@ public class GameManager {
     }
 
     /**
-     * Get the game rank by the player points.
-     *
-     * @param type the type of game to get the points for
-     * @param player the player to get the points for
-     * @return the rank, null otherwise
-     */
-    public GameRank getRankByPoints(GameType type, Player player) {
-        int score = player.getDetails().getGamePoints(type);
-
-        for (GameRank rank : this.rankList) {
-            if (score >= rank.getMinPoints()) {
-                if (rank.getMaxPoints() == 0 || score <= rank.getMaxPoints()) {
-                    return rank;
-                }
-            }
-        }
-
-        return null;
-    }
-
-    /**
      * Gets a game instance by specified game id
      *
      * @param gameId the game id used
@@ -159,6 +141,18 @@ public class GameManager {
     public List<Game> getGamesByType(GameType gameType) {
         return this.games.stream().filter(
                 game -> game.getGameType() == gameType
+        ).collect(Collectors.toList());
+    }
+
+    /**
+     * Get the list of started games by type
+     *
+     * @param gameType the type of game
+     * @return the list of games
+     */
+    public List<Game> getStartedGamesByType(GameType gameType) {
+        return this.games.stream().filter(
+                game -> game.getGameType() == gameType && game.getGameState() == GameState.STARTED
         ).collect(Collectors.toList());
     }
 
@@ -218,7 +212,6 @@ public class GameManager {
     public AtomicInteger getGameCounter() {
         return gameCounter;
     }
-
 
     /**
      * Gets the list of currently active games
@@ -281,12 +274,45 @@ public class GameManager {
     }
 
     /**
-     * Get the list of all finished games
+     * Get the finished game counter.
      *
-     * @return the list of finished games
+     * @return the finished game counter
      */
+    public AtomicInteger getFinishedGameCounter() {
+        return finishedGameCounter;
+    }
+
     public List<GameHistory> getLastPlayedGames(GameType gameType) {
         return lastPlayedGames.get(gameType);
+    }
+
+    /**
+     * Get the game rank by the player points.
+     *
+     * @param type the type of game to get the points for
+     * @param player the player to get the points for
+     * @return the rank, null otherwise
+     */
+    public GameRank getRankByPoints(GameType type, Player player) {
+        int score = 0;
+
+        if (type == GameType.BATTLEBALL) {
+            score = player.getStatisticManager().getIntValue(PlayerStatistic.BATTLEBALL_POINTS_ALL_TIME);
+        }
+
+        if (type == GameType.SNOWSTORM) {
+            score = player.getStatisticManager().getIntValue(PlayerStatistic.SNOWSTORM_POINTS_ALL_TIME);
+        }
+
+        for (GameRank rank : this.rankList) {
+            if (score >= rank.getMinPoints()) {
+                if (rank.getMaxPoints() == 0 || score <= rank.getMaxPoints()) {
+                    return rank;
+                }
+            }
+        }
+
+        return null;
     }
 
     public GameHistory getFinishedGameById(GameType gameType, int gameId) {

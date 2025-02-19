@@ -33,6 +33,7 @@ public abstract class GameTrigger extends GenericTrigger {
         // Call default sitting trigger
         InteractionType.CHAIR.getTrigger().onEntityStop(entity, roomEntity, item, isRotation);
 
+
         // Handle game logic from here
         GamehallGame instance = this.getGameInstance(item.getPosition());
 
@@ -62,6 +63,19 @@ public abstract class GameTrigger extends GenericTrigger {
                 instance.sendToEveryone(new OPENGAMEBOARD(instance.getGameId(), instance.getGameFuseType()));;
             }
         }
+
+        /*if (instance.getGameId() == null) {
+            if (joinedPlayers.size() >= 1) { // New game started
+                instance.createGameId();
+                instance.gameStart();
+
+                for (Player p : joinedPlayers) {
+                    p.send(new OPENGAMEBOARD(instance.getGameId(), instance.getGameFuseType())); // Player joined mid-game
+                }
+            }
+        } else {
+            player.send(new OPENGAMEBOARD(instance.getGameId(), instance.getGameFuseType()));
+        }*/
     }
 
     @Override

@@ -94,7 +94,7 @@ public class GRPC implements MessageEvent {
                 extraData = String.valueOf(item.getItemSpecialId());
             }
 
-            Item present = ItemManager.getInstance().createGift(receivingUserDetails, player.getDetails(), item.getSaleCode(), StringUtil.filterInput(presentNote, false), extraData);//new Item();
+            Item present = ItemManager.getInstance().createGift(receivingUserDetails.getId(), player.getDetails().getName(), item.getSaleCode(), StringUtil.filterInput(presentNote, false), extraData);//new Item();
             /*present.setOwnerId(receivingUserDetails.getId());
             present.setDefinitionId(ItemManager.getInstance().getDefinitionBySprite("present_gen" + ThreadLocalRandom.current().nextInt(1, 7)).getId());
             present.setCustomData(saleCode +
@@ -141,6 +141,6 @@ public class GRPC implements MessageEvent {
         }
 
         CurrencyDao.decreaseCredits(player.getDetails(), price);
-        player.send(new CREDIT_BALANCE(player.getDetails()));
+        player.send(new CREDIT_BALANCE(player.getDetails().getCredits()));
     }
 }

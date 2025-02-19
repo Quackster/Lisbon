@@ -50,11 +50,11 @@ public class ModeratorBanUserAction implements ModerationAction {
         }
 
         long banTime = DateUtil.getCurrentTimeSeconds() + TimeUnit.HOURS.toSeconds(banHours);
-        BanDao.addBan(BanType.USER_ID, String.valueOf(playerDetails.getId()), banTime, alertMessage);
+        BanDao.addBan(BanType.USER_ID, String.valueOf(playerDetails.getId()), banTime, alertMessage, player.getDetails().getId());
 
 
         if (banIp) {
-            BanDao.addBan(BanType.IP_ADDRESS, PlayerDao.getLatestIp(playerDetails.getId()), banTime, alertMessage);
+            BanDao.addBan(BanType.IP_ADDRESS, PlayerDao.getLatestIp(playerDetails.getId()), banTime, alertMessage, player.getDetails().getId());
         }
 
         Player target = PlayerManager.getInstance().getPlayerById(playerDetails.getId());

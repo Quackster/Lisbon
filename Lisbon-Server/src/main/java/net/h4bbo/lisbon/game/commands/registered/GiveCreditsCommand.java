@@ -68,7 +68,7 @@ public class GiveCreditsCommand extends Command {
 
         CurrencyDao.increaseCredits(playerDetailsToSave);
 
-        targetUser.send(new CREDIT_BALANCE(targetUser.getDetails()));
+        targetUser.send(new CREDIT_BALANCE(targetUser.getDetails().getCredits()));
 
         player.send(new CHAT_MESSAGE(CHAT_MESSAGE.ChatMessageType.WHISPER, player.getRoomUser().getInstanceId(), credits + " has been added to user " + targetDetails.getName()));
     }

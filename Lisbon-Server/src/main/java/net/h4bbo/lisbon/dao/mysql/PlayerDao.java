@@ -715,15 +715,14 @@ public class PlayerDao {
         }
     }
 
-    public static void saveCurrency(int userId, int credits, int pixels) {
+    public static void saveCurrency(int userId, int credits) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
 
         try {
             sqlConnection = Storage.getStorage().getConnection();
-            preparedStatement = Storage.getStorage().prepare("UPDATE users SET credits = ?, pixels = ? WHERE id = ?", sqlConnection);
+            preparedStatement = Storage.getStorage().prepare("UPDATE users SET credits = ? WHERE id = ?", sqlConnection);
             preparedStatement.setInt(1, credits);
-            preparedStatement.setInt(2, pixels);
             preparedStatement.setInt(3, userId);
             preparedStatement.execute();
 
@@ -977,6 +976,88 @@ public class PlayerDao {
         return id;
     }
 
+    public static void savePassword(int userId, String password) {
+        Connection sqlConnection = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            sqlConnection = Storage.getStorage().getConnection();
+            preparedStatement = Storage.getStorage().prepare("UPDATE users SET password = ? WHERE id = ?", sqlConnection);
+            preparedStatement.setString(1, password);
+            preparedStatement.setInt(2, userId);
+            preparedStatement.execute();
+
+        } catch (Exception e) {
+            Storage.logError(e);
+        } finally {
+            Storage.closeSilently(preparedStatement);
+            Storage.closeSilently(sqlConnection);
+        }
+    }
+
+    public static void saveBirthday(int userId, String birthday) {
+        Connection sqlConnection = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            sqlConnection = Storage.getStorage().getConnection();
+            preparedStatement = Storage.getStorage().prepare("UPDATE users SET birthday = ? WHERE id = ?", sqlConnection);
+            preparedStatement.setString(1, birthday);
+            preparedStatement.setInt(2, userId);
+            preparedStatement.execute();
+
+        } catch (Exception e) {
+            Storage.logError(e);
+        } finally {
+            Storage.closeSilently(preparedStatement);
+            Storage.closeSilently(sqlConnection);
+        }
+    }
+
+    /**
+     * Register user
+     */
+    public static void register(String username, String password, String figure, String sex, String email, String birthday){
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            conn = Storage.getStorage().getConnection();
+            stmt = Storage.getStorage().prepare("INSERT INTO users (username, password, figure, sex, pool_figure, sso_ticket, email, birthday) VALUES (?, ?, ?, ?, '', '', ?, ?)", conn);
+            stmt.setString(1, username);
+            stmt.setString(2, password);
+            stmt.setString(3, figure);
+            stmt.setString(4, sex);
+            stmt.setString(5, email);
+            stmt.setString(6, birthday);
+            stmt.execute();
+        } catch (SQLException e) {
+            Storage.logError(e);
+        } finally {
+            Storage.closeSilently(stmt);
+            Storage.closeSilently(conn);
+        }
+    }
+
+    public static void saveReceiveMail(PlayerDetails details) {
+        Connection sqlConnection = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            sqlConnection = Storage.getStorage().getConnection();
+            preparedStatement = Storage.getStorage().prepare("UPDATE users SET receive_email = ? WHERE id = ?", sqlConnection);
+            preparedStatement.setBoolean(1, details.isReceiveNews());
+            preparedStatement.setInt(2, details.getId());
+            preparedStatement.execute();
+
+        } catch (Exception e) {
+            Storage.logError(e);
+        } finally {
+            Storage.closeSilently(preparedStatement);
+            Storage.closeSilently(sqlConnection);
+        }
+    }
+
     /**
      * Fill player data
      *
@@ -991,18 +1072,22 @@ public class PlayerDao {
             return;
         }
 
-        details.fill(row.getInt("id"), row.getString("username"), row.getString("figure"),
-                row.getString("pool_figure"), row.getInt("pixels"),  row.getInt("credits"),
+        details.fill(
+                row.getInt("id"), row.getString("username"), row.getString("figure"),
+                row.getString("pool_figure"), row.getInt("credits"),
                 row.getString("email"), row.getString("motto"), row.getString("sex"),
                 row.getString("sso_ticket"), row.getInt("tickets"), row.getInt("film"),
-                row.getInt("rank"), row.getTime("last_online").getTime() / 1000L, row.getTime("created_at").getTime() / 1000L,
-                row.getString("machine_id"), row.getLong("club_subscribed"), row.getLong("club_expiration"),
-                row.getBoolean("allow_stalking"), row.getInt("selected_room_id"), row.getBoolean("allow_friend_requests"),
-                row.getBoolean("online_status_visible"), row.getBoolean("profile_visible"), row.getBoolean("wordfilter_enabled"),
-                row.getBoolean("trade_enabled"), row.getBoolean("sound_enabled"), row.getBoolean("daily_coins_enabled"),
-                row.getInt("daily_respect_points"), row.getString("respect_day"),
-                row.getInt("respect_points"), row.getInt("respect_given"), row.getBoolean("is_online"),
-                row.getLong("totem_effect_expiry"), row.getLong("trade_ban_expiration"), row.getInt("favourite_group"),
-                row.getString("created_at"));
+                row.getInt("rank"), row.getTime("last_online").getTime() / 1000L,
+                row.getTime("created_at").getTime() / 1000L, row.getString("machine_id"),
+                row.getLong("club_subscribed"), row.getLong("club_expiration"),
+                row.getBoolean("allow_stalking"), row.getInt("selected_room_id"),
+                row.getBoolean("allow_friend_requests"), row.getBoolean("online_status_visible"),
+                row.getBoolean("profile_visible"), row.getBoolean("wordfilter_enabled"),
+                row.getBoolean("trade_enabled"), row.getBoolean("sound_enabled"),
+                row.getLong("trade_ban_expiration"), row.getBoolean("receive_email"),
+                row.getBoolean("is_online"), row.getInt("favourite_group"),
+                row.getString("created_at")
+        );
     }
+
 }

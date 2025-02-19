@@ -16,10 +16,7 @@ import net.h4bbo.lisbon.messages.outgoing.user.currencies.CREDIT_BALANCE;
 import net.h4bbo.lisbon.util.DateUtil;
 import net.h4bbo.lisbon.util.config.GameConfiguration;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -29,7 +26,7 @@ public class GameScheduler implements Runnable {
     private ScheduledExecutorService schedulerService;
     private ScheduledFuture<?> gameScheduler;
 
-    private BlockingQueue<Player> creditsHandoutQueue;
+    private BlockingQueue<Map.Entry<Player, Integer>> creditsHandoutQueue;
     private BlockingQueue<Item> itemSavingQueue;
     private BlockingQueue<Integer> itemDeletionQueue;
 
@@ -72,7 +69,8 @@ public class GameScheduler implements Runnable {
                     if (GameConfiguration.getInstance().getBoolean("credits.scheduler.enabled")) {
                         if (DateUtil.getCurrentTimeSeconds() > player.getDetails().getNextHandout()) {
                             if (!player.getRoomUser().containsStatus(StatusType.AVATAR_SLEEP)) {
-                                this.creditsHandoutQueue.put(player);
+                                var amount = GameConfiguration.getInstance().getInteger("credits.scheduler.amount");
+                                this.queuePlayerCredits(player, amount);
                             }
 
                             player.getDetails().resetNextHandout();
@@ -84,22 +82,22 @@ public class GameScheduler implements Runnable {
             if (GameConfiguration.getInstance().getBoolean("credits.scheduler.enabled") &&
                     this.tickRate.get() % 30 == 0) { // Save every 30 seconds
 
-                List<Player> playersToHandout = new ArrayList<>();
-                this.creditsHandoutQueue.drainTo(playersToHandout);
+                List<Map.Entry<Player, Integer>> creditsHandout = new ArrayList<>();
+                this.creditsHandoutQueue.drainTo(creditsHandout);
 
-                if (playersToHandout.size() > 0) {
+                if (creditsHandout.size() > 0) {
                     Map<PlayerDetails, Integer> playerDetailsToSave = new LinkedHashMap<>();
-                    Integer amount = GameConfiguration.getInstance().getInteger("credits.scheduler.amount");
+                    // Integer amount = GameConfiguration.getInstance().getInteger("credits.scheduler.amount");
 
-                    for (Player p : playersToHandout) {
-                        var details = p.getDetails();
-                        playerDetailsToSave.put(details, amount);
+                    for (var p : creditsHandout) {
+                        // var details = p.getKey().getDetails();
+                        playerDetailsToSave.put(p.getKey().getDetails(), p.getValue());
                     }
 
                     CurrencyDao.increaseCredits(playerDetailsToSave);
 
-                    for (Player p : playersToHandout) {
-                        p.send(new CREDIT_BALANCE(p.getDetails()));
+                    for (var p : creditsHandout) {
+                        p.getKey().send(new CREDIT_BALANCE(p.getKey().getDetails().getCredits()));
                     }
                 }
             }
@@ -139,6 +137,17 @@ public class GameScheduler implements Runnable {
         }
 
         this.tickRate.incrementAndGet();
+    }
+
+
+    /**
+     * Add player to queue to give credits to.
+     *
+     * @param player the player to modify
+     * @param credits the credits
+     */
+    public void queuePlayerCredits(Player player, int credits) {
+        this.creditsHandoutQueue.add(new AbstractMap.SimpleEntry<>(player, credits));
     }
 
     /**

@@ -64,7 +64,7 @@ public class BTCKS implements MessageEvent {
         player.getRoomUser().getTimerManager().resetRoomTimer();
 
         CurrencyDao.decreaseCredits(player.getDetails(), costCredits);
-        player.send(new CREDIT_BALANCE(player.getDetails()));
+        player.send(new CREDIT_BALANCE(player.getDetails().getCredits()));
 
         // Join queue after buying ticket
         if (player.getRoomUser().getRoom().getModel().getName().equals("md_a")) {

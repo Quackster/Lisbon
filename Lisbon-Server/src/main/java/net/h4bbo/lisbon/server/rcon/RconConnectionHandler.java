@@ -87,8 +87,7 @@ public class RconConnectionHandler extends ChannelInboundHandlerAdapter {
                         online.getDetails().setClubExpiration(playerDetails.getClubExpiration());
                         online.getDetails().setFirstClubSubscription(playerDetails.getFirstClubSubscription());
 
-                        online.send(new CREDIT_BALANCE(online.getDetails()));
-                        online.refreshFuserights();
+                        online.send(new CREDIT_BALANCE(online.getDetails().getCredits()));
                         online.refreshClub();
                     }
 
@@ -109,7 +108,7 @@ public class RconConnectionHandler extends ChannelInboundHandlerAdapter {
 
                     if (online != null) {
                         online.getDetails().setCredits(CurrencyDao.getCredits(online.getDetails().getId()));
-                        online.send(new CREDIT_BALANCE(online.getDetails()));
+                        online.send(new CREDIT_BALANCE(online.getDetails().getCredits()));
                     }
 
                     break;

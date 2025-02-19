@@ -3,6 +3,7 @@ package net.h4bbo.lisbon.messages.outgoing.games;
 import net.h4bbo.lisbon.game.games.GameManager;
 import net.h4bbo.lisbon.game.games.enums.GameType;
 import net.h4bbo.lisbon.game.player.Player;
+import net.h4bbo.lisbon.game.player.statistics.PlayerStatistic;
 import net.h4bbo.lisbon.messages.types.MessageComposer;
 import net.h4bbo.lisbon.server.netty.streams.NettyResponse;
 
@@ -24,7 +25,15 @@ public class GAMEPLAYERINFO extends MessageComposer {
 
         for (Player player : this.players) {
             response.writeInt(player.getRoomUser().getInstanceId());
-            response.writeString(player.getDetails().getGamePoints(this.type));
+
+            if (this.type == GameType.BATTLEBALL) {
+                response.writeString(player.getStatisticManager().getIntValue(PlayerStatistic.BATTLEBALL_POINTS_ALL_TIME));
+            }
+
+            if (this.type == GameType.SNOWSTORM) {
+                response.writeString(player.getStatisticManager().getIntValue(PlayerStatistic.SNOWSTORM_POINTS_ALL_TIME));
+            }
+
             response.writeString(GameManager.getInstance().getRankByPoints(this.type, player).getTitle());
         }
     }

@@ -1,4 +1,4 @@
-package net.h4bbo.lisbon.messages.outgoing.rooms.badges;
+package net.h4bbo.lisbon.messages.outgoing.user.badges;
 
 import net.h4bbo.lisbon.game.badges.Badge;
 import net.h4bbo.lisbon.messages.types.MessageComposer;
@@ -6,24 +6,18 @@ import net.h4bbo.lisbon.server.netty.streams.NettyResponse;
 
 import java.util.List;
 
-public class AVAILABLE_BADGES extends MessageComposer {
-    private final List<Badge> badges;
+public class USERBADGE extends MessageComposer {
+    private final int userId;
     private final List<Badge> equippedBadges;
 
-    public AVAILABLE_BADGES(List<Badge> badges, List<Badge> equippedBadges) {
-        this.badges = badges;
+    public USERBADGE(int userId, List<Badge> equippedBadges) {
+        this.userId = userId;
         this.equippedBadges = equippedBadges;
     }
 
-
     @Override
     public void compose(NettyResponse response) {
-        response.writeInt(this.badges.size());
-
-        for (Badge badge : this.badges) {
-            response.writeString(badge.getBadgeCode());
-        }
-
+        response.writeString(this.userId);
         response.writeInt(this.equippedBadges.size());
 
         for (Badge badge : this.equippedBadges) {
@@ -34,6 +28,6 @@ public class AVAILABLE_BADGES extends MessageComposer {
 
     @Override
     public short getHeader() {
-        return 229; // "Ce"
+        return 228; // "Cd"
     }
 }

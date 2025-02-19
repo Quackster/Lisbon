@@ -264,13 +264,12 @@ public class HousekeepingUsersController {
                 if (client.post().queries().size() > 0 && !client.session().contains("alertMessages")) {
                     player.setFigure(client.post().getString("figure"));
                     player.setMotto(client.post().getString("motto"));
-                    player.setPixels(Integer.parseInt(client.post().getString("pixels")));
                     player.setCredits(Integer.parseInt(client.post().getString("credits")));
                     player.setEmail(client.post().getString("email"));
 
                     PlayerDao.saveDetails(player.getId(), player.getFigure(), player.getPoolFigure(), player.getSex());
                     PlayerDao.saveMotto(player.getId(), player.getMotto());
-                    PlayerDao.saveCurrency(player.getId(), player.getCredits(), player.getPixels());
+                    PlayerDao.saveCurrency(player.getId(), player.getCredits();
                     PlayerDao.saveEmail(player.getId(), player.getEmail());
 
                     client.session().set("alertColour", "success");
@@ -282,7 +281,7 @@ public class HousekeepingUsersController {
             tpl.set("playerUsername", player.getName());
             tpl.set("playerEmail", player.getEmail());
             tpl.set("playerMotto", player.getMotto());
-            tpl.set("playerPixels", player.getPixels());
+            tpl.set("playerPixels", 0);
             tpl.set("playerCredits", player.getCredits());
             tpl.set("playerFigure", player.getFigure());
         }

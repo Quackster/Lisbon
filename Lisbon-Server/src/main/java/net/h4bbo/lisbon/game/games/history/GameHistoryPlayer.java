@@ -1,5 +1,6 @@
 package net.h4bbo.lisbon.game.games.history;
 
+import net.h4bbo.lisbon.dao.mysql.GameDao;
 import net.h4bbo.lisbon.dao.mysql.PlayerDao;
 
 public class GameHistoryPlayer {
@@ -32,5 +33,5 @@ public class GameHistoryPlayer {
         }
 
         return username;
-    }
+     }
 }

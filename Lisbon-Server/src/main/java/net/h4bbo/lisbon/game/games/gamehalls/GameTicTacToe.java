@@ -5,8 +5,10 @@ import net.h4bbo.lisbon.game.games.triggers.GameTrigger;
 import net.h4bbo.lisbon.game.item.Item;
 import net.h4bbo.lisbon.game.player.Player;
 import net.h4bbo.lisbon.game.room.Room;
+import net.h4bbo.lisbon.messages.outgoing.rooms.games.CLOSEGAMEBOARD;
 import net.h4bbo.lisbon.messages.outgoing.rooms.games.ITEMMSG;
 import net.h4bbo.lisbon.messages.outgoing.rooms.user.CHAT_MESSAGE;
+import net.h4bbo.lisbon.messages.outgoing.rooms.user.CHAT_MESSAGE.ChatMessageType;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
@@ -20,8 +22,6 @@ public class GameTicTacToe extends GamehallGame {
     private static final int MAX_LENGTH = 24;
 
     private GameToken[] gameTokens;
-
-    private List<Player> playersInGame;
     private Map<Player, Character> playerSides;
 
     private boolean gameFinished;
@@ -34,16 +34,22 @@ public class GameTicTacToe extends GamehallGame {
 
     @Override
     public void gameStart() {
-        this.playersInGame = new ArrayList<>();
         this.playerSides = new HashMap<>();
         this.restartMap();
     }
 
     @Override
     public void gameStop() {
-        this.playersInGame.clear();
         this.playerSides.clear();
         this.gameMap = null;
+    }
+
+    @Override
+    public void joinGame(Player p) { }
+
+    @Override
+    public void leaveGame(Player player) {
+        this.playerSides.remove(player);
     }
 
     @Override
@@ -68,7 +74,6 @@ public class GameTicTacToe extends GamehallGame {
             }
 
             this.playerSides.put(player, sideChosen);
-            this.playersInGame.add(player);
 
             player.send(new ITEMMSG(new String[]{this.getGameId(), "SELECTTYPE " + String.valueOf(sideChosen)}));
 
@@ -86,7 +91,6 @@ public class GameTicTacToe extends GamehallGame {
                 for (Player otherPlayer : this.getPlayers()) {
                     if (otherPlayer != player) {
                         otherPlayer.send(new ITEMMSG(new String[]{this.getGameId(), "SELECTTYPE " + String.valueOf(otherToken.getToken())}));
-                        this.playersInGame.add(otherPlayer);
                         this.playerSides.put(otherPlayer, otherToken.getToken());
                         break;
                     }
@@ -94,7 +98,15 @@ public class GameTicTacToe extends GamehallGame {
             }
 
             String[] playerNames = this.getCurrentlyPlaying();
-            this.sendToEveryone(new ITEMMSG(new String[]{this.getGameId(), "OPPONENTS", playerNames[0], playerNames[1]}));
+
+            if (playerNames != null) {
+                this.sendToEveryone(new ITEMMSG(new String[]{this.getGameId(), "OPPONENTS", playerNames[0], playerNames[1]}));
+            } else {
+                player.send(new CLOSEGAMEBOARD(this.getGameId(), this.getGameFuseType()));
+                this.getPlayers().remove(player);
+                this.resetGameId();
+                this.gameStop();
+            }
         }
 
         if (command.equals("RESTART")) {
@@ -104,7 +116,7 @@ public class GameTicTacToe extends GamehallGame {
         }
 
         if (command.equals("SETSECTOR")) {
-            if (this.playersInGame.size() < this.getMinimumPeopleRequired()) {
+            if (this.getPlayers().size() < this.getMinimumPeopleRequired()) {
                 return; // Can't place objects until other player has joined.
             }
 
@@ -131,7 +143,7 @@ public class GameTicTacToe extends GamehallGame {
             int Y = Integer.parseInt(args[1]);
             int X = Integer.parseInt(args[2]);
 
-            if (X >= MAX_WIDTH || Y >= MAX_LENGTH) {
+            if (X >= MAX_WIDTH || Y >= MAX_LENGTH || X < 0 || Y < 0) {
                 return;
             }
 
@@ -191,9 +203,14 @@ public class GameTicTacToe extends GamehallGame {
                 return;
             }
 
-            for (Player player : this.playersInGame) {
-                player.send(new CHAT_MESSAGE(CHAT_MESSAGE.ChatMessageType.CHAT, player.getRoomUser().getInstanceId(), winner.getDetails().getName() + " has won the game in " + token.getMoves() + " moves"));
+            for (Player player : this.getPlayers()) {
+                player.send(new CHAT_MESSAGE(ChatMessageType.CHAT, player.getRoomUser().getInstanceId(), winner.getDetails().getName() + " has won the game in " + token.getMoves() + " moves"));
             }
+
+            /*(for (Player p : playerSides.keySet()) {
+                GameManager.getInstance().giveRandomCredits(p, winner == p);
+            }*/
+
         }
     }
 
@@ -348,7 +365,7 @@ public class GameTicTacToe extends GamehallGame {
         Player nextPlayer = null;
 
         if (this.nextTurn == player) {
-            for (Player p :  this.playersInGame) {
+            for (Player p :  this.getPlayers()) {
                 if (p != player) {
                     nextPlayer = p;
                 }
@@ -367,8 +384,8 @@ public class GameTicTacToe extends GamehallGame {
                 new GameToken('X', '+')
         };
 
-        if (this.playersInGame.size() > 0) {
-            this.nextTurn = this.playersInGame.get(0);
+        if (this.getPlayers().size() > 0) {
+            this.nextTurn = this.getPlayers().get(0);
         }
 
         this.gameFinished = false;
@@ -389,14 +406,17 @@ public class GameTicTacToe extends GamehallGame {
 
         for (char[] mapData : this.gameMap) {
             for (char mapLetter : mapData) {
-                boardData.append(mapLetter == '0' ? (char)32 : mapLetter);
+                boardData.append(mapLetter == '0' ? (char) 32 : mapLetter);
             }
 
-            boardData.append((char)32);
+            boardData.append((char) 32);
         }
 
         String[] playerNames = this.getCurrentlyPlaying();
-        this.sendToEveryone(new ITEMMSG(new String[]{this.getGameId(), "BOARDDATA", playerNames[0], playerNames[1], boardData.toString()}));
+
+        if (playerNames.length > 0) {
+            this.sendToEveryone(new ITEMMSG(new String[]{this.getGameId(), "BOARDDATA", playerNames[0], "", boardData.toString()}));
+        }
     }
 
     /**
@@ -405,18 +425,23 @@ public class GameTicTacToe extends GamehallGame {
      * @return the array with player name
      */
     private String[] getCurrentlyPlaying() {
-        String[] playerNames = new String[]{"", ""};
-
+        try {
+            String[] playerNames = new String[]{"", ""};
         /*for (int i = 0; i < this.playersInGame.size(); i++) {
             Player player = this.playersInGame.get(i);
             playerNames[i] = Character.toUpperCase(this.playerSides.get(player).getToken()) + " " + player.getDetails().getName();
         }*/
 
-        if (this.nextTurn != null) {
-            playerNames[0] = Character.toUpperCase(this.playerSides.get(this.nextTurn)) + " " + this.nextTurn.getDetails().getName();
+            if (this.nextTurn != null) {
+                playerNames[0] = Character.toUpperCase(this.playerSides.get(this.nextTurn)) + " " + this.nextTurn.getDetails().getName();
+            }
+
+            return playerNames;
+        } catch (Exception ex) {
+
         }
 
-        return playerNames;
+        return new String[0];
     }
 
     /**
@@ -461,7 +486,7 @@ public class GameTicTacToe extends GamehallGame {
 
     @Override
     public int getMinimumPeopleRequired() {
-        return 2;
+        return 1;
     }
 
     @Override

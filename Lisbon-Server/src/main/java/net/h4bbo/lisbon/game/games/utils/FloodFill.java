@@ -8,9 +8,7 @@ import net.h4bbo.lisbon.game.games.player.GamePlayer;
 import net.h4bbo.lisbon.game.pathfinder.Pathfinder;
 import net.h4bbo.lisbon.game.pathfinder.Position;
 
-import java.util.ArrayDeque;
-import java.util.Collection;
-import java.util.HashSet;
+import java.util.*;
 
 public class FloodFill {
     public static Collection<BattleBallTile> getFill(GamePlayer gamePlayer, BattleBallTile startTile) {

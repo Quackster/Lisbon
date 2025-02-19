@@ -1,10 +1,8 @@
 package net.h4bbo.lisbon.game.games.battleball;
 
 import net.h4bbo.lisbon.dao.mysql.CurrencyDao;
-import net.h4bbo.lisbon.game.games.Game;
-import net.h4bbo.lisbon.game.games.GameManager;
+import net.h4bbo.lisbon.game.games.*;
 import net.h4bbo.lisbon.game.games.GameSpawn;
-import net.h4bbo.lisbon.game.games.GameTile;
 import net.h4bbo.lisbon.game.games.battleball.enums.BattleBallColourState;
 import net.h4bbo.lisbon.game.games.battleball.enums.BattleBallPlayerState;
 import net.h4bbo.lisbon.game.games.battleball.enums.BattleBallPowerType;

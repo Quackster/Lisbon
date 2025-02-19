@@ -180,9 +180,46 @@ public class DateUtil {
                 .getDefault().toZoneId());
     }
 
-    public static LocalDate getDateFromTimestamp(long timestamp) {
-        LocalDateTime date = getDateTimeFromTimestamp(timestamp);
-        return date == null ? null : date.toLocalDate();
+    /**
+     * Returns the current date as "dd-MM-yyyy"
+     * @return the date as string
+     */
+    public static String getShortDate() {
+        Date date = new Date();
+        return new SimpleDateFormat(SHORT_DATE).format(date);
+    }
+
+    /**
+     * Returns the current date as "dd-MM-yyyy"
+     * @return the date as string
+     */
+    public static String getShortDate(long time) {
+        try {
+            Date date = new Date();
+            return new SimpleDateFormat(SHORT_DATE).format(date);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /**
+     * Gets the date given by unix timestamp as string.
+     *
+     * @param time the unix timestamp
+     * @return the date as string
+     */
+    public static String getDateAsString(long time) {
+        try {
+            Date date = new Date();
+            date.setTime(time * 1000);
+            return new SimpleDateFormat(LONG_DATE).format(date);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     /**
