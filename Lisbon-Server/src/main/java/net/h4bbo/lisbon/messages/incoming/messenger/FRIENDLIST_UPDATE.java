@@ -7,7 +7,7 @@ import net.h4bbo.lisbon.server.netty.streams.NettyRequest;
 
 public class FRIENDLIST_UPDATE implements MessageEvent {
     @Override
-    public void handle(Player player, NettyRequest reader) {
+    public void handle(Player player, NettyRequest reader) throws Exception {
         player.send(new FRIENDS_UPDATE(player, player.getMessenger()));
     }
 }

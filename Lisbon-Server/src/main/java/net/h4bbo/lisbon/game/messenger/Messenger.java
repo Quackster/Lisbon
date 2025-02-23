@@ -1,10 +1,14 @@
 package net.h4bbo.lisbon.game.messenger;
 
+
 import net.h4bbo.lisbon.dao.mysql.MessengerDao;
+import net.h4bbo.lisbon.dao.mysql.PlayerDao;
 import net.h4bbo.lisbon.game.player.Player;
 import net.h4bbo.lisbon.game.player.PlayerDetails;
 import net.h4bbo.lisbon.game.player.PlayerManager;
 import net.h4bbo.lisbon.game.room.Room;
+import net.h4bbo.lisbon.messages.outgoing.messenger.ADD_BUDDY;
+import net.h4bbo.lisbon.messages.outgoing.messenger.FRIENDS_UPDATE;
 import net.h4bbo.lisbon.messages.outgoing.messenger.FRIEND_REQUEST;
 import net.h4bbo.lisbon.util.config.GameConfiguration;
 
@@ -15,6 +19,8 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Messenger {
+    private final boolean officialStatusUpdateSpeed;
+    private Player player;
     private Map<Integer, MessengerUser> friends;
     private Map<Integer, MessengerUser> requests;
     private Map<Integer, MessengerMessage> offlineMessages;
@@ -22,31 +28,35 @@ public class Messenger {
     private List<MessengerCategory> messengerCategories;
 
     private BlockingQueue<MessengerUser> friendsUpdate;
-    private BlockingQueue<MessengerUser> friendsAdded;
-    private BlockingQueue<MessengerUser> friendsRemoved;
-
     private int friendsLimit;
     private boolean allowsFriendRequests;
     private MessengerUser user;
     private Room followed;
 
+    public Messenger(Player player) {
+        this(player.getDetails());
+        this.player = player;
+    }
+
     public Messenger(PlayerDetails details) {
+        this.officialStatusUpdateSpeed = GameConfiguration.getInstance().getBoolean("messenger.enable.official.update.speed");
         this.user = new MessengerUser(details);
         this.friends = MessengerDao.getFriends(details.getId());
         this.requests = MessengerDao.getRequests(details.getId());
         this.offlineMessages = MessengerDao.getUnreadMessages(details.getId());
         this.allowsFriendRequests = details.isAllowFriendRequests();
 
-        this.messengerCategories = new ArrayList<>();
-
+        this.messengerCategories = MessengerDao.getCategories(details.getId());
         this.friendsUpdate = new LinkedBlockingQueue<>();
-        this.friendsAdded = new LinkedBlockingQueue<>();
-        this.friendsRemoved = new LinkedBlockingQueue<>();
 
-        if (details.hasClubSubscription()) {
-            this.friendsLimit = GameConfiguration.getInstance().getInteger("messenger.max.friends.club");
+        if (details.getRank().getRankId() <= 1) {
+            if (details.hasClubSubscription()) {
+                this.friendsLimit = GameConfiguration.getInstance().getInteger("messenger.max.friends.club");
+            } else {
+                this.friendsLimit = GameConfiguration.getInstance().getInteger("messenger.max.friends.nonclub");
+            }
         } else {
-            this.friendsLimit = GameConfiguration.getInstance().getInteger("messenger.max.friends.nonclub");
+            this.friendsLimit = Integer.MAX_VALUE;
         }
     }
 
@@ -57,17 +67,56 @@ public class Messenger {
         if (this.user == null) {
             return;
         }
-        
+        var onlineFriends = this.getOnlineFriends();
+
+        /*for (var user : this.friends.values()) {
+            int userId = user.getUserId();
+
+            Player friend = PlayerManager.getInstance().getPlayerById(userId);
+
+            if (friend != null && friend.getMessenger() != null) {
+                var youAsFriend = ;
+
+                if (youAsFriend != null) {
+                    friend.getMessenger().queueFriendUpdate(youAsFriend);
+                }
+            }
+        }*/
+
+        for (Player friend : onlineFriends) {
+            friend.getMessenger().queueFriendUpdate(friend.getMessenger().getFriend(this.user.getUserId()));
+        }
+
+        if (!this.officialStatusUpdateSpeed) {
+            for (Player friend : onlineFriends) {
+                friend.send(new FRIENDS_UPDATE(friend, friend.getMessenger()));
+            }
+        }
+    }
+
+    /***
+     * Get the list of online friends.
+     *
+     * @return the list of online friends
+     */
+    private List<Player> getOnlineFriends() {
+        List<Player> friends = new ArrayList<>();
+
         for (var user : this.friends.values()) {
             int userId = user.getUserId();
 
             Player friend = PlayerManager.getInstance().getPlayerById(userId);
 
             if (friend != null && friend.getMessenger() != null) {
-                friend.getMessenger().queueFriendUpdate(this.user);
-                //new FRIENDLIST_UPDATE().handle(friend, null);
+                var youAsFriend = friend.getMessenger().getFriend(this.user.getUserId());
+
+                if (youAsFriend != null) {
+                    friends.add(friend);
+                }
             }
         }
+
+        return friends;
     }
 
     /**
@@ -90,13 +139,39 @@ public class Messenger {
         return this.getFriend(userId) != null;
     }
 
-    public void addFriend(MessengerUser friend) {
-        MessengerDao.removeRequest(friend.getUserId(), this.user.getUserId());
+    /**
+     * Method to add new friend.
+     *
+     * @param newBuddy the new friend to add
+     */
+    public void addFriend(MessengerUser newBuddy) {
+        if (this.hasFriend(newBuddy.getUserId())) {
+            return;
+        }
 
-        this.requests.remove(friend.getUserId());
-        this.friends.put(friend.getUserId(), friend);
+        MessengerDao.removeRequest(newBuddy.getUserId(), this.user.getUserId());
+
+        MessengerDao.newFriend(player.getDetails().getId(), newBuddy.getUserId());
+        MessengerDao.newFriend(newBuddy.getUserId(), player.getDetails().getId());
+
+        this.player.send(new ADD_BUDDY(player, new MessengerUser(PlayerDao.getDetails(newBuddy.getUserId()))));
+        this.requests.remove(newBuddy.getUserId());
+        this.friends.put(newBuddy.getUserId(), newBuddy);
+
+        Player friend = PlayerManager.getInstance().getPlayerById(newBuddy.getUserId());
+
+        if (friend != null) {
+            MessengerUser meAsBuddy = player.getMessenger().getMessengerUser();
+            friend.getMessenger().getFriends().put(meAsBuddy.getUserId(), meAsBuddy);
+            friend.send(new ADD_BUDDY(friend, meAsBuddy));
+        }
     }
 
+    /**
+     * Add request method.
+     *
+     * @param requester method to add request
+     */
     public void addRequest(MessengerUser requester) {
         MessengerDao.newRequest(requester.getUserId(), this.user.getUserId());
         this.requests.put(requester.getUserId(), requester);
@@ -108,11 +183,19 @@ public class Messenger {
         }
     }
 
+    /**
+     * Decline request by friend.
+     *
+     * @param requester the requester
+     */
     public void declineRequest(MessengerUser requester) {
         MessengerDao.removeRequest(requester.getUserId(), this.user.getUserId());
         this.requests.remove(requester.getUserId());
     }
 
+    /**
+     * Decline all friend requests.
+     */
     public void declineAllRequests() {
         MessengerDao.removeAllRequests(this.user.getUserId());
         this.requests.clear();
@@ -184,8 +267,8 @@ public class Messenger {
      *
      * @return the list of friends
      */
-    public List<MessengerUser> getFriends() {
-        return new ArrayList<>(this.friends.values());
+    public Map<Integer, MessengerUser> getFriends() {
+        return this.friends;
     }
 
     /**
@@ -228,57 +311,19 @@ public class Messenger {
      * @param friend the friend to update
      */
     public void queueFriendUpdate(MessengerUser friend) {
-        if (this.friendsAdded.stream().anyMatch(f -> friend.getUserId() == friend.getUserId())) {
-            return;
-        }
-
-        if (this.friendsRemoved.stream().anyMatch(f -> friend.getUserId() == friend.getUserId())) {
-            return;
-        }
-
         this.friendsUpdate.removeIf(f -> f.getUserId() == friend.getUserId());
         this.friendsUpdate.add(friend);
-    }
-
-    /**
-     * Gets the queue for the adding friends to the conosle
-     *
-     * @return the queue
-     */
-    public BlockingQueue<MessengerUser> getFriendsAdd() {
-        return friendsAdded;
-    }
-
-    /**
-     * Adds a user friend joined to the events update console queue, removes any previous mentions of this friend.
-     *
-     * @param friend the friend to update
-     */
-    public void queueNewFriend(MessengerUser friend) {
-        this.friendsUpdate.removeIf(f -> f.getUserId() == friend.getUserId());
-        this.friendsUpdate.add(friend);
-    }
-
-    /**
-     * Gets the queue for the next friends came offline update.
-     *
-     * @return the queue
-     */
-    public BlockingQueue<MessengerUser> getFriendsRemove() {
-        return friendsRemoved;
-    }
-
-    /**
-     * Adds a user friend joined to the events update console queue, removes any previous mentions of this friend.
-     *
-     * @param friend the friend to update
-     */
-    public void queueRemoveFriend(MessengerUser friend) {
-        this.friendsRemoved.removeIf(f -> f.getUserId() == friend.getUserId());
-        this.friendsRemoved.add(friend);
     }
 
     public List<MessengerCategory> getCategories() {
         return messengerCategories;
+    }
+
+    public void hasFollowed(Room friendRoom) {
+        this.followed = friendRoom;
+    }
+
+    public Room getFollowed() {
+        return followed;
     }
 }

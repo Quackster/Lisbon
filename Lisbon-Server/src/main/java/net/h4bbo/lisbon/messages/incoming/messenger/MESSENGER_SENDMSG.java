@@ -5,6 +5,7 @@ import net.h4bbo.lisbon.game.messenger.MessengerMessage;
 import net.h4bbo.lisbon.game.messenger.MessengerUser;
 import net.h4bbo.lisbon.game.player.Player;
 import net.h4bbo.lisbon.game.player.PlayerManager;
+import net.h4bbo.lisbon.game.wordfilter.WordfilterManager;
 import net.h4bbo.lisbon.messages.outgoing.messenger.INSTANT_MESSAGE_ERROR;
 import net.h4bbo.lisbon.messages.outgoing.messenger.MESSENGER_MSG;
 import net.h4bbo.lisbon.messages.types.MessageEvent;
@@ -14,7 +15,7 @@ import net.h4bbo.lisbon.util.StringUtil;
 
 public class MESSENGER_SENDMSG implements MessageEvent {
     @Override
-    public void handle(Player player, NettyRequest reader) {
+    public void handle(Player player, NettyRequest reader) throws Exception {
         //int amount = reader.readInt();
 
         /*List<Integer> friends = new ArrayList<>();
@@ -25,8 +26,24 @@ public class MESSENGER_SENDMSG implements MessageEvent {
         }*/
 
         int userId = reader.readInt();
-        String message = StringUtil.filterInput(reader.readString(), false);
 
+        String originalMessage = reader.readString();
+        String message = WordfilterManager.filterMandatorySentence(StringUtil.filterInput(originalMessage, false));
+
+        if (message.isBlank()) {
+            return;
+        }
+
+        if (WordfilterManager.hasBannableSentence(player, originalMessage)) {
+            WordfilterManager.performBan(player);
+            return;
+        }
+/*
+        if (player.isMuted()) {
+            PlayerManager.getInstance().showMutedAlert(player);
+            return;
+        }
+*/
         MessengerUser friend = player.getMessenger().getFriend(userId);
 
         if (friend == null) {
@@ -41,8 +58,8 @@ public class MESSENGER_SENDMSG implements MessageEvent {
             return;
         }
 
-        String chatMessage = message;
-        int messageId = MessengerDao.newMessage(player.getDetails().getId(), userId, message);
+        String chatMessage = friendPlayer.getDetails().isWordFilterEnabled() ? WordfilterManager.filterSentence(message) : message;
+        int messageId = MessengerDao.newMessage(player.getDetails().getId(), userId, originalMessage);
 
         MessengerMessage msg = new MessengerMessage(
                 messageId, userId, player.getDetails().getId(), DateUtil.getCurrentTimeSeconds(), chatMessage);

@@ -9,7 +9,7 @@ import net.h4bbo.lisbon.server.netty.streams.NettyRequest;
 
 public class MESSENGERINIT implements MessageEvent {
     @Override
-    public void handle(Player player, NettyRequest reader) {
+    public void handle(Player player, NettyRequest reader) throws Exception {
         Messenger messenger = MessengerManager.getInstance().getMessengerData(player.getDetails().getId());
         player.send(new MESSENGER_INIT(player, messenger));
     }

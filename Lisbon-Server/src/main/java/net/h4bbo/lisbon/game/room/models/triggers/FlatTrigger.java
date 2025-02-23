@@ -1,6 +1,7 @@
 package net.h4bbo.lisbon.game.room.models.triggers;
 
 import net.h4bbo.lisbon.dao.mysql.PetDao;
+import net.h4bbo.lisbon.dao.mysql.RoomVisitsDao;
 import net.h4bbo.lisbon.game.entity.Entity;
 import net.h4bbo.lisbon.game.item.Item;
 import net.h4bbo.lisbon.game.item.interactors.InteractionType;
@@ -33,6 +34,8 @@ public class FlatTrigger extends GenericTrigger {
                 return 356; // E`
             }
         });*/
+
+        RoomVisitsDao.addVisit(player.getDetails().getId(), room.getId());
 
         if (firstEntry) {
             for (Item item : room.getItemManager().getFloorItems().stream().filter(item -> item.getDefinition().getInteractionType() == InteractionType.PET_NEST).toList()) {

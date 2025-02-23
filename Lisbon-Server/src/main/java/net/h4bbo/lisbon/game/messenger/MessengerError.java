@@ -1,7 +1,7 @@
 package net.h4bbo.lisbon.game.messenger;
 
 public class MessengerError {
-    private MessengerUser causer;
+    private String causer;
     private final MessengerErrorType error;
     private final MessengerErrorReason reason;
 
@@ -15,12 +15,12 @@ public class MessengerError {
         this.reason = reason;
     }
 
-    public void setCauser(MessengerUser causer) {
-        this.causer = causer;
+    public String getCauser() {
+        return causer;
     }
 
-    public MessengerUser getCauser() {
-        return this.causer;
+    public void setCauser(String causer) {
+        this.causer = causer;
     }
 
     public MessengerErrorType getErrorType() {

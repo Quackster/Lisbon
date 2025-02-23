@@ -30,6 +30,7 @@ public class INVITE_FRIEND implements MessageEvent {
             int userId = reader.readInt();
 
             if (!player.getMessenger().hasFriend(userId)) {
+                player.send(new INVITATION_ERROR());
                 break;
             }
 
@@ -37,7 +38,7 @@ public class INVITE_FRIEND implements MessageEvent {
 
             if (friend == null) {
                 player.send(new INVITATION_ERROR());
-                return;
+                continue;
             }
 
             friends.add(friend);

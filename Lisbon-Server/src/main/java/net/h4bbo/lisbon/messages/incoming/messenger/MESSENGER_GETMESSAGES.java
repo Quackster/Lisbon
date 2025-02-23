@@ -8,7 +8,7 @@ import net.h4bbo.lisbon.server.netty.streams.NettyRequest;
 
 public class MESSENGER_GETMESSAGES implements MessageEvent {
     @Override
-    public void handle(Player player, NettyRequest reader) {
+    public void handle(Player player, NettyRequest reader) throws Exception {
         for (MessengerMessage offlineMessage : player.getMessenger().getOfflineMessages().values()) {
             player.send(new MESSENGER_MSG(offlineMessage));
         }

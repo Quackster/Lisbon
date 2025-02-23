@@ -15,7 +15,7 @@ public class InfobusPollTrigger extends GenericTrigger {
         }
 
         Player player = (Player) entity;
-        InfobusManager.getInstance().addPlayer(player.getDetails().getId());
+        //InfobusManager.getInstance().addPlayer(player.getDetails().getId());
     }
 
     @Override
@@ -25,6 +25,6 @@ public class InfobusPollTrigger extends GenericTrigger {
         }
 
         Player player = (Player) entity;
-        InfobusManager.getInstance().removePlayer(player.getDetails().getId());
+        //InfobusManager.getInstance().removePlayer(player.getDetails().getId());
     }
 }

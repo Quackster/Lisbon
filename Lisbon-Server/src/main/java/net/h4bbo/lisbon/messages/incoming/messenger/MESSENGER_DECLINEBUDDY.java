@@ -7,7 +7,7 @@ import net.h4bbo.lisbon.server.netty.streams.NettyRequest;
 
 public class MESSENGER_DECLINEBUDDY implements MessageEvent {
     @Override
-    public void handle(Player player, NettyRequest reader) {
+    public void handle(Player player, NettyRequest reader) throws Exception {
         boolean declineAll = reader.readBoolean();
 
         if (declineAll) {

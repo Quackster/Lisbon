@@ -18,7 +18,7 @@ public class BUDDY_REQUEST_RESULT extends MessageComposer {
         response.writeInt(this.errors.size());
 
         for (MessengerError error : this.errors) {
-            response.writeString(error.getCauser().getUsername());
+            response.writeString(error.getCauser());
             response.writeInt(error.getErrorType().getErrorCode());
         }
     }

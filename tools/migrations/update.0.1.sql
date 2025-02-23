@@ -71,3 +71,306 @@ ALTER TABLE `users_bans`
 	ADD COLUMN `banned_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP() AFTER `banned_until`,
 	ADD COLUMN `banned_by` INT NOT NULL AFTER `banned_at`,
 	ADD COLUMN `is_active` TINYINT NOT NULL DEFAULT '1' AFTER `banned_by`;
+
+CREATE TABLE IF NOT EXISTS `messenger_categories` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  KEY `Index 1` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+ALTER TABLE `messenger_friends`
+	ADD COLUMN `category_id` INT NULL AFTER `to_id`,
+	ADD INDEX `from_id` (`from_id`),
+	ADD INDEX `to_id` (`to_id`),
+	ADD INDEX `category_id` (`category_id`);
+	
+DROP TABLE IF EXISTS `messenger_categories`;
+CREATE TABLE IF NOT EXISTS `messenger_categories` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  KEY `Index 1` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+DROP TABLE IF EXISTS `achievements`;
+CREATE TABLE IF NOT EXISTS `achievements` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `achievement` varchar(64) NOT NULL,
+  `level` int(11) NOT NULL DEFAULT 1,
+  `reward_pixels` int(11) NOT NULL DEFAULT 0,
+  `progress_needed` int(11) NOT NULL DEFAULT 1,
+  `disabled` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=116 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+DELETE FROM `achievements`;
+INSERT INTO `achievements` (`id`, `achievement`, `level`, `reward_pixels`, `progress_needed`, `disabled`) VALUES
+	(1, 'ACH_Motto', 1, 10, 1, 0),
+	(2, 'ACH_AvatarLooks', 1, 50, 1, 0),
+	(3, 'ACH_MGM', 1, 50, 1, 0),
+	(4, 'ACH_MGM', 2, 55, 2, 0),
+	(5, 'ACH_MGM', 3, 60, 3, 0),
+	(6, 'ACH_MGM', 4, 130, 5, 0),
+	(7, 'ACH_MGM', 5, 140, 7, 0),
+	(8, 'ACH_MGM', 6, 150, 9, 0),
+	(9, 'ACH_MGM', 7, 160, 11, 0),
+	(10, 'ACH_MGM', 8, 170, 13, 0),
+	(11, 'ACH_MGM', 9, 180, 15, 0),
+	(12, 'ACH_MGM', 10, 200, 17, 0),
+	(13, 'ACH_Student', 1, 20, 1, 1),
+	(14, 'ACH_RespectGiven', 1, 20, 100, 0),
+	(15, 'ACH_AvatarTags', 1, 50, 5, 0),
+	(16, 'ACH_EmailVerification', 1, 200, 1, 1),
+	(17, 'ACH_Graduate', 1, 20, 1, 0),
+	(18, 'ACH_HappyHour', 1, 100, 1, 0),
+	(19, 'HC', 1, 100, 1, 0),
+	(20, 'HC', 2, 200, 12, 0),
+	(21, 'HC', 3, 300, 24, 0),
+	(22, 'ACH_Login', 1, 50, 5, 0),
+	(23, 'ACH_Login', 2, 80, 8, 0),
+	(24, 'ACH_Login', 3, 120, 15, 0),
+	(25, 'ACH_Login', 4, 150, 28, 0),
+	(26, 'ACH_Login', 5, 200, 35, 0),
+	(27, 'ACH_Login', 6, 200, 60, 0),
+	(28, 'ACH_Login', 7, 200, 70, 0),
+	(29, 'ACH_Login', 8, 200, 80, 0),
+	(30, 'ACH_Login', 9, 200, 90, 0),
+	(31, 'ACH_Login', 10, 200, 100, 0),
+	(32, 'ACH_RegistrationDuration', 1, 30, 3, 0),
+	(33, 'ACH_RegistrationDuration', 2, 60, 21, 0),
+	(34, 'ACH_RegistrationDuration', 3, 90, 56, 0),
+	(35, 'ACH_RegistrationDuration', 4, 120, 112, 0),
+	(36, 'ACH_RegistrationDuration', 5, 160, 168, 0),
+	(37, 'ACH_RegistrationDuration', 6, 200, 365, 0),
+	(38, 'ACH_RegistrationDuration', 7, 200, 730, 0),
+	(39, 'ACH_RegistrationDuration', 8, 200, 1095, 0),
+	(40, 'ACH_RegistrationDuration', 9, 200, 1461, 0),
+	(41, 'ACH_RegistrationDuration', 10, 200, 1826, 0),
+	(42, 'ACH_RespectEarned', 1, 20, 1, 0),
+	(43, 'ACH_RespectEarned', 2, 20, 5, 0),
+	(44, 'ACH_RespectEarned', 3, 20, 10, 0),
+	(45, 'ACH_RespectEarned', 4, 50, 50, 0),
+	(46, 'ACH_RespectEarned', 5, 100, 100, 0),
+	(47, 'ACH_RespectEarned', 6, 200, 200, 0),
+	(48, 'ACH_RespectEarned', 7, 200, 200, 0),
+	(49, 'ACH_RespectEarned', 8, 200, 200, 0),
+	(50, 'ACH_RespectEarned', 9, 200, 200, 0),
+	(51, 'ACH_RespectEarned', 10, 200, 400, 0),
+	(52, 'ACH_RoomEntry', 1, 10, 5, 0),
+	(53, 'ACH_RoomEntry', 2, 10, 15, 0),
+	(54, 'ACH_RoomEntry', 3, 15, 30, 0),
+	(55, 'ACH_RoomEntry', 4, 15, 50, 0),
+	(56, 'ACH_RoomEntry', 5, 15, 60, 0),
+	(57, 'ACH_RoomEntry', 6, 20, 80, 0),
+	(58, 'ACH_RoomEntry', 7, 20, 120, 0),
+	(59, 'ACH_RoomEntry', 8, 30, 140, 0),
+	(60, 'ACH_RoomEntry', 9, 30, 160, 0),
+	(61, 'ACH_RoomEntry', 10, 40, 200, 0),
+	(62, 'ACH_TraderPass', 1, 0, 0, 0),
+	(72, 'ACH_AIPerformanceVote', 1, 20, 1, 0),
+	(73, 'ACH_AIPerformanceVote', 2, 20, 20, 0),
+	(74, 'ACH_AIPerformanceVote', 3, 20, 50, 0),
+	(75, 'ACH_AIPerformanceVote', 4, 20, 100, 0),
+	(76, 'ACH_AIPerformanceVote', 5, 40, 180, 0),
+	(77, 'ACH_AIPerformanceVote', 6, 40, 200, 0),
+	(78, 'ACH_AIPerformanceVote', 7, 40, 200, 0),
+	(79, 'ACH_AIPerformanceVote', 8, 60, 300, 0),
+	(80, 'ACH_AIPerformanceVote', 9, 60, 300, 0),
+	(81, 'ACH_AIPerformanceVote', 10, 100, 1, 0),
+	(82, 'HC', 4, 400, 36, 0),
+	(83, 'HC', 5, 500, 48, 0),
+	(84, 'ACH_AllTimeHotelPresence', 1, 30, 1, 0),
+	(85, 'ACH_AllTimeHotelPresence', 2, 20, 3, 0),
+	(86, 'ACH_AllTimeHotelPresence', 3, 20, 8, 0),
+	(87, 'ACH_AllTimeHotelPresence', 4, 20, 16, 0),
+	(88, 'ACH_AllTimeHotelPresence', 5, 20, 48, 0),
+	(89, 'ACH_AllTimeHotelPresence', 6, 20, 144, 0),
+	(90, 'ACH_AllTimeHotelPresence', 7, 20, 288, 0),
+	(91, 'ACH_AllTimeHotelPresence', 8, 20, 576, 0),
+	(92, 'ACH_AllTimeHotelPresence', 9, 20, 1152, 0),
+	(93, 'ACH_AllTimeHotelPresence', 10, 20, 2304, 0),
+	(94, 'ACH_GamePlayed', 1, 10, 1, 0),
+	(95, 'ACH_GamePlayed', 2, 30, 5, 0),
+	(96, 'ACH_GamePlayed', 3, 50, 20, 0),
+	(97, 'ACH_GamePlayed', 4, 80, 50, 0),
+	(98, 'ACH_GamePlayed', 5, 100, 100, 0),
+	(99, 'ACH_GamePlayed', 6, 120, 160, 0),
+	(100, 'ACH_GamePlayed', 7, 160, 200, 0),
+	(101, 'ACH_GamePlayed', 8, 220, 280, 0),
+	(102, 'ACH_GamePlayed', 9, 280, 360, 0),
+	(103, 'ACH_GamePlayed', 10, 340, 440, 0),
+	(104, 'ACH_Student', 1, 20, 1, 0),
+	(105, 'ACH_EmailVerification', 1, 200, 1, 0);
+
+DROP TABLE IF EXISTS `users_achievements`;
+CREATE TABLE IF NOT EXISTS `users_achievements` (
+  `achievement_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `progress` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+DROP TABLE IF EXISTS `groups_details`;
+CREATE TABLE IF NOT EXISTS `groups_details` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) NOT NULL,
+  `description` mediumtext NOT NULL,
+  `owner_id` int(10) NOT NULL,
+  `room_id` int(10) NOT NULL DEFAULT 0,
+  `badge` mediumtext NOT NULL DEFAULT 'b0503Xs09114s05013s05015',
+  `recommended` int(1) NOT NULL DEFAULT 0,
+  `background` varchar(255) NOT NULL DEFAULT 'bg_colour_08',
+  `views` int(15) NOT NULL DEFAULT 0,
+  `topics` smallint(1) NOT NULL DEFAULT 0,
+  `group_type` tinyint(3) unsigned NOT NULL DEFAULT 0,
+  `forum_type` tinyint(1) unsigned NOT NULL DEFAULT 0,
+  `forum_premission` tinyint(1) unsigned NOT NULL DEFAULT 0,
+  `alias` varchar(30) DEFAULT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `alias` (`alias`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Dumping data for table havana.groups_details: ~0 rows (approximately)
+DELETE FROM `groups_details`;
+
+-- Dumping structure for table havana.groups_edit_sessions
+DROP TABLE IF EXISTS `groups_edit_sessions`;
+CREATE TABLE IF NOT EXISTS `groups_edit_sessions` (
+  `user_id` int(11) NOT NULL,
+  `group_id` int(11) NOT NULL,
+  `expire` bigint(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Dumping data for table havana.groups_edit_sessions: ~0 rows (approximately)
+DELETE FROM `groups_edit_sessions`;
+
+-- Dumping structure for table havana.groups_memberships
+DROP TABLE IF EXISTS `groups_memberships`;
+CREATE TABLE IF NOT EXISTS `groups_memberships` (
+  `user_id` int(10) NOT NULL,
+  `group_id` int(10) NOT NULL,
+  `member_rank` enum('3','2','1') NOT NULL DEFAULT '1',
+  `is_pending` tinyint(11) NOT NULL DEFAULT 0,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  KEY `userid` (`user_id`),
+  KEY `groupid` (`group_id`),
+  KEY `group_id` (`group_id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Dumping data for table havana.groups_memberships: ~0 rows (approximately)
+DELETE FROM `groups_memberships`;
+
+-- Dumping structure for table havana.homes_details
+DROP TABLE IF EXISTS `homes_details`;
+CREATE TABLE IF NOT EXISTS `homes_details` (
+  `user_id` int(10) NOT NULL,
+  `background` varchar(255) NOT NULL DEFAULT 'bg_pattern_abstract2',
+  UNIQUE KEY `user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Dumping data for table havana.homes_details: ~0 rows (approximately)
+DELETE FROM `homes_details`;
+
+-- Dumping structure for table havana.homes_edit_sessions
+DROP TABLE IF EXISTS `homes_edit_sessions`;
+CREATE TABLE IF NOT EXISTS `homes_edit_sessions` (
+  `user_id` int(11) NOT NULL,
+  `expire` bigint(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Dumping data for table havana.homes_edit_sessions: ~0 rows (approximately)
+DELETE FROM `homes_edit_sessions`;
+
+-- Dumping structure for table havana.homes_ratings
+DROP TABLE IF EXISTS `homes_ratings`;
+CREATE TABLE IF NOT EXISTS `homes_ratings` (
+  `user_id` int(11) NOT NULL,
+  `home_id` int(11) NOT NULL,
+  `rating` int(11) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Dumping data for table havana.homes_ratings: ~0 rows (approximately)
+DELETE FROM `homes_ratings`;
+
+-- Dumping structure for table havana.housekeeping_audit_log
+DROP TABLE IF EXISTS `housekeeping_audit_log`;
+CREATE TABLE IF NOT EXISTS `housekeeping_audit_log` (
+  `action` enum('alert_user','kick_user','ban_user','room_alert','room_kick') NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `target_id` int(11) NOT NULL DEFAULT -1,
+  `message` varchar(255) NOT NULL DEFAULT '',
+  `extra_notes` varchar(255) NOT NULL DEFAULT '',
+  `created_at` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Dumping data for table havana.housekeeping_audit_log: ~0 rows (approximately)
+DELETE FROM `housekeeping_audit_log`;
+
+-- Dumping structure for table havana.infobus_polls
+DROP TABLE IF EXISTS `infobus_polls`;
+CREATE TABLE IF NOT EXISTS `infobus_polls` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `initiated_by` int(11) NOT NULL,
+  `poll_data` text NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Dumping data for table havana.infobus_polls: ~0 rows (approximately)
+DELETE FROM `infobus_polls`;
+
+-- Dumping structure for table havana.infobus_polls_answers
+DROP TABLE IF EXISTS `infobus_polls_answers`;
+CREATE TABLE IF NOT EXISTS `infobus_polls_answers` (
+  `poll_id` int(11) NOT NULL,
+  `answer` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  KEY `poll_id` (`poll_id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Dumping data for table havana.infobus_polls_answers: ~0 rows (approximately)
+DELETE FROM `infobus_polls_answers`;
+
+-- Dumping structure for table havana.users_referred
+DROP TABLE IF EXISTS `users_referred`;
+CREATE TABLE IF NOT EXISTS `users_referred` (
+  `user_id` int(11) DEFAULT NULL,
+  `referred_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Dumping data for table havana.users_referred: ~0 rows (approximately)
+DELETE FROM `users_referred`;
+
+-- Dumping structure for table havana.users_tags
+DROP TABLE IF EXISTS `users_tags`;
+CREATE TABLE IF NOT EXISTS `users_tags` (
+  `user_id` int(11) DEFAULT NULL,
+  `tag` varchar(20) NOT NULL,
+  `room_id` varchar(20) NOT NULL DEFAULT '0',
+  `group_id` varchar(20) NOT NULL DEFAULT '0',
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  KEY `user_id` (`user_id`),
+  KEY `room_id` (`room_id`),
+  KEY `group_id` (`group_id`),
+  KEY `tag` (`tag`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Dumping data for table havana.users_tags: ~2 rows (approximately)
+DELETE FROM `users_tags`;
+
+ALTER TABLE `users_badges`
+	CHANGE COLUMN `badge` `badge` CHAR(50) NOT NULL COLLATE 'utf8mb4_general_ci' AFTER `user_id`,
+	ADD COLUMN `equipped` TINYINT(1) NOT NULL DEFAULT 0 AFTER `badge`,
+	ADD COLUMN `slot_id` INT(11) NOT NULL DEFAULT 0 AFTER `equipped`;
+
+DROP TABLE IF EXISTS `room_visits`;
+CREATE TABLE IF NOT EXISTS `room_visits` (
+  `room_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL DEFAULT 0,
+  `visited_at` datetime NOT NULL DEFAULT current_timestamp(),
+  UNIQUE KEY `room_id_user_id` (`room_id`,`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

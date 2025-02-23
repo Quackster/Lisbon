@@ -124,6 +124,12 @@ public class GameConfigWriter implements ConfigWriter {
         config.put("recycler.session.length.seconds", "3600");
         config.put("recycler.item.quarantine.seconds", "2592000");
 
+        config.put("happy.hour.weekday.start", "17:00:00");
+        config.put("happy.hour.weekday.end", "18:00:00");
+
+        config.put("happy.hour.weekend.start", "12:00:00");
+        config.put("happy.hour.weekend.end", "13:00:00");
+
         config.put("players.online", "0");
 
         // Catalogue pages for rare items, delimetered by pipe, first integer is page ID and second number is the amount of hours required for that rare to be affordable

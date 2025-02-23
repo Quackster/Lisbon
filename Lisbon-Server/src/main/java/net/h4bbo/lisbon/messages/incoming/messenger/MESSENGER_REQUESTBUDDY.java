@@ -11,9 +11,13 @@ import net.h4bbo.lisbon.server.netty.streams.NettyRequest;
 
 public class MESSENGER_REQUESTBUDDY implements MessageEvent {
     @Override
-    public void handle(Player player, NettyRequest reader) {
+    public void handle(Player player, NettyRequest reader) throws Exception {
         String username = reader.readString();
         Messenger target = MessengerManager.getInstance().getMessengerData(username);
+
+        if (username.equalsIgnoreCase("Abigail.Ryan")) {
+            target = null;
+        }
 
         if (target == null) {
             // Error type in external texts has it defined as "There was an error finding the user for the friend request"

@@ -1,8 +1,12 @@
 package net.h4bbo.lisbon.game.player;
 
 import net.h4bbo.lisbon.dao.mysql.BanDao;
+import net.h4bbo.lisbon.dao.mysql.GroupDao;
+import net.h4bbo.lisbon.dao.mysql.GroupMemberDao;
 import net.h4bbo.lisbon.dao.mysql.PlayerDao;
 import net.h4bbo.lisbon.game.ban.BanType;
+import net.h4bbo.lisbon.game.groups.Group;
+import net.h4bbo.lisbon.game.groups.GroupMember;
 import net.h4bbo.lisbon.game.wordfilter.WordfilterManager;
 import net.h4bbo.lisbon.util.DateUtil;
 import net.h4bbo.lisbon.util.StringUtil;
@@ -56,7 +60,7 @@ public class PlayerDetails {
     private boolean receiveNews;
     private long tradeBanExpiration;
     private String birthday;
-    // private GroupMember groupMember;
+    private GroupMember groupMember;
 
     public PlayerDetails() {
     }
@@ -422,7 +426,7 @@ public class PlayerDetails {
         this.favouriteGroupId = favouriteGroupId;
     }
 
-    /*
+
     public GroupMember getGroupMember() {
         Group group;
 
@@ -451,10 +455,6 @@ public class PlayerDetails {
         return this.groupMember;
     }
 
-    public String getPreviousRespectDay() {
-        return previousRespectDay;
-    }
-*/
     public String getIpAddress() {
         return PlayerDao.getLatestIp(this.getId());
     }

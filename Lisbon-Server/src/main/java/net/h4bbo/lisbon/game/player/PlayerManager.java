@@ -321,6 +321,28 @@ public class PlayerManager {
         return registerValues;
     }
 
+    /**
+     * Get if the player is online.
+     *
+     * @param userId the id of the user to check
+     * @return true, if successful
+     */
+    public boolean isPlayerOnline(int userId) {
+        for (Player player : this.players) {
+            if (player.getDetails().getId() != userId) {
+                continue;
+            }
+
+            if (!player.getDetails().isOnlineStatusVisible()) {
+                return false;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
     public Object getRegisterValue(LinkedHashMap<Integer, RegisterValue> values, String label) {
         for (var value : values.values()) {
             if (value.getLabel().equals(label))

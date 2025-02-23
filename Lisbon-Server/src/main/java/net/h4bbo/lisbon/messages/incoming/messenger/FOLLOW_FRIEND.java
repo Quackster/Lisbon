@@ -27,7 +27,7 @@ public class FOLLOW_FRIEND implements MessageEvent {
     }
 
     @Override
-    public void handle(Player player, NettyRequest reader) {
+    public void handle(Player player, NettyRequest reader) throws Exception {
         int friendId = reader.readInt();
 
         if (!player.getMessenger().hasFriend(friendId)) {
@@ -53,6 +53,7 @@ public class FOLLOW_FRIEND implements MessageEvent {
         }
 
         Room friendRoom = friend.getRoomUser().getRoom();
+        player.getMessenger().hasFollowed(friendRoom);
         friendRoom.forward(player, false);
     }
 }

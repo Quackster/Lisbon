@@ -33,7 +33,6 @@ import net.h4bbo.lisbon.messages.incoming.recycler.GET_FURNI_RECYCLER_STATUS;
 import net.h4bbo.lisbon.messages.incoming.recycler.START_FURNI_RECYCLING;
 import net.h4bbo.lisbon.messages.incoming.register.*;
 import net.h4bbo.lisbon.messages.incoming.rooms.*;
-import net.h4bbo.lisbon.messages.incoming.rooms.badges.GETAVAILABLEBADGES;
 import net.h4bbo.lisbon.messages.incoming.rooms.badges.SETBADGE;
 import net.h4bbo.lisbon.messages.incoming.rooms.dimmer.MSG_ROOMDIMMER_CHANGE_STATE;
 import net.h4bbo.lisbon.messages.incoming.rooms.dimmer.MSG_ROOMDIMMER_GET_PRESETS;
@@ -47,6 +46,8 @@ import net.h4bbo.lisbon.messages.incoming.rooms.user.*;
 import net.h4bbo.lisbon.messages.incoming.songs.*;
 import net.h4bbo.lisbon.messages.incoming.trade.*;
 import net.h4bbo.lisbon.messages.incoming.user.*;
+import net.h4bbo.lisbon.messages.incoming.user.badges.GETAVAILABLEBADGES;
+import net.h4bbo.lisbon.messages.incoming.user.badges.GETSELECTEDBADGES;
 import net.h4bbo.lisbon.messages.incoming.user.settings.GET_ACCOUNT_PREFERENCES;
 import net.h4bbo.lisbon.messages.incoming.user.settings.GET_SOUND_SETTING;
 import net.h4bbo.lisbon.messages.incoming.user.settings.UPDATE_ACCOUNT;
@@ -227,6 +228,7 @@ public class MessageHandler {
         registerEvent(88, new STOP());
         registerEvent(229, new SET_SOUND_SETTING());
         registerEvent(117, new IIM());
+        registerEvent(263, new GET_USER_TAGS());
     }
 
     /**
@@ -242,6 +244,7 @@ public class MessageHandler {
     private void registerRoomBadgesPackets() {
         registerEvent(157, new GETAVAILABLEBADGES());
         registerEvent(158, new SETBADGE());
+        registerEvent(159, new GETSELECTEDBADGES());
     }
 
     /**

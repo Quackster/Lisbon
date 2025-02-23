@@ -16,10 +16,16 @@ public class ADD_BUDDY extends MessageComposer {
 
     @Override
     public void compose(NettyResponse response) {
-        response.writeInt(0);
-        response.writeInt(1);
+        response.writeInt(this.player.getMessenger().getCategories().size());
+
+        for (var category : this.player.getMessenger().getCategories()) {
+            response.writeInt(category.getId());
+            response.writeString(category.getName());
+        }
 
         response.writeInt(1);
+        response.writeInt(1);
+
         this.friend.serialise(this.player, response);
     }
 

@@ -1,4 +1,4 @@
-package net.h4bbo.lisbon.messages.outgoing.rooms.infobus;
+package net.h4bbo.lisbon.messages.outgoing.infobus;
 
 import net.h4bbo.lisbon.messages.types.MessageComposer;
 import net.h4bbo.lisbon.server.netty.streams.NettyResponse;
@@ -17,7 +17,6 @@ public class CANNOT_ENTER_BUS extends MessageComposer {
 
     @Override
     public short getHeader() {
-        return 81; // "AQ"
+        return 81;
     }
 }
-

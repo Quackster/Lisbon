@@ -7,7 +7,7 @@ import net.h4bbo.lisbon.server.netty.streams.NettyRequest;
 
 public class MESSENGER_GETREQUESTS implements MessageEvent {
     @Override
-    public void handle(Player player, NettyRequest reader) {
+    public void handle(Player player, NettyRequest reader) throws Exception {
         player.send(new FRIEND_REQUESTS(player.getMessenger().getRequests()));
     }
 }

@@ -37,6 +37,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.util.Locale;
+
 public class Lisbon {
     private static final Gson gson = new Gson();
     private static long startupTime;
@@ -238,6 +243,33 @@ public class Lisbon {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static boolean isHappyHour() {
+        try {
+            Calendar cl = Calendar.getInstance();
+
+            LocalTime from = null;//LocalTime.parse( "20:11:13"  ) ;
+            LocalTime to = null;//LocalTime.parse( "14:49:00" ) ;
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss", Locale.US);
+
+            if (cl.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY ||
+                    cl.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+                from = LocalTime.parse(GameConfiguration.getInstance().getString("happy.hour.weekend.start"), formatter);
+                to = LocalTime.parse(GameConfiguration.getInstance().getString("happy.hour.weekend.end"), formatter);
+            } else {
+                from = LocalTime.parse(GameConfiguration.getInstance().getString("happy.hour.weekday.start"), formatter);
+                to = LocalTime.parse(GameConfiguration.getInstance().getString("happy.hour.weekday.end"), formatter);
+            }
+
+            LocalTime nowUtcTime = LocalTime.parse(DateUtil.getCurrentDate("HH:mm:ss"), formatter);
+            return nowUtcTime.isAfter(from) && nowUtcTime.isBefore(to);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return false;
     }
 
     /**

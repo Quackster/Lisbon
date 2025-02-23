@@ -14,38 +14,44 @@ public class MessengerUser {
     private String figure;
     private String sex;
     private String motto;
-    private String lastOnline;
+    private long lastOnline;
     private boolean allowStalking;
     private boolean toRemove;
     private boolean toAdd;
+    private int categoryId;
+    private boolean onlineStatusVisible;
+    private boolean isOnline;
 
     public MessengerUser(PlayerDetails details) {
-        this.applyUserDetails(details.getId(), details.getName(), details.getFigure(), details.getMotto(), String.valueOf(details.getSex()), details.getLastOnline(), details.doesAllowStalking());
+        this.applyUserDetails(details.getId(), details.getName(), details.getFigure(), details.getMotto(), String.valueOf(details.getSex()), details.getLastOnline(), details.doesAllowStalking(), 0, details.isOnline(), details.isOnlineStatusVisible());
     }
 
-    public MessengerUser(int userId, String username, String figure, String sex, String consoleMotto, long lastOnline, boolean allowStalking) {
-        this.applyUserDetails(userId, username, figure, consoleMotto, sex, lastOnline, allowStalking);
+    public MessengerUser(int userId, String username, String figure, String sex, String consoleMotto, long lastOnline, boolean allowStalking, int categoryId, boolean isOnline, boolean onlineStatusVisible) {
+        this.applyUserDetails(userId, username, figure, consoleMotto, sex, lastOnline, allowStalking, categoryId, isOnline, onlineStatusVisible);
     }
 
     /**
      * Geneic method for applying details, used from both constructors.
      *
-     * @param userId       the id of the user
-     * @param username     the name of the user
-     * @param figure       the figure of the user
+     * @param userId the id of the user
+     * @param username the name of the user
+     * @param figure the figure of the user
      * @param consoleMotto the console motto of the user
-     * @param sex          the sex of the user
-     * @param lastOnline   the last time the user was online in Unix time
+     * @param sex the sex of the user
+     * @param lastOnline the last time the user was online in Unix time
      */
-    private void applyUserDetails(int userId, String username, String figure, String consoleMotto, String sex, long lastOnline, boolean allowStalking) {
+    private void applyUserDetails(int userId, String username, String figure, String consoleMotto, String sex, long lastOnline, boolean allowStalking, int categoryId, boolean isOnline, boolean onlineStatusVisible) {
         this.toRemove = false;
         this.userId = userId;
         this.username = StringUtil.filterInput(username, true);
         this.figure = StringUtil.filterInput(figure, true);
         this.sex = sex.toLowerCase().equals("f") ? "F" : "M";
-        this.lastOnline = DateUtil.getDate(lastOnline, DateUtil.SHORT_DATE); // lastOnline;
+        this.lastOnline = lastOnline;
         this.motto = StringUtil.filterInput(consoleMotto, true);
         this.allowStalking = allowStalking;
+        this.categoryId = categoryId;
+        this.onlineStatusVisible = onlineStatusVisible;
+        this.isOnline = isOnline;
     }
 
     /**
@@ -58,13 +64,13 @@ public class MessengerUser {
 
         if (player != null) {
             this.figure = player.getDetails().getFigure();
-            this.lastOnline = player.getDetails().getFormattedLastOnline();
+            this.lastOnline = player.getDetails().getLastOnline();
             this.sex = player.getDetails().getSex();
             this.motto = player.getDetails().getMotto();
             this.allowStalking = player.getDetails().doesAllowStalking();
         }
 
-        boolean isOnline = player != null;
+        boolean isOnline = PlayerManager.getInstance().isPlayerOnline(this.userId);
 
         response.writeInt(this.userId);
         response.writeString(this.username);
@@ -74,9 +80,9 @@ public class MessengerUser {
         response.writeBool(this.canFollowFriend(friend));
 
         response.writeString(isOnline ? this.figure : "");
-        response.writeInt(0);
+        response.writeInt(this.categoryId);
         response.writeString(this.motto);
-        response.writeString(this.lastOnline);
+        response.writeString(DateUtil.getDate(this.lastOnline, DateUtil.LONG_DATE));
     }
 
     public boolean canFollowFriend(Player friend) {
@@ -92,8 +98,8 @@ public class MessengerUser {
 
         Room room = player.getRoomUser().getRoom();
 
-        // Don't allow follow into rooms that you cannot gain entry into normally
-        return true;//(!room.getModel().getName().startsWith("bb_") && !room.getModel().getName().equals("snowwar"));
+        return (!room.getModel().getName().startsWith("bb_") &&
+                !room.getModel().getName().equals("snowwar"));
     }
 
 
@@ -129,16 +135,60 @@ public class MessengerUser {
         this.motto = motto;
     }
 
-    public String getLastOnline() {
+    public String getFormattedLastOnline() {
+        return DateUtil.getDate(this.lastOnline, "dd/MM/yyyy hh:mm a").replace("am", "AM").replace("pm","PM").replace(".", "");
+    }
+
+    public String getFormatLastOnline(String format) {
+        return DateUtil.getDate(this.lastOnline, format);
+    }
+
+    public long getLastOnline() {
         return lastOnline;
     }
 
     public void setLastOnline(long lastOnline) {
-        this.lastOnline = DateUtil.getDate(lastOnline, DateUtil.SHORT_DATE);
+        this.lastOnline = lastOnline;
     }
 
     @Override
     public String toString() {
         return "[" + username + "," + motto + "," + figure + "," + sex + "," + lastOnline + "]";
+    }
+
+    public boolean removed() {
+        return toRemove;
+    }
+
+    public void setToRemove(boolean toRemove) {
+        this.toRemove = toRemove;
+    }
+
+    public boolean added() {
+        return toAdd;
+    }
+
+    public void setToAdd(boolean toAdd) {
+        this.toAdd = toAdd;
+    }
+
+    public boolean isOnline() {
+        if (!this.onlineStatusVisible) {
+            return false;
+        }
+
+        if (PlayerManager.getInstance().getPlayers().size() > 0) {
+            return PlayerManager.getInstance().isPlayerOnline(this.userId);
+        }
+
+        return isOnline;
+    }
+
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
     }
 }

@@ -13,7 +13,7 @@ import java.util.List;
 
 public class FINDUSER implements MessageEvent {
     @Override
-    public void handle(Player player, NettyRequest reader) {
+    public void handle(Player player, NettyRequest reader) throws Exception {
         String searchQuery = reader.readString();
 
         List<Integer> userList = MessengerDao.search(searchQuery.toLowerCase());
@@ -30,7 +30,9 @@ public class FINDUSER implements MessageEvent {
         }
 
         friends.removeIf(playerDetails -> playerDetails.getId() == player.getDetails().getId());
+
         others.removeIf(playerDetails -> playerDetails.getId() == player.getDetails().getId());
+        others.removeIf(playerDetails -> playerDetails.getName().equals("Abigail.Ryan"));
 
         player.send(new MESSENGER_SEARCH(friends, others));
     }

@@ -7,6 +7,7 @@ import net.h4bbo.lisbon.messages.types.MessageComposer;
 import net.h4bbo.lisbon.server.netty.streams.NettyResponse;
 import net.h4bbo.lisbon.util.config.GameConfiguration;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MESSENGER_INIT extends MessageComposer {
@@ -17,11 +18,18 @@ public class MESSENGER_INIT extends MessageComposer {
     public MESSENGER_INIT(Player player, Messenger data) {
         this.player = player;
         this.friendsLimit = data.getFriendsLimit();
-        this.friends = data.getFriends();
+        this.friends = new ArrayList<>(data.getFriends().values());
     }
 
     @Override
     public void compose(NettyResponse response) {
+        //response.writeString(this.persistentMessage);
+
+//        if (this.isClubMember) {
+//            response.writeInt(clubFriendsLimit);
+//        } else {
+//            response.writeInt(normalFriendsLimit);
+//        }
 
         int normalFriendsLimit = GameConfiguration.getInstance().getInteger("messenger.max.friends.nonclub");
         int clubFriendsLimit = GameConfiguration.getInstance().getInteger("messenger.max.friends.club");

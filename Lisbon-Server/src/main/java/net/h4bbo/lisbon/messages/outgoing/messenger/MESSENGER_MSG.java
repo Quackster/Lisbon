@@ -19,6 +19,10 @@ public class MESSENGER_MSG extends MessageComposer {
         response.writeString(this.message.getMessage());
     }
 
+    public MessengerMessage getMessage() {
+        return message;
+    }
+
     @Override
     public short getHeader() {
         return 134; // "BF"

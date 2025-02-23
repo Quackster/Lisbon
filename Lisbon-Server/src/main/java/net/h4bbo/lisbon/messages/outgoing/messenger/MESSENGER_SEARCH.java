@@ -39,15 +39,15 @@ public class MESSENGER_SEARCH extends MessageComposer {
         response.writeString(playerDetails.getMotto());
 
         Player player = PlayerManager.getInstance().getPlayerById(playerDetails.getId());
-        boolean isOnline = player != null;
+        boolean isOnline = PlayerManager.getInstance().isPlayerOnline(playerDetails.getId());
 
         response.writeBool(isOnline);
         response.writeBool(isOnline && player.getRoomUser().getRoom() != null);
         response.writeString((isOnline && player.getRoomUser().getRoom() != null) ? player.getRoomUser().getRoom().getData().getName() : "");
 
-        response.writeBool(playerDetails.getSex().equals("M"));
+        response.writeBool(playerDetails.getSex().toUpperCase().equals("M"));
         response.writeString(isOnline ? playerDetails.getFigure() : "");
-        response.writeString(DateUtil.getDateAsString(playerDetails.getLastOnline()));
+        response.writeString(DateUtil.getDate(playerDetails.getLastOnline(), DateUtil.LONG_DATE));
     }
 
     @Override

@@ -1,6 +1,7 @@
 package net.h4bbo.lisbon.dao.mysql;
 
 import net.h4bbo.lisbon.dao.Storage;
+import net.h4bbo.lisbon.game.messenger.MessengerCategory;
 import net.h4bbo.lisbon.game.messenger.MessengerMessage;
 import net.h4bbo.lisbon.game.messenger.MessengerUser;
 import net.h4bbo.lisbon.util.DateUtil;
@@ -31,15 +32,16 @@ public class MessengerDao {
 
         try {
             sqlConnection = Storage.getStorage().getConnection();
-            preparedStatement = Storage.getStorage().prepare("SELECT id,username,figure,motto,last_online,sex,allow_stalking FROM messenger_friends INNER JOIN users ON messenger_friends.from_id = users.id WHERE to_id = ?", sqlConnection);
+            preparedStatement = Storage.getStorage().prepare("SELECT id,username,figure,motto,last_online,sex,allow_stalking,is_online,category_id,online_status_visible FROM messenger_friends INNER JOIN users ON messenger_friends.from_id = users.id WHERE to_id = ?", sqlConnection);
             preparedStatement.setInt(1, userId);
             resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
                 int resultUserId = resultSet.getInt("id");
                 friends.put(resultUserId, new MessengerUser(resultUserId, resultSet.getString("username"), resultSet.getString("figure"),
-                        resultSet.getString("sex"), resultSet.getString("motto"), resultSet.getLong("last_online"),
-                        resultSet.getBoolean("allow_stalking")));
+                        resultSet.getString("sex"), resultSet.getString("motto"), resultSet.getTime("last_online").getTime() / 1000L,
+                        resultSet.getBoolean("allow_stalking"), resultSet.getInt("category_id"),
+                        resultSet.getBoolean("is_online"), resultSet.getBoolean("online_status_visible")));
             }
 
         } catch (Exception e) {
@@ -53,6 +55,65 @@ public class MessengerDao {
         return friends;
     }
 
+    public static Map<Integer, MessengerUser> getFriendsPage(int userId, int range, int pageSize) {
+        Map<Integer, MessengerUser> friends = new HashMap<>();
+
+        Connection sqlConnection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            sqlConnection = Storage.getStorage().getConnection();
+            preparedStatement = Storage.getStorage().prepare("SELECT id,username,figure,motto,last_online,sex,allow_stalking,is_online,category_id,online_status_visible FROM messenger_friends INNER JOIN users ON messenger_friends.from_id = users.id WHERE to_id = ? LIMIT " + (range * pageSize) + "," + ((range * pageSize) + pageSize), sqlConnection);
+            preparedStatement.setInt(1, userId);
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                int resultUserId = resultSet.getInt("id");
+                friends.put(resultUserId, new MessengerUser(resultUserId, resultSet.getString("username"), resultSet.getString("figure"),
+                        resultSet.getString("sex"), resultSet.getString("motto"), resultSet.getTime("last_online").getTime() / 1000L,
+                        resultSet.getBoolean("allow_stalking"), resultSet.getInt("category_id"),
+                        resultSet.getBoolean("is_online"), resultSet.getBoolean("online_status_visible")));
+            }
+
+        } catch (Exception e) {
+            Storage.logError(e);
+        } finally {
+            Storage.closeSilently(resultSet);
+            Storage.closeSilently(preparedStatement);
+            Storage.closeSilently(sqlConnection);
+        }
+
+        return friends;
+    }
+
+    public static int getFriendsCount(int userId) {
+        int count = 0;
+
+        Connection sqlConnection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            sqlConnection = Storage.getStorage().getConnection();
+            preparedStatement = Storage.getStorage().prepare("SELECT COUNT(*) FROM messenger_friends INNER JOIN users ON messenger_friends.from_id = users.id WHERE to_id = ?", sqlConnection);
+            preparedStatement.setInt(1, userId);
+            resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                count = resultSet.getInt(1);
+            }
+
+        } catch (Exception e) {
+            Storage.logError(e);
+        } finally {
+            Storage.closeSilently(resultSet);
+            Storage.closeSilently(preparedStatement);
+            Storage.closeSilently(sqlConnection);
+        }
+
+        return count;
+    }
 
     /**
      * Gets the requests.
@@ -69,14 +130,15 @@ public class MessengerDao {
 
         try {
             sqlConnection = Storage.getStorage().getConnection();
-            preparedStatement = Storage.getStorage().prepare("SELECT from_id,username,figure,sex,motto,last_online,allow_stalking FROM messenger_requests INNER JOIN users ON messenger_requests.from_id = users.id WHERE to_id = " + userId, sqlConnection);
+            preparedStatement = Storage.getStorage().prepare("SELECT from_id,username,figure,sex,motto,last_online,allow_stalking,is_online,online_status_visible FROM messenger_requests INNER JOIN users ON messenger_requests.from_id = users.id WHERE to_id = " + userId, sqlConnection);
             resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
                 int fromId = resultSet.getInt("from_id");
                 users.put(fromId, new MessengerUser(fromId, resultSet.getString("username"), resultSet.getString("figure"),
-                        resultSet.getString("sex"), resultSet.getString("motto"), resultSet.getLong("last_online"),
-                        resultSet.getBoolean("allow_stalking")));
+                        resultSet.getString("sex"), resultSet.getString("motto"), resultSet.getTime("last_online").getTime() / 1000L,
+                        resultSet.getBoolean("allow_stalking"), 0,
+                        resultSet.getBoolean("is_online"), resultSet.getBoolean("online_status_visible")));
             }
 
         } catch (Exception e) {
@@ -254,6 +316,11 @@ public class MessengerDao {
             preparedStatement.setInt(2, toId);
             preparedStatement.execute();
 
+            preparedStatement = Storage.getStorage().prepare("DELETE FROM messenger_requests WHERE from_id = ? AND to_id = ?", sqlConnection);
+            preparedStatement.setInt(1, toId);
+            preparedStatement.setInt(2, fromId);
+            preparedStatement.execute();
+
         } catch (SQLException ex) {
             Storage.logError(ex);
         } finally {
@@ -356,6 +423,31 @@ public class MessengerDao {
         }
     }
 
+    /**
+     * Removes the category from friends after it had been deleted
+     *
+     * @param userId the friend id
+     * @param categoryId the category
+     */
+    public static void resetFriendCategories(int userId, int categoryId) {
+        Connection sqlConnection = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            sqlConnection = Storage.getStorage().getConnection();
+            preparedStatement = Storage.getStorage().prepare("UPDATE messenger_friends SET category_id = 0 WHERE to_id = ? AND category_id = ?", sqlConnection);
+            preparedStatement.setInt(1, userId);
+            preparedStatement.setInt(2, categoryId);
+            preparedStatement.execute();
+
+        } catch (SQLException ex) {
+            Storage.logError(ex);
+        } finally {
+            Storage.closeSilently(preparedStatement);
+            Storage.closeSilently(sqlConnection);
+        }
+    }
+
 
     /**
      * Create a message for other people to read them later, if they're offline.
@@ -444,4 +536,89 @@ public class MessengerDao {
         Storage.getStorage().execute("UPDATE messenger_messages SET unread = 0 WHERE id = " + messageId);
     }
 
+    public static List<MessengerCategory> getCategories(int userId) {
+        var categories = new ArrayList<MessengerCategory>();
+
+        Connection sqlConnection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+
+            sqlConnection = Storage.getStorage().getConnection();
+            preparedStatement = Storage.getStorage().prepare("SELECT * FROM messenger_categories WHERE user_id  = " + userId, sqlConnection);
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                categories.add(new MessengerCategory(resultSet.getInt("id"), resultSet.getInt("user_id"), resultSet.getString("name")));
+            }
+
+        } catch (Exception e) {
+            Storage.logError(e);
+        } finally {
+            Storage.closeSilently(resultSet);
+            Storage.closeSilently(preparedStatement);
+            Storage.closeSilently(sqlConnection);
+        }
+
+        return categories;
+    }
+
+    public static void deleteCategory(int categoryId, int userId) {
+        Connection sqlConnection = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            sqlConnection = Storage.getStorage().getConnection();
+            preparedStatement = Storage.getStorage().prepare("DELETE FROM messenger_categories WHERE id = ? AND user_id = ?", sqlConnection);
+            preparedStatement.setInt(1, categoryId);
+            preparedStatement.setInt(2, userId);
+            preparedStatement.execute();
+
+        } catch (SQLException ex) {
+            Storage.logError(ex);
+        } finally {
+            Storage.closeSilently(preparedStatement);
+            Storage.closeSilently(sqlConnection);
+        }
+    }
+
+    public static void addCategory(String name, int userId) {
+        Connection sqlConnection = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            sqlConnection = Storage.getStorage().getConnection();
+            preparedStatement = Storage.getStorage().prepare("INSERT INTO messenger_categories (user_id, name) VALUES (?, ?)", sqlConnection);
+            preparedStatement.setInt(1, userId);
+            preparedStatement.setString(2, name);
+            preparedStatement.execute();
+
+        } catch (SQLException ex) {
+            Storage.logError(ex);
+        } finally {
+            Storage.closeSilently(preparedStatement);
+            Storage.closeSilently(sqlConnection);
+        }
+    }
+
+    public static void updateCategory(String name, int categoryId, int userId) {
+        Connection sqlConnection = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            sqlConnection = Storage.getStorage().getConnection();
+            preparedStatement = Storage.getStorage().prepare("UPDATE messenger_categories SET name = ? WHERE id = ? AND user_id = ?", sqlConnection);
+            preparedStatement.setString(1, name);
+            preparedStatement.setInt(2, categoryId);
+            preparedStatement.setInt(3, userId);
+            preparedStatement.execute();
+
+        } catch (SQLException ex) {
+            Storage.logError(ex);
+        } finally {
+            Storage.closeSilently(preparedStatement);
+            Storage.closeSilently(sqlConnection);
+        }
+    }
 }

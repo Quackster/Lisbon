@@ -1,17 +1,16 @@
 package net.h4bbo.lisbon.game.player;
 
 import io.netty.util.AttributeKey;
-import net.h4bbo.lisbon.dao.mysql.ItemDao;
-import net.h4bbo.lisbon.dao.mysql.PlayerDao;
-import net.h4bbo.lisbon.dao.mysql.PlayerStatisticsDao;
-import net.h4bbo.lisbon.dao.mysql.SettingsDao;
+import net.h4bbo.lisbon.dao.mysql.*;
 import net.h4bbo.lisbon.game.GameScheduler;
+import net.h4bbo.lisbon.game.achievements.user.UserAchievementManager;
 import net.h4bbo.lisbon.game.badges.BadgeManager;
 import net.h4bbo.lisbon.game.club.ClubSubscription;
 import net.h4bbo.lisbon.game.entity.Entity;
 import net.h4bbo.lisbon.game.entity.EntityType;
 import net.h4bbo.lisbon.game.fuserights.Fuseright;
 import net.h4bbo.lisbon.game.fuserights.FuserightsManager;
+import net.h4bbo.lisbon.game.groups.Group;
 import net.h4bbo.lisbon.game.inventory.Inventory;
 import net.h4bbo.lisbon.game.messenger.Messenger;
 import net.h4bbo.lisbon.game.player.statistics.PlayerStatistic;
@@ -47,7 +46,9 @@ public class Player extends Entity {
     private Messenger messenger;
     private Inventory inventory;
     private BadgeManager badgeManager;
+    private UserAchievementManager achievementManager;
     private PlayerStatisticManager statisticManager;
+    private List<Group> joinedGroups;
 
     private boolean loggedIn;
     private boolean disconnected;
@@ -61,6 +62,7 @@ public class Player extends Entity {
         this.badgeManager = new BadgeManager();
         this.roomEntity = new RoomPlayer(this);
         this.statisticManager = new PlayerStatisticManager(-1, Map.of());
+        this.achievementManager = new UserAchievementManager();
         this.ignoredList = new HashSet<>();
         this.log = LoggerFactory.getLogger("Connection " + this.network.getConnectionId());
         this.pingOK = true;
@@ -139,11 +141,11 @@ public class Player extends Entity {
         }
 
         this.statisticManager = new PlayerStatisticManager(this.details.getId(), stats);
-
+        this.achievementManager.loadAchievements(this.details.getId());
         this.badgeManager.loadBadges(this);
         // this.achievementManager.loadAchievements(this.details.getId());
         this.details.resetNextHandout();
-        // this.refreshJoinedGroups();
+        this.refreshJoinedGroups();
 
         this.send(new RIGHTS(this.getFuserights()));
         this.send(new LOGIN());
@@ -315,6 +317,15 @@ public class Player extends Entity {
     }
 
     /**
+     * Get the user achievement manager.
+     *
+     * @return the user achievement manager
+     */
+    public UserAchievementManager getAchievementManager() {
+        return achievementManager;
+    }
+
+    /**
      * Get the statistic manager for the user.
      *
      * @return the statistic manager
@@ -375,12 +386,40 @@ public class Player extends Entity {
     }
 
     /**
+     * Refresh the groups the user has joined
+     */
+    public void refreshJoinedGroups() {
+        this.joinedGroups = GroupDao.getJoinedGroups(this.details.getId());
+    }
+
+    /**
+     * Get the list of groups the user has joined.
+     *
+     * @return the list of groups
+     */
+    public List<Group> getJoinedGroups() {
+        return joinedGroups;
+    }
+
+    /**
+     * Get the joined group
+     * @param joinedGroupId the joined group id
+     * @return the group
+     */
+    public Group getJoinedGroup(int joinedGroupId) {
+        return joinedGroups.stream().filter(x -> x.getId() == joinedGroupId).findFirst().orElse(null);
+    }
+
+    /**
      * Dispose player when disconnect happens.
      */
     @Override
     public void dispose() {
         try {
             if (this.loggedIn) {
+                if (this.roomEntity.getRoom() != null) {
+                    this.roomEntity.getRoom().getEntityManager().leaveRoom(this, false);
+                }
 
                 if (this.roomEntity.getObservingGameId() != -1) {
                     this.roomEntity.stopObservingGame();

@@ -1,0 +1,20 @@
+package net.h4bbo.lisbon.game.achievements.progressions;
+
+import net.h4bbo.lisbon.game.achievements.AchievementInfo;
+import net.h4bbo.lisbon.game.achievements.AchievementProgress;
+import net.h4bbo.lisbon.game.achievements.user.UserAchievement;
+import net.h4bbo.lisbon.game.player.Player;
+
+public class AchievementAIPerformanceVote implements AchievementProgress {
+    @Override
+    public boolean tryProgress(Player player, UserAchievement userAchievement, AchievementInfo achievementInfo) {
+        int progress = userAchievement.getProgress() + 1;
+
+        if (progress > achievementInfo.getProgressRequired()) {
+            progress = achievementInfo.getProgressRequired();
+        }
+
+        userAchievement.setProgress(progress);
+        return true;
+    }
+}
