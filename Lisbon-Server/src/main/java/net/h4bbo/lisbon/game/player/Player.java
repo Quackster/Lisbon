@@ -11,8 +11,10 @@ import net.h4bbo.lisbon.game.entity.EntityType;
 import net.h4bbo.lisbon.game.fuserights.Fuseright;
 import net.h4bbo.lisbon.game.fuserights.FuserightsManager;
 import net.h4bbo.lisbon.game.groups.Group;
+import net.h4bbo.lisbon.game.guides.GuideManager;
 import net.h4bbo.lisbon.game.inventory.Inventory;
 import net.h4bbo.lisbon.game.messenger.Messenger;
+import net.h4bbo.lisbon.game.player.guides.PlayerGuideManager;
 import net.h4bbo.lisbon.game.player.statistics.PlayerStatistic;
 import net.h4bbo.lisbon.game.player.statistics.PlayerStatisticManager;
 import net.h4bbo.lisbon.game.room.entities.RoomPlayer;
@@ -24,6 +26,7 @@ import net.h4bbo.lisbon.messages.outgoing.handshake.LOGIN;
 import net.h4bbo.lisbon.messages.outgoing.handshake.RIGHTS;
 import net.h4bbo.lisbon.messages.outgoing.moderation.USER_BANNED;
 import net.h4bbo.lisbon.messages.outgoing.openinghours.INFO_HOTEL_CLOSING;
+import net.h4bbo.lisbon.messages.outgoing.user.settings.HELP_ITEMS;
 import net.h4bbo.lisbon.messages.types.MessageComposer;
 import net.h4bbo.lisbon.server.netty.NettyPlayerNetwork;
 import net.h4bbo.lisbon.util.DateUtil;
@@ -55,12 +58,14 @@ public class Player extends Entity {
     private boolean pingOK;
     private int timeConnected;
     private String lastGift;
+    private PlayerGuideManager guideManager;
 
     public Player(NettyPlayerNetwork nettyPlayerNetwork) {
         this.network = nettyPlayerNetwork;
         this.details = new PlayerDetails();
         this.badgeManager = new BadgeManager();
         this.roomEntity = new RoomPlayer(this);
+        this.guideManager = new PlayerGuideManager(this);
         this.statisticManager = new PlayerStatisticManager(-1, Map.of());
         this.achievementManager = new UserAchievementManager();
         this.ignoredList = new HashSet<>();
@@ -166,6 +171,25 @@ public class Player extends Entity {
         }
 
         this.messenger.sendStatusUpdate();
+
+        // Guide checks
+        this.guideManager.setGuide(GuideManager.getInstance().isGuide(this));
+
+        if (GameConfiguration.getInstance().getBoolean("tutorial.enabled")) {
+            if (this.guideManager.isGuide()) {
+                this.guideManager.setHasTutorial(false);
+                this.guideManager.refreshGuidingUsers();
+            } else {
+                this.guideManager.setHasTutorial(this.statisticManager.getIntValue(PlayerStatistic.HAS_TUTORIAL) == 1);
+            }
+        }
+
+
+        if (GameConfiguration.getInstance().getBoolean("tutorial.enabled")) {
+            if (this.guideManager.hasTutorial()) {
+                this.send(new HELP_ITEMS(List.of(1, 2, 3, 4, 5, 6, 7, 8)));
+            }
+        }
     }
 
     /**
@@ -326,6 +350,15 @@ public class Player extends Entity {
     }
 
     /**
+     * Get the guide manager for the user.
+     *
+     * @return the guide manager
+     */
+    public PlayerGuideManager getGuideManager() {
+        return guideManager;
+    }
+
+    /**
      * Get the statistic manager for the user.
      *
      * @return the statistic manager
@@ -333,7 +366,6 @@ public class Player extends Entity {
     public PlayerStatisticManager getStatisticManager() {
         return statisticManager;
     }
-
 
     /**
      * Get if the player has logged in or not.

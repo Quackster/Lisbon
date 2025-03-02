@@ -2,7 +2,10 @@ package net.h4bbo.lisbon.game.room.models.triggers;
 
 import net.h4bbo.lisbon.dao.mysql.PetDao;
 import net.h4bbo.lisbon.dao.mysql.RoomVisitsDao;
+import net.h4bbo.lisbon.game.achievements.AchievementManager;
+import net.h4bbo.lisbon.game.achievements.AchievementType;
 import net.h4bbo.lisbon.game.entity.Entity;
+import net.h4bbo.lisbon.game.guides.GuideManager;
 import net.h4bbo.lisbon.game.item.Item;
 import net.h4bbo.lisbon.game.item.interactors.InteractionType;
 import net.h4bbo.lisbon.game.item.interactors.types.PetNestInteractor;
@@ -36,6 +39,23 @@ public class FlatTrigger extends GenericTrigger {
         });*/
 
         RoomVisitsDao.addVisit(player.getDetails().getId(), room.getId());
+
+        AchievementManager.getInstance().tryProgress(AchievementType.ACHIEVEMENT_ROOMENTRY, player);
+
+        if (player.getGuideManager().isGuide() && player.getGuideManager().getInvitedBy() > 0) {
+            int invitedBy = player.getGuideManager().getInvitedBy();
+
+            if (room.getData().getOwnerId() == invitedBy) {
+                room.getEntityManager().getPlayers().stream()
+                        .filter(p -> p.getDetails().getId() == invitedBy)
+                        .findFirst()
+                        .ifPresent(newb -> {
+                            GuideManager.getInstance().tutorEnterRoom(player, newb);
+                        });
+
+                player.getGuideManager().setInvitedBy(0);
+            }
+        }
 
         if (firstEntry) {
             for (Item item : room.getItemManager().getFloorItems().stream().filter(item -> item.getDefinition().getInteractionType() == InteractionType.PET_NEST).toList()) {

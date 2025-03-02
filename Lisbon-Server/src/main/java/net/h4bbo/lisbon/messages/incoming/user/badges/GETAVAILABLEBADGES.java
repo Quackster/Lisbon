@@ -1,6 +1,7 @@
 package net.h4bbo.lisbon.messages.incoming.user.badges;
 
 import net.h4bbo.lisbon.game.player.Player;
+import net.h4bbo.lisbon.messages.outgoing.guides.INIT_TUTOR_SERVICE_STATUS;
 import net.h4bbo.lisbon.messages.types.MessageEvent;
 import net.h4bbo.lisbon.server.netty.streams.NettyRequest;
 
@@ -13,5 +14,9 @@ public class GETAVAILABLEBADGES implements MessageEvent {
 
         player.getBadgeManager().refreshBadges();
         player.getAchievementManager().processAchievements(player, true);
+
+        if (player.getGuideManager().isGuide()) {
+            player.send(new INIT_TUTOR_SERVICE_STATUS(1));
+        }
     }
 }

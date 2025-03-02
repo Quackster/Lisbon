@@ -46,6 +46,7 @@ import net.h4bbo.lisbon.messages.incoming.rooms.teleporter.GETDOORFLAT;
 import net.h4bbo.lisbon.messages.incoming.rooms.user.*;
 import net.h4bbo.lisbon.messages.incoming.songs.*;
 import net.h4bbo.lisbon.messages.incoming.trade.*;
+import net.h4bbo.lisbon.messages.incoming.tutorial.*;
 import net.h4bbo.lisbon.messages.incoming.user.*;
 import net.h4bbo.lisbon.messages.incoming.user.badges.GETAVAILABLEBADGES;
 import net.h4bbo.lisbon.messages.incoming.user.badges.GETSELECTEDBADGES;
@@ -102,6 +103,7 @@ public class MessageHandler {
         registerGamePackets();
         registerJukeboxPackets();
         registerEcotronPackets();
+        registerTutorPackets();
 
         registerEvent(230, (player, reader) -> {
             if (player.getRoomUser().getRoom() == null) {
@@ -504,6 +506,21 @@ public class MessageHandler {
 
             player.send(new SNOWSTORM_GAMESTATUS((SnowStormGame) game, List.of(), gamePlayer));//.compose(response);
         });*/
+    }
+
+    /**
+     * Register tutor packets.
+     */
+    private void registerTutorPackets() {
+        registerEvent(356, new MSG_INVITE_TUTORS());
+        registerEvent(355, new MSG_GET_TUTORS_AVAILABLE());
+        registerEvent(362, new MSG_WAIT_FOR_TUTOR_INVITATIONS());
+        registerEvent(363, new MSG_CANCEL_WAIT_FOR_TUTOR_INVITATIONS());
+        registerEvent(313, new MSG_REMOVE_ACCOUNT_HELP_TEXT());
+        registerEvent(357, new MSG_ACCEPT_TUTOR_INVITATION());
+        registerEvent(358, new MSG_REJECT_TUTOR_INVITATION());
+        registerEvent(359, new MSG_CANCEL_TUTOR_INVITATIONS());
+        registerEvent(249, new RESET_TUTORIAL());
     }
 
     /**

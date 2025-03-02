@@ -5,6 +5,8 @@ import net.h4bbo.lisbon.game.achievements.AchievementInfo;
 import net.h4bbo.lisbon.game.achievements.AchievementManager;
 import net.h4bbo.lisbon.game.achievements.AchievementType;
 import net.h4bbo.lisbon.game.club.ClubSubscription;
+import net.h4bbo.lisbon.game.groups.GroupMemberRank;
+import net.h4bbo.lisbon.game.guides.GuideManager;
 import net.h4bbo.lisbon.game.player.Player;
 import net.h4bbo.lisbon.util.DateUtil;
 import net.h4bbo.lisbon.util.config.GameConfiguration;
@@ -175,13 +177,12 @@ public class UserAchievementManager {
         // AchievementManager.getInstance().tryProgress(AchievementType.ACHIEVEMENT_TRADERPASS, player);
         AchievementManager.getInstance().tryProgress(AchievementType.ACHIEVEMENT_EMAIL_VERIFICATION, player);
 
-        /*GuideManager.getInstance().tryProgress(player);
-        GuideManager.getInstance().checkGuidingFriends(player);*/
+        GuideManager.getInstance().tryProgress(player);
+        GuideManager.getInstance().checkGuidingFriends(player);
 
         ClubSubscription.checkBadges(player);
 
         // Habbo Guide admins
-        /*
         if (player.getGuideManager().isGuide()) {
             if (!player.getBadgeManager().hasBadge("GLK")) {
                 int guideGroupId = GameConfiguration.getInstance().getInteger("guides.group.id");
@@ -189,13 +190,13 @@ public class UserAchievementManager {
 
                 if (groupMember != null &&
                         (groupMember.getMemberRank() == GroupMemberRank.ADMINISTRATOR ||
-                        groupMember.getMemberRank() == GroupMemberRank.OWNER)) {
+                                groupMember.getMemberRank() == GroupMemberRank.OWNER)) {
                     player.getBadgeManager().tryAddBadge("GLK", null);
                 } else {
                     player.getGuideManager().setGuide(GuideManager.getInstance().isGuide(player));
                 }
             }
-        }*/
+        }
 
         // Habbo eXperts
         if (GameConfiguration.getInstance().getInteger("habbo.experts.group.id") > 0) {
