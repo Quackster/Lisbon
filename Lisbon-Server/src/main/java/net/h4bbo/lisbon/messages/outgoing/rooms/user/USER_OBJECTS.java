@@ -3,6 +3,7 @@ package net.h4bbo.lisbon.messages.outgoing.rooms.user;
 import net.h4bbo.lisbon.game.entity.Entity;
 import net.h4bbo.lisbon.game.entity.EntityState;
 import net.h4bbo.lisbon.game.entity.EntityType;
+import net.h4bbo.lisbon.game.player.Player;
 import net.h4bbo.lisbon.messages.types.MessageComposer;
 import net.h4bbo.lisbon.server.netty.streams.NettyResponse;
 import net.h4bbo.lisbon.util.FigureUtil;
@@ -31,14 +32,20 @@ public class USER_OBJECTS extends MessageComposer {
         this.states = new ArrayList<>();
 
         for (Entity user : entities) {
-            this.states.add(new EntityState(
+            var entityState = new EntityState(
                     user.getDetails().getId(),
                     user.getRoomUser().getInstanceId(),
                     user.getDetails(),
                     user.getType(),
                     user.getRoomUser().getRoom(),
                     user.getRoomUser().getPosition().copy(),
-                    user.getRoomUser().getStatuses()));
+                    user.getRoomUser().getStatuses());
+
+            if (user instanceof Player player) {
+                entityState.getBadges().addAll(player.getBadgeManager().getEquippedBadges());
+            }
+
+            this.states.add(entityState);
         }
     }
 
@@ -49,9 +56,9 @@ public class USER_OBJECTS extends MessageComposer {
 
             if (states.getEntityType() == EntityType.PET) {
                 response.writeKeyValue("i", states.getInstanceId());
-                response.writeKeyValue("n", states.getInstanceId() + Character.toString((char)4) + states.getDetails().getName());
+                response.writeKeyValue("n", states.getInstanceId() + Character.toString((char) 4) + states.getDetails().getName());
                 response.writeKeyValue("f", states.getDetails().getFigure());
-                response.writeKeyValue("l", states.getPosition().getX() + " " + states.getPosition().getY() + " " + (int)states.getPosition().getZ());
+                response.writeKeyValue("l", states.getPosition().getX() + " " + states.getPosition().getY() + " " + (int) states.getPosition().getZ());
                 response.writeKeyValue("c", "");
             } else {
                 response.writeKeyValue("i", states.getInstanceId());
@@ -69,8 +76,25 @@ public class USER_OBJECTS extends MessageComposer {
                 if (states.getDetails().getShowBadge()) {
                     response.writeKeyValue("b", states.getDetails().getCurrentBadge());
                 }
+                */
 
-                 */
+                String szNotify = "";
+
+                for (var badge : states.getBadges()) {
+                    szNotify += badge.getSlotId();
+                    szNotify += ":";
+                    szNotify += badge.getBadgeCode();
+                    szNotify += ",";
+                }
+
+                if (szNotify.length() > 0)
+                    response.writeKeyValue("b", szNotify); // s += "b:" + szNotify + Convert.ToChar(13);
+
+                if (states.getGroupMember() != null) {
+                    response.writeKeyValue("g", states.getGroupMember().getGroupId());
+                    response.writeKeyValue("t", states.getGroupMember().getMemberRank().getClientRank());
+                }
+
                 if (states.getRoom().getModel().getName().startsWith("pool_") ||
                         states.getRoom().getModel().getName().equals("md_a")) {
 

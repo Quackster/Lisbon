@@ -1,6 +1,7 @@
 package net.h4bbo.lisbon.messages;
 
 import net.h4bbo.lisbon.game.player.Player;
+import net.h4bbo.lisbon.game.room.Room;
 import net.h4bbo.lisbon.game.room.RoomManager;
 import net.h4bbo.lisbon.log.Log;
 import net.h4bbo.lisbon.messages.incoming.catalogue.GCAP;
@@ -54,12 +55,15 @@ import net.h4bbo.lisbon.messages.incoming.user.settings.UPDATE_ACCOUNT;
 import net.h4bbo.lisbon.messages.incoming.welcomingparty.ACCEPT_TUTOR_INVITATION;
 import net.h4bbo.lisbon.messages.incoming.welcomingparty.REJECT_TUTOR_INVITATION;
 import net.h4bbo.lisbon.messages.incoming.wobblesquabble.PTM;
+import net.h4bbo.lisbon.messages.outgoing.rooms.groups.GROUP_BADGES;
+import net.h4bbo.lisbon.messages.outgoing.rooms.groups.GROUP_INFO;
 import net.h4bbo.lisbon.messages.types.MessageEvent;
 import net.h4bbo.lisbon.server.netty.streams.NettyRequest;
 import net.h4bbo.lisbon.util.config.ServerConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class MessageHandler {
@@ -98,6 +102,54 @@ public class MessageHandler {
         registerGamePackets();
         registerJukeboxPackets();
         registerEcotronPackets();
+
+        registerEvent(230, (player, reader) -> {
+            if (player.getRoomUser().getRoom() == null) {
+                return;
+            }
+
+            Room room = player.getRoomUser().getRoom();
+            HashMap<Integer, String> groupBadges = new HashMap<>();
+
+            for (Player p : room.getEntityManager().getPlayers()) {
+                if (p.getDetails().getFavouriteGroupId() > 0) {
+                    if (groupBadges.containsKey(p.getDetails().getFavouriteGroupId())) {
+                        continue;
+                    }
+
+                    var group = player.getJoinedGroup(p.getDetails().getFavouriteGroupId());
+
+                    if (group == null) {
+                        continue;
+                    }
+
+                    groupBadges.put(group.getId(), group.getBadge());
+                }
+            }
+
+            player.send(new GROUP_BADGES(groupBadges));
+        });
+
+        registerEvent(231, (player, reader) -> {
+            if (player.getRoomUser().getRoom() == null) {
+                return;
+            }
+
+            int groupId = reader.readInt();
+
+            Room room = player.getRoomUser().getRoom();
+
+            for (Player p : room.getEntityManager().getPlayers()) {
+                var group = p.getJoinedGroup(groupId);
+
+                if (group == null) {
+                    continue;
+                }
+
+                player.send(new GROUP_INFO(group));
+                break;
+            }
+        });
     }
 
     /**
@@ -150,6 +202,7 @@ public class MessageHandler {
         registerEvent(228, new GET_ACCOUNT_PREFERENCES());
         registerEvent(196, new PONG());
         registerEvent(44, new UPDATE());
+        registerEvent(370, new GET_POSSIBLE_ACHIEVEMENTS());
         // (Unknown): 149 / BU@M@Flol123@H@J01.01.1991@C@Iqwerty123
         registerEvent(360, new GET_IGNORE_LIST());
         registerEvent(319, new IGNORE_USER());

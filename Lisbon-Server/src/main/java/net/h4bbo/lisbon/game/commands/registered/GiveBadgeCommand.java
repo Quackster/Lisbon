@@ -1,6 +1,8 @@
 package net.h4bbo.lisbon.game.commands.registered;
 
 import net.h4bbo.lisbon.dao.mysql.BadgeDao;
+import net.h4bbo.lisbon.dao.mysql.PlayerDao;
+import net.h4bbo.lisbon.game.badges.BadgeManager;
 import net.h4bbo.lisbon.game.commands.Command;
 import net.h4bbo.lisbon.game.entity.Entity;
 import net.h4bbo.lisbon.game.entity.EntityType;
@@ -9,11 +11,10 @@ import net.h4bbo.lisbon.game.player.Player;
 import net.h4bbo.lisbon.game.player.PlayerDetails;
 import net.h4bbo.lisbon.game.player.PlayerManager;
 import net.h4bbo.lisbon.game.room.Room;
-import net.h4bbo.lisbon.messages.outgoing.rooms.badges.AVAILABLE_BADGES;
-import net.h4bbo.lisbon.messages.outgoing.rooms.badges.USER_BADGE;
+import net.h4bbo.lisbon.messages.outgoing.alert.ALERT;
 import net.h4bbo.lisbon.messages.outgoing.rooms.user.CHAT_MESSAGE;
 import net.h4bbo.lisbon.messages.outgoing.rooms.user.FIGURE_CHANGE;
-import org.apache.commons.lang3.StringUtils;
+import net.h4bbo.lisbon.util.StringUtil;
 
 import java.util.List;
 
@@ -31,7 +32,6 @@ public class GiveBadgeCommand extends Command {
 
     @Override
     public void handleCommand(Entity entity, String message, String[] args) {
-        /*
         // :givebadge Alex NL1
 
         // should refuse to give badges that belong to ranks
@@ -45,84 +45,73 @@ public class GiveBadgeCommand extends Command {
             return;
         }
 
-        Player targetUser = PlayerManager.getInstance().getPlayerByName(args[0]);
-
-        if (targetUser == null) {
-            player.send(new CHAT_MESSAGE(CHAT_MESSAGE.ChatMessageType.WHISPER, player.getRoomUser().getInstanceId(), "Could not find user: " + args[0]));
-            return;
-        }
-
         if (args.length == 1) {
             player.send(new CHAT_MESSAGE(CHAT_MESSAGE.ChatMessageType.WHISPER, player.getRoomUser().getInstanceId(), "Badge code not provided"));
             return;
         }
 
+        PlayerDetails targetUserDetails = PlayerDao.getDetails(args[0]);
+
+        if (targetUserDetails == null) {
+            player.send(new ALERT("Could not find user: " + args[0]));
+            return;
+        }
+
         String badge = args[1];
 
-        if (badge.length() != 3) {
-            player.send(new CHAT_MESSAGE(CHAT_MESSAGE.ChatMessageType.WHISPER, player.getRoomUser().getInstanceId(), "Badge codes have a length of three characters."));
+        if (badge.startsWith("GL") || badge.startsWith("ACH_") || badge.equalsIgnoreCase("Z64")) {
             return;
         }
 
-        // Badge should be alphanumeric
-        if (!StringUtils.isAlphanumeric(badge)) {
-            player.send(new CHAT_MESSAGE(CHAT_MESSAGE.ChatMessageType.WHISPER, player.getRoomUser().getInstanceId(), "Badge code provided not alphanumeric."));
-            return;
-        }
+        Player targetUser = PlayerManager.getInstance().getPlayerByName(args[0]);
 
-        // Check if characters are uppercase
-        for (int i=0; i < badge.length(); i++) {
-            if (!Character.isUpperCase(badge.charAt(i)) && !Character.isDigit(badge.charAt(i))) {
-                player.send(new CHAT_MESSAGE(CHAT_MESSAGE.ChatMessageType.WHISPER, player.getRoomUser().getInstanceId(), "Badge code should be uppercase."));
+        if (targetUser == null) {
+            var badgeManager = new BadgeManager(targetUserDetails.getId());
+
+            // Check if user already owns badge
+            if (badgeManager.hasBadge(badge)) {
+                player.send(new CHAT_MESSAGE(CHAT_MESSAGE.ChatMessageType.WHISPER, player.getRoomUser().getInstanceId(), "User " + targetUserDetails.getName() + " already owns this badge."));
                 return;
             }
+
+            List<String> rankBadges = BadgeDao.getRankBadges();
+
+            // Check if badge code is a rank badge
+            if (rankBadges.contains(badge)) {
+                player.send(new CHAT_MESSAGE(CHAT_MESSAGE.ChatMessageType.WHISPER, player.getRoomUser().getInstanceId(), "This badge belongs to a certain rank. If you would like to give " + targetUserDetails.getName() + " this badge, increase their rank."));
+                return;
+            }
+
+            // Add badge
+            badgeManager.tryAddBadge(badge, null);
+            player.send(new CHAT_MESSAGE(CHAT_MESSAGE.ChatMessageType.WHISPER, player.getRoomUser().getInstanceId(), "Badge " + badge + " added to user " + targetUserDetails.getName()));
+        } else {
+            // Check if user already owns badge
+            if (targetUser.getBadgeManager().hasBadge(badge)) {
+                player.send(new CHAT_MESSAGE(CHAT_MESSAGE.ChatMessageType.WHISPER, player.getRoomUser().getInstanceId(), "User " + targetUserDetails.getName() + " already owns this badge."));
+                return;
+            }
+
+            List<String> rankBadges = BadgeDao.getRankBadges();
+
+            // Check if badge code is a rank badge
+            if (rankBadges.contains(badge)) {
+                player.send(new CHAT_MESSAGE(CHAT_MESSAGE.ChatMessageType.WHISPER, player.getRoomUser().getInstanceId(), "This badge belongs to a certain rank. If you would like to give " + targetUserDetails.getName() + " this badge, increase their rank."));
+                return;
+            }
+
+            // Add badge
+            targetUser.getBadgeManager().tryAddBadge(badge, null, 0);
+
+            Room targetRoom = targetUser.getRoomUser().getRoom();
+
+            // Let other room users know something changed if targetUser is inside a room
+            if (targetRoom != null) {
+                targetRoom.send(new FIGURE_CHANGE(targetUser.getRoomUser().getInstanceId(), targetUserDetails));
+            }
+
+            player.send(new CHAT_MESSAGE(CHAT_MESSAGE.ChatMessageType.WHISPER, player.getRoomUser().getInstanceId(), "Badge " + badge + " added to user " + targetUserDetails.getName()));
         }
-
-        PlayerDetails targetDetails = targetUser.getDetails();
-        List<String> badges = targetDetails.getBadges();
-
-        // Check if user already owns badge
-        if (badges.contains(badge)) {
-            player.send(new CHAT_MESSAGE(CHAT_MESSAGE.ChatMessageType.WHISPER, player.getRoomUser().getInstanceId(), "User " + targetDetails.getName() + " already owns this badge."));
-            return;
-        }
-
-        List<String> rankBadges = BadgeDao.getAllRankBadges();
-
-        // Check if badge code is a rank badge
-        if (rankBadges.contains(badge)) {
-            player.send(new CHAT_MESSAGE(CHAT_MESSAGE.ChatMessageType.WHISPER, player.getRoomUser().getInstanceId(), "This badge belongs to a certain rank. If you would like to give " + targetDetails.getName() + " this badge, increase their rank."));
-            return;
-        }
-
-        // Add badge
-        badges.add(badge);
-        targetDetails.setBadges(badges);
-
-        // Set current badge to newly given
-        targetDetails.setCurrentBadge(badge);
-
-        // Set badge to active for display
-        targetDetails.setShowBadge(true);
-
-        // Send badges to user
-        targetUser.send(new AVAILABLE_BADGES(targetDetails));
-
-        Room targetRoom = targetUser.getRoomUser().getRoom();
-
-        // Let other room users know something changed if targetUser is inside a room
-        if (targetRoom != null) {
-            targetRoom.send(new USER_BADGE(targetUser.getRoomUser().getInstanceId(), targetDetails));
-            targetRoom.send(new FIGURE_CHANGE(targetUser.getRoomUser().getInstanceId(), targetDetails));
-        }
-
-        // Persist changes
-        BadgeDao.saveCurrentBadge(targetDetails);
-        BadgeDao.addBadge(targetDetails.getId(), badge);
-
-        player.send(new CHAT_MESSAGE(CHAT_MESSAGE.ChatMessageType.WHISPER, player.getRoomUser().getInstanceId(), "Badge " + badge + " added to user " + targetDetails.getName()));
-
-         */
     }
 
     @Override

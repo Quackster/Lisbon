@@ -184,6 +184,7 @@ public class RconConnectionHandler extends ChannelInboundHandlerAdapter {
                     }
 
                     break;
+                    /*
                 case REFRESH_TRADE_SETTING:
                     online = PlayerManager.getInstance().getPlayerById(Integer.parseInt(message.getValues().get("userId")));
 
@@ -203,7 +204,7 @@ public class RconConnectionHandler extends ChannelInboundHandlerAdapter {
                             }
                         }
                     }
-                    break;
+                    break;*/
                 case REFRESH_GROUP_PERMS:
                     online = PlayerManager.getInstance().getPlayerById(Integer.parseInt(message.getValues().get("userId")));
 

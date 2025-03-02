@@ -162,17 +162,17 @@ public class UserAchievementManager {
      */
     public void processAchievements(Player player, boolean isLogin) {
         if (isLogin) {
-            AchievementManager.getInstance().tryProgress(AchievementType.ACHIEVEMENT_TAGS, player);
+            // AchievementManager.getInstance().tryProgress(AchievementType.ACHIEVEMENT_TAGS, player);
             AchievementManager.getInstance().tryProgress(AchievementType.ACHIEVEMENT_LOGIN, player);
             AchievementManager.getInstance().tryProgress(AchievementType.ACHIEVEMENT_HAPPYHOUR, player);
         }
 
         AchievementManager.getInstance().tryProgress(AchievementType.ACHIEVEMENT_HC, player);
-        AchievementManager.getInstance().tryProgress(AchievementType.ACHIEVEMENT_MGM, player);
+        // AchievementManager.getInstance().tryProgress(AchievementType.ACHIEVEMENT_MGM, player);
         AchievementManager.getInstance().tryProgress(AchievementType.ACHIEVEMENT_REGISTRATION_DURATION, player);
         AchievementManager.getInstance().tryProgress(AchievementType.ACHIEVEMENT_HC, player);
-        AchievementManager.getInstance().tryProgress(AchievementType.ACHIEVEMENT_ALL_TIME_HOTEL_PRESENCE, player);
-        AchievementManager.getInstance().tryProgress(AchievementType.ACHIEVEMENT_TRADERPASS, player);
+        // AchievementManager.getInstance().tryProgress(AchievementType.ACHIEVEMENT_ALL_TIME_HOTEL_PRESENCE, player);
+        // AchievementManager.getInstance().tryProgress(AchievementType.ACHIEVEMENT_TRADERPASS, player);
         AchievementManager.getInstance().tryProgress(AchievementType.ACHIEVEMENT_EMAIL_VERIFICATION, player);
 
         /*GuideManager.getInstance().tryProgress(player);
