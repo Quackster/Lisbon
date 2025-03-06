@@ -10,6 +10,8 @@ import net.h4bbo.lisbon.game.item.base.ItemDefinition;
 import net.h4bbo.lisbon.game.item.interactors.InteractionType;
 import net.h4bbo.lisbon.game.pets.PetManager;
 import net.h4bbo.lisbon.game.player.Player;
+import net.h4bbo.lisbon.game.player.PlayerDetails;
+import net.h4bbo.lisbon.game.player.PlayerManager;
 import net.h4bbo.lisbon.game.player.PlayerRank;
 import net.h4bbo.lisbon.messages.outgoing.user.currencies.FILM;
 import net.h4bbo.lisbon.util.DateUtil;
@@ -35,20 +37,36 @@ public class CatalogueManager {
         this.loadPackages();
     }
 
-    public List<Item> purchase(Player player, CatalogueItem item, String extraData, String overrideName, long timestamp) throws SQLException {
+    /**
+     * Purchase handler for player details.
+     *
+     * @param playerDetails the details for player
+     * @param item the item the user is buying
+     * @param extraData the extra data attached to item
+     * @param overrideName the override name (used for trophies)
+     * @param timestamp the time of purchase
+     * @return the list of items bought
+     * @throws SQLException the sql exception
+     */
+    public List<Item> purchase(PlayerDetails playerDetails, CatalogueItem item, String extraData, String overrideName, long timestamp) throws SQLException {
         List<Item> itemsBought = new ArrayList<>();
 
         if (!item.isPackage()) {
-            Item newItem = purchase(player, item.getDefinition(), extraData, item.getItemSpecialId(), overrideName, timestamp);
+            //for (int i = 0; i < item.getAmount(); i++) {
+                Item newItem = purchase(playerDetails, item.getDefinition(), extraData, item.getItemSpecialId(), overrideName, timestamp);
 
-            if (newItem != null) {
-                itemsBought.add(newItem);
-            }
+                if (newItem != null) {
+                    itemsBought.add(newItem);
+                }
+            //}
         } else {
             for (CataloguePackage cataloguePackage : item.getPackages()) {
                 for (int i = 0; i < cataloguePackage.getAmount(); i++) {
-                    Item newItem = purchase(player, cataloguePackage.getDefinition(), null, cataloguePackage.getSpecialSpriteId(), overrideName, timestamp);
-                    itemsBought.add(newItem);
+                    Item newItem = purchase(playerDetails, cataloguePackage.getDefinition(), null, cataloguePackage.getSpecialSpriteId(), overrideName, timestamp);
+
+                    if (newItem != null) {
+                        itemsBought.add(newItem);
+                    }
                 }
             }
         }
@@ -56,7 +74,21 @@ public class CatalogueManager {
         return itemsBought;
     }
 
-    private Item purchase(Player player, ItemDefinition def, String extraData, int specialSpriteId, String overrideName, long timestamp) throws SQLException {
+    /**
+     * The player purchase handler but purchase single item.
+     *
+     * @param playerDetails the details of the player
+     * @param def the definition of the item
+     * @param extraData the extra data attached to the item
+     * @param specialSpriteId the special sprite id used for posters
+     * @param overrideName the override name - used for trophies
+     * @param timestamp the time of purchase
+     * @return the item bought
+     * @throws SQLException the sql exception
+     */
+    public Item purchase(PlayerDetails playerDetails, ItemDefinition def, String extraData, int specialSpriteId, String overrideName, long timestamp) throws SQLException {
+        Player player = PlayerManager.getInstance().getPlayerById(playerDetails.getId());
+
         // If the item is film, just give the user film
         if (def.getSprite().equals("film")) {
             CurrencyDao.increaseFilm(player.getDetails(), 5);
@@ -221,7 +253,7 @@ public class CatalogueManager {
                 }
             }
              */
-            
+
             // Do collectables
             CollectableData collectableData = CollectablesManager.getInstance().getCollectableDataByPage(pageId);
 

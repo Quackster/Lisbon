@@ -6,7 +6,10 @@ import net.h4bbo.lisbon.game.commands.clientside.FurniCommand;
 import net.h4bbo.lisbon.game.commands.registered.*;
 import net.h4bbo.lisbon.game.entity.Entity;
 import net.h4bbo.lisbon.game.fuserights.Fuseright;
+import net.h4bbo.lisbon.game.fuserights.FuserightsManager;
 import net.h4bbo.lisbon.game.player.Player;
+import net.h4bbo.lisbon.game.player.PlayerDetails;
+import net.h4bbo.lisbon.game.player.PlayerManager;
 import net.h4bbo.lisbon.game.texts.TextsManager;
 import net.h4bbo.lisbon.messages.outgoing.alert.ALERT;
 import org.apache.commons.lang3.tuple.Pair;
@@ -122,6 +125,37 @@ public class CommandManager {
     }
 
     /**
+     * Checks for command permission.
+     *
+     * @param playerDetails the player details
+     * @param commandName the command
+     * @return true, if successful
+     */
+    public boolean hasPermission(PlayerDetails playerDetails, String commandName) {
+        var cmd = getCommand(commandName);
+
+        if (cmd == null)
+            return false;
+
+        boolean hasRank = cmd.getPermissions().stream().anyMatch(x -> FuserightsManager.getInstance().getFuserightsForRank(playerDetails.getRank()).contains(x));
+
+        if (hasRank)
+            return true;
+
+        /*
+        var player = PlayerManager.getInstance().getPlayerById(playerDetails.getId());
+
+        if (player != null) {
+            for (int groupId : cmd.getGroupPermission()) {
+                if (player.getJoinedGroup(groupId) != null)
+                    return true;
+            }
+        }*/
+
+        return false;
+    }
+
+    /**
      * Invoke command.
      *
      * @param entity the player
@@ -179,4 +213,5 @@ public class CommandManager {
 
         return instance;
     }
+
 }

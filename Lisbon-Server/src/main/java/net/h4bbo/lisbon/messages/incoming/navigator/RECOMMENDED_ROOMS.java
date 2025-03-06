@@ -23,7 +23,7 @@ public class RECOMMENDED_ROOMS implements MessageEvent {
         if (roomList.size() < roomLimit) {
             //int difference = roomLimit - roomList.size();
 
-            for (Room room : RoomManager.getInstance().replaceQueryRooms(RoomDao.getHighestRatedRooms(roomLimit, false))) {
+            for (Room room : RoomManager.getInstance().replaceQueryRooms(RoomDao.getHighestRatedRooms(roomLimit, 0))) {
                 if (roomList.size() == roomLimit) {
                     break;
                 }

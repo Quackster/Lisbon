@@ -28,8 +28,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static net.h4bbo.lisbon.game.achievements.progressions.AchievementTraderPass.isActivated;
-
 public class ProfileController {
     public static void profile(WebConnection webConnection) {
         XSSUtil.clear(webConnection);
@@ -79,11 +77,6 @@ public class ProfileController {
                 FriendManagementController.friendmanagement(template, webConnection, 30, 1, -1, null);
                 break;
             }
-            case 6: {
-                template = webConnection.template("profile/change_trade_settings");
-                tradesettings(template, webConnection);
-                break;
-            }
             default: {
                 template = webConnection.template("profile/change_looks");
                 profile_flash(template, webConnection);
@@ -93,7 +86,6 @@ public class ProfileController {
 
         if (template != null) {
             template.set("settingsSavedAlert", false);
-            template.set("accountActivated", isActivated(statistics.getValue(PlayerStatistic.ACTIVATION_CODE)));
 
             if (webConnection.session().contains("settings.saved.successfully")) {
                 template.set("settingsSavedAlert", true);

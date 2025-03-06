@@ -12,7 +12,24 @@ import java.sql.SQLException;
 import java.util.*;
 
 public class ItemDao {
-    
+    public static void deleteHandItems(int userId) {
+        Connection sqlConnection = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            sqlConnection = Storage.getStorage().getConnection();
+            preparedStatement = Storage.getStorage().prepare("DELETE FROM items WHERE is_hidden = 0 AND is_trading = 0 AND room_id = 0 AND user_id = ?", sqlConnection);
+            preparedStatement.setInt(1, userId);
+            preparedStatement.execute();
+
+        } catch (Exception e) {
+            Storage.logError(e);
+        } finally {
+            Storage.closeSilently(preparedStatement);
+            Storage.closeSilently(sqlConnection);
+        }
+    }
+
     /**
      * Get the item definitions.
      *

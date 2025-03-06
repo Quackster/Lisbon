@@ -1,8 +1,10 @@
 package net.h4bbo.lisbon.game.room;
 
+import net.h4bbo.lisbon.dao.mysql.BadgeDao;
 import net.h4bbo.lisbon.dao.mysql.RoomDao;
 import net.h4bbo.lisbon.dao.mysql.RoomFavouritesDao;
 import net.h4bbo.lisbon.dao.mysql.RoomVoteDao;
+import net.h4bbo.lisbon.game.player.Player;
 import net.h4bbo.lisbon.game.room.handlers.walkways.WalkwaysEntrance;
 import net.h4bbo.lisbon.game.room.handlers.walkways.WalkwaysManager;
 
@@ -12,12 +14,13 @@ import java.util.concurrent.ConcurrentHashMap;
 public class RoomManager {
     public static final int PUBLIC_ROOM_OFFSET = 1000; // Used as the "port" for the public room, in NAVNODEINFO and friend following
     private static RoomManager instance = null;
+    private Map<Integer, List<String>> roomEntryBadges;
 
     private ConcurrentHashMap<Integer, Room> roomMap;
 
     public RoomManager() {
         this.roomMap = new ConcurrentHashMap<>();
-        RoomDao.resetVisitors();
+        this.roomEntryBadges = BadgeDao.getRoomBadges();
     }
 
     /**
@@ -223,5 +226,37 @@ public class RoomManager {
         }
 
         return instance;
+    }
+
+    /**
+     * Reload badges given upon room entry.
+     */
+    public void reloadBadges() {
+        this.roomEntryBadges = BadgeDao.getRoomBadges();
+    }
+
+    /**
+     * Give badges to everybody in the room already.
+     */
+    public void giveBadges() {
+        for (Room room : this.roomMap.values()) {
+            if (!this.roomEntryBadges.containsKey(room.getId())) {
+                continue;
+            }
+
+            for (String badge : this.roomEntryBadges.get(room.getId())) {
+                for (Player player : room.getEntityManager().getPlayers()) {
+                    player.getBadgeManager().tryAddBadge(badge, null);
+                }
+            }
+        }
+    }
+
+    /**
+     * Get list of badges to receive on room entry
+     * @return
+     */
+    public Map<Integer, List<String>> getRoomEntryBadges() {
+        return roomEntryBadges;
     }
 }

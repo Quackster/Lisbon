@@ -1,6 +1,7 @@
 package net.h4bbo.lisbon.game.room.managers;
 
 import net.h4bbo.lisbon.dao.mysql.ItemDao;
+import net.h4bbo.lisbon.dao.mysql.TransactionDao;
 import net.h4bbo.lisbon.game.item.Item;
 import net.h4bbo.lisbon.game.player.Player;
 import net.h4bbo.lisbon.game.room.entities.RoomPlayer;
@@ -89,6 +90,20 @@ public class RoomTradeManager {
 
             item.setOwnerId(player.getDetails().getId());
             itemsToUpdate.add(item);
+
+            try {
+                TransactionDao.createTransaction(player.getDetails().getId(),
+                        String.valueOf(item.getId()), String.valueOf(item.getDefinition().getId()), 1,
+                        "Traded " + item.getDefinition().getName() + " from " + tradePartner.getDetails().getName(),
+                        0, tradePartner.getDetails().getId(), false);
+
+                TransactionDao.createTransaction(tradePartner.getDetails().getId(),
+                        String.valueOf(item.getId()), String.valueOf(item.getDefinition().getId()), 1,
+                        "Traded " + item.getDefinition().getName() + " to " + player.getDetails().getName(),
+                        0, player.getDetails().getId(), false);
+            } catch (Exception ex) {
+
+            }
         }
 
         ItemDao.updateItems(itemsToUpdate);

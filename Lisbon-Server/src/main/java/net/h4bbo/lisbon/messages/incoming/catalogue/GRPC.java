@@ -2,13 +2,14 @@ package net.h4bbo.lisbon.messages.incoming.catalogue;
 
 import net.h4bbo.lisbon.dao.mysql.CurrencyDao;
 import net.h4bbo.lisbon.dao.mysql.PlayerDao;
-import net.h4bbo.lisbon.game.catalogue.CatalogueItem;
-import net.h4bbo.lisbon.game.catalogue.CatalogueManager;
-import net.h4bbo.lisbon.game.catalogue.CataloguePage;
-import net.h4bbo.lisbon.game.catalogue.RareManager;
+import net.h4bbo.lisbon.dao.mysql.TransactionDao;
+import net.h4bbo.lisbon.game.catalogue.*;
+import net.h4bbo.lisbon.game.catalogue.collectables.CollectablesManager;
 import net.h4bbo.lisbon.game.fuserights.Fuseright;
 import net.h4bbo.lisbon.game.item.Item;
 import net.h4bbo.lisbon.game.item.ItemManager;
+import net.h4bbo.lisbon.game.item.base.ItemBehaviour;
+import net.h4bbo.lisbon.game.item.base.ItemDefinition;
 import net.h4bbo.lisbon.game.player.Player;
 import net.h4bbo.lisbon.game.player.PlayerDetails;
 import net.h4bbo.lisbon.game.player.PlayerManager;
@@ -24,7 +25,10 @@ import net.h4bbo.lisbon.util.DateUtil;
 import net.h4bbo.lisbon.util.StringUtil;
 import net.h4bbo.lisbon.util.config.GameConfiguration;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class GRPC implements MessageEvent {
     @Override
@@ -105,6 +109,22 @@ public class GRPC implements MessageEvent {
 
             ItemDao.newItem(present);*/
 
+            String transactionDscription = getTransactionDescription(item);
+
+            if (transactionDscription != null && receivingUserDetails != null) {
+                TransactionDao.createTransaction(receivingUserDetails.getId(),
+                        present.getId() + "",
+                        item.getId() + "",
+                        1/*item.getAmount()*/,
+                        "Gift purchase from " + player.getDetails().getName() + " for " + receivingUserDetails.getName() + " - " + transactionDscription, item.getPrice(), 0/*pricePixels*/, true);
+
+                TransactionDao.createTransaction(player.getDetails().getId(),
+                        present.getId() + "",
+                        item.getId() + "",
+                        1/*item.getAmount()*/,
+                        "Gift purchase from " + player.getDetails().getName() + " for " + receivingUserDetails.getName() + " - " + transactionDscription, item.getPrice(), 0/*pricePixels*/, true);
+            }
+
             Player receiver = PlayerManager.getInstance().getPlayerById(receivingUserDetails.getId());
 
             if (receiver != null) {
@@ -122,9 +142,30 @@ public class GRPC implements MessageEvent {
                 extraData = data[4];
             }
 
-            if (CatalogueManager.getInstance().purchase(player, item, extraData, null, DateUtil.getCurrentTimeSeconds()).size() > 0) {
+            var items = CatalogueManager.getInstance().purchase(player.getDetails(), item, extraData, null, DateUtil.getCurrentTimeSeconds());
+
+            if (items.size() > 0)
                 player.getInventory().getView("new");
+
+
+        String transactionDscription = getTransactionDescription(item);
+
+        if (transactionDscription != null) {
+            boolean isCollectable = CollectablesManager.getInstance().isCollectable(item);
+
+            if (isCollectable) {
+                TransactionDao.createTransaction(player.getDetails().getId(),
+                        items.stream().map(e -> String.valueOf(e.getId())).collect(Collectors.joining(",")),
+                        item.getId() + "",
+                        1/*item.getAmount()*/,
+                        "Collectible - " + transactionDscription, item.getPrice(), 0/*pricePixels*/, true);
+            } else {
+                TransactionDao.createTransaction(player.getDetails().getId(),
+                        items.stream().map(e -> String.valueOf(e.getId())).collect(Collectors.joining(",")),
+                        item.getId() + "",
+                        1/*item.getAmount()*/, transactionDscription, item.getPrice(), 0/*pricePixels*/, true);
             }
+        }
 
             boolean showItemDelivered = true;
 
@@ -140,7 +181,43 @@ public class GRPC implements MessageEvent {
             }
         }
 
+
         CurrencyDao.decreaseCredits(player.getDetails(), price);
         player.send(new CREDIT_BALANCE(player.getDetails().getCredits()));
+    }
+
+    public static String getTransactionDescription(CatalogueItem item) {
+        if (!item.isPackage()) {
+            return getItemDescription(item.getDefinition(), 1/*item.getAmount()*/);
+        } else {
+            List<String> descriptions = new ArrayList<>();
+
+            for (CataloguePackage cataloguePackage : item.getPackages()) {
+                var description = getItemDescription(cataloguePackage.getDefinition(), 1);
+
+                if (description != null) {
+                    descriptions.add(description);
+                }
+            }
+
+            return "Package purchase (" + String.join(", ", descriptions) + ")";
+        }
+    }
+
+    private static String getItemDescription(ItemDefinition definition, int amount) {
+        if (definition == null) {
+            return null;
+        }
+
+        /*
+        if (definition.hasBehaviour(ItemBehaviour.EFFECT)) {
+            return "Effect " + definition.getSprite().replace("avatar_effect", "") + " purchase";
+        }*/
+
+        if (definition.getSprite().equals("film")) {
+            return "Film purchase";
+        }
+
+        return definition.getName() + " purchase";
     }
 }

@@ -1,6 +1,7 @@
 package net.h4bbo.lisbon.messages.incoming.rooms.items;
 
 import net.h4bbo.lisbon.dao.mysql.ItemDao;
+import net.h4bbo.lisbon.dao.mysql.TransactionDao;
 import net.h4bbo.lisbon.game.fuserights.Fuseright;
 import net.h4bbo.lisbon.game.item.Item;
 import net.h4bbo.lisbon.game.item.base.ItemBehaviour;
@@ -11,9 +12,11 @@ import net.h4bbo.lisbon.messages.outgoing.user.currencies.CREDIT_BALANCE;
 import net.h4bbo.lisbon.messages.types.MessageEvent;
 import net.h4bbo.lisbon.server.netty.streams.NettyRequest;
 
+import java.sql.SQLException;
+
 public class CONVERT_FURNI_TO_CREDITS implements MessageEvent {
     @Override
-    public void handle(Player player, NettyRequest reader) {
+    public void handle(Player player, NettyRequest reader) throws SQLException {
         Room room = player.getRoomUser().getRoom();
 
         if (room == null) {
@@ -52,6 +55,11 @@ public class CONVERT_FURNI_TO_CREDITS implements MessageEvent {
         // Notify room of item removal and set credits of player
         room.getMapping().removeItem(item);
         player.getDetails().setCredits(currentAmount);
+
+        TransactionDao.createTransaction(player.getDetails().getId(),
+                String.valueOf(item.getId()), "", 1,
+                "Exchanged " + item.getDefinition().getName() + " into " + amount + " credits",
+                amount, 0, false);
 
         // Send new credit amount
         player.send(new CREDIT_BALANCE(player.getDetails().getCredits()));

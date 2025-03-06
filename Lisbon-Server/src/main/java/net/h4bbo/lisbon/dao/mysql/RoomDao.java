@@ -166,24 +166,21 @@ public class RoomDao {
      * @param limit the limit of rooms
      * @return the list of rooms
      */
-    public static List<Room> getHighestRatedRooms(int limit, boolean allowStarterRooms) {
+    public static List<Room> getHighestRatedRooms(int limit, int offset) {
         List<Room> rooms = new ArrayList<>();
 
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
 
-        //SELECT * FROM rooms LEFT JOIN users ON rooms.owner_id = users.id WHERE owner_id = 0
-
         try {
             sqlConnection = Storage.getStorage().getConnection();
-            preparedStatement = Storage.getStorage().prepare("SELECT * FROM rooms LEFT JOIN users ON rooms.owner_id = users.id WHERE owner_id > 0 AND accesstype = 0" + (allowStarterRooms ? "" : " AND model <> 'model_s'") + " ORDER BY rating DESC LIMIT ?", sqlConnection);
-            preparedStatement.setInt(1, limit);
+            preparedStatement = Storage.getStorage().prepare("SELECT * FROM rooms LEFT JOIN users ON rooms.owner_id = users.id WHERE owner_id > 0 ORDER BY rating DESC LIMIT " + limit + " OFFSET " + offset, sqlConnection);
             resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
                 Room room = new Room();
-                fill(room.getData(), resultSet);
+                RoomDao.fill(room.getData(), resultSet);
                 rooms.add(room);
             }
 
@@ -450,6 +447,29 @@ public class RoomDao {
     }
 
     /**
+     * Save visitor count of rooms
+     *
+     * @param roomId the room to save
+     */
+    public static void saveGroupId(int roomId, int groupId) {
+        Connection sqlConnection = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            sqlConnection = Storage.getStorage().getConnection();
+            preparedStatement = Storage.getStorage().prepare("UPDATE rooms SET group_id = ? WHERE id = ?", sqlConnection);
+            preparedStatement.setInt(1, roomId);
+            preparedStatement.setInt(2, groupId);
+            preparedStatement.execute();
+        } catch (Exception e) {
+            Storage.logError(e);
+        } finally {
+            Storage.closeSilently(preparedStatement);
+            Storage.closeSilently(sqlConnection);
+        }
+    }
+
+    /**
      * Fill room data
      *
      * @param data the room data instance
@@ -469,8 +489,8 @@ public class RoomDao {
                 row.getString("name"), row.getString("description"), row.getString("model"),
                 row.getString("ccts"), row.getInt("wallpaper"), row.getInt("floor"), row.getBoolean("showname"),
                 row.getBoolean("superusers"), row.getInt("accesstype"), row.getString("password"),
-                row.getInt("visitors_now"), row.getInt("visitors_max"), row.getInt("rating"), row.getBoolean("is_hidden"));
+                row.getInt("visitors_now"), row.getInt("visitors_max"), row.getInt("rating"),
+                row.getInt("group_id"), row.getBoolean("is_hidden"));
 
     }
-
 }

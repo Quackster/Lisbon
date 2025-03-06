@@ -3,7 +3,9 @@ package net.h4bbo.lisbon.game.moderation.actions;
 import net.h4bbo.lisbon.dao.mysql.BanDao;
 import net.h4bbo.lisbon.dao.mysql.PlayerDao;
 import net.h4bbo.lisbon.game.GameScheduler;
+import net.h4bbo.lisbon.game.ban.BanManager;
 import net.h4bbo.lisbon.game.ban.BanType;
+import net.h4bbo.lisbon.game.commands.CommandManager;
 import net.h4bbo.lisbon.game.fuserights.Fuseright;
 import net.h4bbo.lisbon.game.moderation.ModerationAction;
 import net.h4bbo.lisbon.game.player.Player;
@@ -15,6 +17,8 @@ import net.h4bbo.lisbon.messages.outgoing.moderation.USER_BANNED;
 import net.h4bbo.lisbon.server.netty.streams.NettyRequest;
 import net.h4bbo.lisbon.util.DateUtil;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class ModeratorBanUserAction implements ModerationAction {
@@ -65,5 +69,55 @@ public class ModeratorBanUserAction implements ModerationAction {
         }
 
         player.send(new ALERT("The user " + playerDetails.getName() + " has been banned."));
+    }
+
+    public static String ban(PlayerDetails banningPlayerDetails, String alertMessage, String notes, String name, long banSeconds, boolean banMachineId, boolean banIp) {
+        Map<BanType, String> criteria = new HashMap<>();
+        PlayerDetails playerDetails = PlayerManager.getInstance().getPlayerData(name);
+
+        if (playerDetails == null) {
+            return "Could not find user: " + name;
+        }
+
+        if (playerDetails.getId() == banningPlayerDetails.getId()) {
+            return "Cannot ban yourself";
+        }
+
+        if (playerDetails.isBanned() != null) {
+            return "User is already banned!";
+        }
+
+        if (CommandManager.getInstance().hasPermission(playerDetails, "ban"))
+            return "Cannot ban a user who has permission to ban";
+
+        long banTime = DateUtil.getCurrentTimeSeconds() + banSeconds;
+
+        BanDao.addBan(BanType.USER_ID, String.valueOf(playerDetails.getId()), banTime, alertMessage, banningPlayerDetails.getId());
+        criteria.put(BanType.USER_ID, String.valueOf(playerDetails.getId()));
+
+        if (banMachineId && playerDetails.getMachineId() != null) {
+            BanDao.addBan(BanType.MACHINE_ID, playerDetails.getMachineId(), banTime, alertMessage, banningPlayerDetails.getId());
+            criteria.put(BanType.MACHINE_ID, playerDetails.getMachineId());
+        }
+
+        /*if (banIp) {
+            var latestIp = PlayerDao.getLatestIp(playerDetails.getId());
+            InetAddressValidator validator = InetAddressValidator.getInstance();
+
+            // Validate an IPv4 address
+            if (validator.isValidInet4Address(latestIp)) {
+                BanDao.addBan(BanType.IP_ADDRESS, latestIp, banTime, alertMessage);
+                criteria.put(BanType.IP_ADDRESS, latestIp);
+            }
+        }*/
+
+        Player target = PlayerManager.getInstance().getPlayerById(playerDetails.getId());
+
+        if (target != null) {
+            target.getNetwork().disconnect();
+        }
+
+        BanManager.getInstance().disconnectBanAccounts(criteria);
+        return "The user " + playerDetails.getName() + " has been banned.";
     }
 }

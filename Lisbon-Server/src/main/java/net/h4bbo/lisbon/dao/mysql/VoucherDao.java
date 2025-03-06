@@ -2,7 +2,7 @@ package net.h4bbo.lisbon.dao.mysql;
 
 import net.h4bbo.lisbon.dao.Storage;
 import net.h4bbo.lisbon.game.catalogue.CatalogueItem;
-import net.h4bbo.lisbon.game.purse.Voucher;
+import net.h4bbo.lisbon.game.misc.purse.Voucher;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PurseDao {
+public class VoucherDao {
 
     /**
      * Redeems a voucher.
@@ -31,9 +31,9 @@ public class PurseDao {
 
         try {
             sqlConnection = Storage.getStorage().getConnection();
-            
+
             //Get the voucher
-            preparedStatement = Storage.getStorage().prepare("SELECT credits,is_single_use FROM vouchers WHERE voucher_code = ? " +
+            preparedStatement = Storage.getStorage().prepare("SELECT credits,is_single_use,allow_new_users FROM vouchers WHERE voucher_code = ? " +
                     "AND (expiry_date IS NULL OR (UNIX_TIMESTAMP() < UNIX_TIMESTAMP(expiry_date))) AND " +
                     "NOT EXISTS (SELECT vouchers_history.user_id FROM vouchers_history WHERE vouchers_history.user_id = ? AND vouchers_history.voucher_code = ?)", sqlConnection);
             preparedStatement.setString(1, voucherCode);
@@ -43,7 +43,7 @@ public class PurseDao {
 
             if (resultSet.next()) {
                 boolean isSingleUse = resultSet.getBoolean("is_single_use");
-                voucher = new Voucher(resultSet.getInt("credits"));
+                voucher = new Voucher(resultSet.getInt("credits"), resultSet.getBoolean("allow_new_users"));
 
                 //Get related voucher items
                 preparedStatement = Storage.getStorage().prepare("SELECT catalogue_sale_code FROM vouchers_items INNER JOIN catalogue_items ON catalogue_items.sale_code = vouchers_items.catalogue_sale_code WHERE voucher_code = ?", sqlConnection);
@@ -134,3 +134,4 @@ public class PurseDao {
         }
     }
 }
+

@@ -93,8 +93,8 @@ public class Routes {
         // Profile
         RouteManager.addRoute("/profile", ProfileController::profile);
         //RouteManager.addRoute("/profile/flash", ProfileController::profile_flash);
-        RouteManager.addRoute("/profile/verify", ProfileController::verify);
-        RouteManager.addRoute("/profile/send_email", ProfileController::send_email);
+        //RouteManager.addRoute("/profile/verify", ProfileController::verify);
+        //RouteManager.addRoute("/profile/send_email", ProfileController::send_email);
 
         RouteManager.addRoute("/profile/wardrobeStore", ProfileController::wardrobeStore);
         RouteManager.addRoute("/profile/passwordupdate", ProfileController::passwordupdate);
@@ -102,7 +102,7 @@ public class Routes {
         RouteManager.addRoute("/profile/characterupdate", ProfileController::characterupdate);
         RouteManager.addRoute("/profile/profile.action", ProfileController::action);
         RouteManager.addRoute("/profile/profileupdate", ProfileController::profileupdate);
-        RouteManager.addRoute("/profile/securitysettingupdate", ProfileController::securitysettingupdate);
+        // RouteManager.addRoute("/profile/securitysettingupdate", ProfileController::securitysettingupdate);
         RouteManager.addRoute("/club", ProfileController::club);
 
         RouteManager.addRoute("/friendmanagement/ajax/editCategory", FriendManagementController::editCategory);

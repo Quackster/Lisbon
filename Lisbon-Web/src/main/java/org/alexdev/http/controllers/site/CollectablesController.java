@@ -72,7 +72,7 @@ public class CollectablesController {
         var template = webConnection.template("habblet/collectiblesConfirm");
 
         template.set("collectableName", collectablesData.getActiveItem().getDefinition().getName());
-        template.set("collectableCost", collectablesData.getActiveItem().getPriceCoins());
+        template.set("collectableCost", collectablesData.getActiveItem().getPrice());
 
         template.render();
     }
@@ -102,16 +102,17 @@ public class CollectablesController {
         }
 
 
-        if (playerDetails.getCredits() >= collectablesData.getActiveItem().getPriceCoins() &&
-            playerDetails.getPixels() >= collectablesData.getActiveItem().getPricePixels()) {
+        if (playerDetails.getCredits() >= collectablesData.getActiveItem().getPrice()/* &&
+            playerDetails.getPixels() >= collectablesData.getActiveItem().getPricePixels()*/) {
 
-            if (collectablesData.getActiveItem().getPriceCoins() > 0) {
-                CurrencyDao.decreaseCredits(playerDetails, collectablesData.getActiveItem().getPriceCoins());
+            if (collectablesData.getActiveItem().getPrice() > 0) {
+                CurrencyDao.decreaseCredits(playerDetails, collectablesData.getActiveItem().getPrice());
             }
 
+            /*
             if (collectablesData.getActiveItem().getPricePixels() > 0) {
                 CurrencyDao.decreasePixels(playerDetails, collectablesData.getActiveItem().getPricePixels());
-            }
+            }*/
 
             template.set("message", "You've successfully bought a " + collectablesData.getActiveItem().getDefinition().getName());
 
@@ -123,11 +124,11 @@ public class CollectablesController {
 
                 if (transactionDscription != null) {
                     TransactionDao.createTransaction(playerDetails.getId(),
-                            items.stream().map(e -> String.valueOf(e.getDatabaseId())).collect(Collectors.joining(",")),
+                            items.stream().map(e -> String.valueOf(e.getId())).collect(Collectors.joining(",")),
                             collectablesData.getActiveItem().getId() + "",
-                            collectablesData.getActiveItem().getAmount(),
+                            1/*collectablesData.getActiveItem().getAmount()*/,
                             "Collectable " + transactionDscription,
-                            collectablesData.getActiveItem().getPriceCoins(), collectablesData.getActiveItem().getPricePixels(), true);
+                            collectablesData.getActiveItem().getPrice(), /*collectablesData.getActiveItem().getPricePixels(),*/0, true);
                 }
 
             } catch (Exception ex) {
@@ -142,10 +143,14 @@ public class CollectablesController {
                 put("userId", playerDetails.getId());
             }});
         } else {
-            if (collectablesData.getActiveItem().getPricePixels() > playerDetails.getPixels()) {
+            /*if (collectablesData.getActiveItem().getPricePixels() > playerDetails.getPixels()) {
                 template.set("message", "Purchasing the collectable failed. You don't have enough pixels.");
             } else {
                 template.set("message", "Purchasing the collectable failed. You don't have enough credits.");
+            }*/
+
+            if (collectablesData.getActiveItem().getPrice() > playerDetails.getCredits()) {
+                template.set("message", "Purchasing the collectable failed. You don't have enough pixels.");
             }
         }
 

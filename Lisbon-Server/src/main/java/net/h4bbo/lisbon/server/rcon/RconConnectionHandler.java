@@ -3,9 +3,7 @@ package net.h4bbo.lisbon.server.rcon;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import net.h4bbo.lisbon.Lisbon;
-import net.h4bbo.lisbon.dao.mysql.CurrencyDao;
-import net.h4bbo.lisbon.dao.mysql.MessengerDao;
-import net.h4bbo.lisbon.dao.mysql.PlayerDao;
+import net.h4bbo.lisbon.dao.mysql.*;
 import net.h4bbo.lisbon.game.achievements.AchievementManager;
 import net.h4bbo.lisbon.game.achievements.AchievementType;
 import net.h4bbo.lisbon.game.groups.GroupMember;
@@ -294,11 +292,10 @@ public class RconConnectionHandler extends ChannelInboundHandlerAdapter {
                         }
 
                         item.delete();
-                        // PhotoDao.deleteItem(itemId);
+                        PhotoDao.deleteItem(itemId);
 
-                        /*
                         TransactionDao.createTransaction(userId, String.valueOf(itemId), "0", 1,
-                                "Hidden photo " + itemId, 0, 0, false);*/
+                                "Hidden photo " + itemId, 0, 0, false);
                     }
 
                     break;
@@ -309,6 +306,11 @@ public class RconConnectionHandler extends ChannelInboundHandlerAdapter {
                         online.getStatisticManager().reload();
                     }
 
+                    break;
+
+                case REFRESH_ROOM_BADGES:
+                    RoomManager.getInstance().reloadBadges();
+                    RoomManager.getInstance().giveBadges();
                     break;
             }
         } catch (Exception ex) {

@@ -20,7 +20,8 @@ public enum RconHeader {
     REFRESH_CATALOGUE_FRONTPAGE("refreshcataloguefrontpage"),
     CLEAR_PHOTO("clearphoto"),
     DISCONNECT_USER("disconnect"),
-    REFRESH_STATISTICS("refreshstats");
+    REFRESH_STATISTICS("refreshstats"),
+    REFRESH_ROOM_BADGES("refreshroombadges");
 
     private final String rawHeader;
 

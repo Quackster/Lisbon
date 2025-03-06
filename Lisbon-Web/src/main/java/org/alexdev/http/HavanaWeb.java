@@ -6,8 +6,6 @@ import org.alexdev.duckhttpd.routes.RouteManager;
 import org.alexdev.duckhttpd.server.WebServer;
 import org.alexdev.duckhttpd.util.config.Settings;
 import net.h4bbo.lisbon.dao.Storage;
-import net.h4bbo.lisbon.dao.mysql.LogDao;
-import net.h4bbo.lisbon.game.catalogue.CatalogueManager;
 import net.h4bbo.lisbon.game.item.ItemManager;
 import net.h4bbo.lisbon.game.wordfilter.WordfilterManager;
 import net.h4bbo.lisbon.log.Log;

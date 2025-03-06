@@ -46,7 +46,7 @@ public class RoomData {
     }
 
     public void fill(int id, int ownerId, String ownerName, int category, String name, String description, String model, String ccts, int wallpaper, int floor, boolean showName, boolean superUsers, int accessType, String password, int visitorsNow, int visitorsMax, int rating,
-                     boolean isHidden) {
+                     int groupId, boolean isHidden) {
         this.id = id;
         this.ownerId = ownerId;
         this.ownerName = StringUtil.filterInput(ownerName, true);;
@@ -303,4 +303,11 @@ public class RoomData {
         isHidden = hidden;
     }
 
+    public int getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
+    }
 }

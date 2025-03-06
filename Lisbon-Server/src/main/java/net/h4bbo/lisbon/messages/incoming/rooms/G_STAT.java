@@ -5,6 +5,7 @@ import net.h4bbo.lisbon.game.item.Item;
 import net.h4bbo.lisbon.game.item.base.ItemBehaviour;
 import net.h4bbo.lisbon.game.player.Player;
 import net.h4bbo.lisbon.game.room.Room;
+import net.h4bbo.lisbon.game.room.RoomManager;
 import net.h4bbo.lisbon.messages.outgoing.games.GAMESTART;
 import net.h4bbo.lisbon.messages.outgoing.rooms.items.DICE_VALUE;
 import net.h4bbo.lisbon.messages.outgoing.rooms.items.SHOWPROGRAM;
@@ -50,6 +51,12 @@ public class G_STAT implements MessageEvent {
         player.send(new USER_OBJECTS(room.getEntities()));
 
         room.getEntityManager().tryRoomEntry(player);
+
+        if (RoomManager.getInstance().getRoomEntryBadges().containsKey(room.getId())) {
+            for (String badge : RoomManager.getInstance().getRoomEntryBadges().get(room.getId())) {
+                player.getBadgeManager().tryAddBadge(badge, null);
+            }
+        }
 
         player.send(new USER_STATUSES(room.getEntities()));
         player.getRoomUser().setNeedsUpdate(true);

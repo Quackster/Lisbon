@@ -1,6 +1,7 @@
 package net.h4bbo.lisbon.messages.incoming.rooms.items;
 
 import net.h4bbo.lisbon.dao.mysql.ItemDao;
+import net.h4bbo.lisbon.dao.mysql.TransactionDao;
 import net.h4bbo.lisbon.game.fuserights.Fuseright;
 import net.h4bbo.lisbon.game.item.Item;
 import net.h4bbo.lisbon.game.item.base.ItemBehaviour;
@@ -120,6 +121,13 @@ public class PLACESTUFF implements MessageEvent {
         if (room.getItemManager().getMoodlight() != null && (item.hasBehaviour(ItemBehaviour.ROOMDIMMER))) {
             player.send(new ALERT(TextsManager.getInstance().getValue("roomdimmer_furni_limit")));
             return;
+        }
+
+        if (room.getData().getOwnerId() != player.getDetails().getId()) {
+            TransactionDao.createTransaction(player.getDetails().getId(),
+                    String.valueOf(item.getId()), String.valueOf(item.getDefinition().getId()), 1,
+                    "Placed item " + item.getDefinition().getName() + " into " + room.getData().getOwnerName() + "'s room: " + room.getData().getId(),
+                    room.getId(), room.getData().getOwnerId(), false);
         }
 
         room.getMapping().addItem(player, item);
