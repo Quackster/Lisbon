@@ -25,15 +25,15 @@ public class WebSettingsConfigWriter implements ConfigWriter {
         config.put("loader.mus.ip", "127.0.0.1");
         config.put("loader.mus.port", "12322");
 
-        config.put("loader.dcr", "http://localhost/dcr/v31/habbo.dcr?");
-        config.put("loader.external.variables", "http://localhost/dcr/v31/gamedata/external_variables.txt?");
-        config.put("loader.external.texts", "http://localhost/dcr/v31/gamedata/external_texts.txt?");
+        config.put("loader.dcr", "http://localhost/dcr/r26_20080915_0408_7984_61ccb5f8b8797a3aba62c1fa2ca80169/habbo.dcr");
+        config.put("loader.external.variables", "http://localhost/gamedata/external_variables.txt?");
+        config.put("loader.external.texts", "http://localhost/gamedata/external_texts.txt?");
 
+        /*
         config.put("loader.flash.base", "http://localhost/gordon/RELEASE39-22643-22891-200911110035_07c3a2a30713fd5bea8a8caf07e33438/");
         config.put("loader.flash.swf", "http://localhost/gordon/RELEASE39-22643-22891-200911110035_07c3a2a30713fd5bea8a8caf07e33438/Habbo.swf");
         config.put("loader.flash.external.texts", "http://localhost/flash/gamedata/external_flash_texts.txt");
-        config.put("loader.flash.external.variables", "http://localhost/flash/gamedata/external_variables.txt");
-
+        config.put("loader.flash.external.variables", "http://localhost/flash/gamedata/external_variables.txt");*/
 
         config.put("registration.disabled", "false");
         config.put("collectables.page", "51");
