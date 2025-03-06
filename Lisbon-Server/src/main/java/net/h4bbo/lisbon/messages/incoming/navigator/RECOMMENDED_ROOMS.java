@@ -15,7 +15,7 @@ public class RECOMMENDED_ROOMS implements MessageEvent {
     public void handle(Player player, NettyRequest reader) {
         int roomLimit = 3;
 
-        List<Room> roomList = RoomManager.getInstance().replaceQueryRooms(RoomDao.getRecommendedRooms(roomLimit, false));
+        List<Room> roomList = RoomManager.getInstance().replaceQueryRooms(RoomDao.getRecommendedRooms(roomLimit, 0));
 
         RoomManager.getInstance().sortRooms(roomList);
         RoomManager.getInstance().ratingSantiyCheck(roomList);

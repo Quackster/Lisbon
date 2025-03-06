@@ -164,7 +164,7 @@ public class UserAchievementManager {
      */
     public void processAchievements(Player player, boolean isLogin) {
         if (isLogin) {
-            // AchievementManager.getInstance().tryProgress(AchievementType.ACHIEVEMENT_TAGS, player);
+            AchievementManager.getInstance().tryProgress(AchievementType.ACHIEVEMENT_TAGS, player);
             AchievementManager.getInstance().tryProgress(AchievementType.ACHIEVEMENT_LOGIN, player);
             AchievementManager.getInstance().tryProgress(AchievementType.ACHIEVEMENT_HAPPYHOUR, player);
         }
@@ -173,7 +173,9 @@ public class UserAchievementManager {
         // AchievementManager.getInstance().tryProgress(AchievementType.ACHIEVEMENT_MGM, player);
         AchievementManager.getInstance().tryProgress(AchievementType.ACHIEVEMENT_REGISTRATION_DURATION, player);
         AchievementManager.getInstance().tryProgress(AchievementType.ACHIEVEMENT_HC, player);
+        AchievementManager.getInstance().tryProgress(AchievementType.ACHIEVEMENT_GUIDE, player);
         // AchievementManager.getInstance().tryProgress(AchievementType.ACHIEVEMENT_ALL_TIME_HOTEL_PRESENCE, player);
+        AchievementManager.getInstance().tryProgress(AchievementType.ACHIEVEMENT_GUIDE, player);
         // AchievementManager.getInstance().tryProgress(AchievementType.ACHIEVEMENT_TRADERPASS, player);
         AchievementManager.getInstance().tryProgress(AchievementType.ACHIEVEMENT_EMAIL_VERIFICATION, player);
 
@@ -190,13 +192,15 @@ public class UserAchievementManager {
 
                 if (groupMember != null &&
                         (groupMember.getMemberRank() == GroupMemberRank.ADMINISTRATOR ||
-                                groupMember.getMemberRank() == GroupMemberRank.OWNER)) {
+                        groupMember.getMemberRank() == GroupMemberRank.OWNER)) {
                     player.getBadgeManager().tryAddBadge("GLK", null);
                 } else {
                     player.getGuideManager().setGuide(GuideManager.getInstance().isGuide(player));
                 }
             }
         }
+
+        /*
 
         // Habbo eXperts
         if (GameConfiguration.getInstance().getInteger("habbo.experts.group.id") > 0) {
@@ -255,5 +259,8 @@ public class UserAchievementManager {
 
         // Remove special badge.
         //player.getBadgeManager().tryAddBadge("Z64", null);
+
+
+         */
     }
 }

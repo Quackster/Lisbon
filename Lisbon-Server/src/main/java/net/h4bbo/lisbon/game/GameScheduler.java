@@ -2,6 +2,7 @@ package net.h4bbo.lisbon.game;
 
 import net.h4bbo.lisbon.dao.mysql.CurrencyDao;
 import net.h4bbo.lisbon.game.catalogue.RareManager;
+import net.h4bbo.lisbon.game.catalogue.collectables.CollectablesManager;
 import net.h4bbo.lisbon.game.events.EventsManager;
 import net.h4bbo.lisbon.game.item.Item;
 import net.h4bbo.lisbon.game.item.ItemManager;
@@ -130,6 +131,8 @@ public class GameScheduler implements Runnable {
             if (this.tickRate.get() % 60 == 0) {
                 ChatManager.getInstance().performChatSaving();
             }
+
+            CollectablesManager.getInstance().checkExpiries();
 
             RareManager.getInstance().performRareManagerJob(this.tickRate);
         } catch (Exception ex) {

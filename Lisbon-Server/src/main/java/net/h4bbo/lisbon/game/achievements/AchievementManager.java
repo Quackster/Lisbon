@@ -39,12 +39,10 @@ public class AchievementManager {
 
         var badgeCode = userAchievement.getAchievementInfo().getName() + userAchievement.getAchievementInfo().getLevel();
 
-        /*
         if (userAchievement.getAchievementInfo().getName().equals("GL")) {
             badgeCode = userAchievement.getAchievementInfo().getName() + StringUtil.toAlphabetic(userAchievement.getAchievementInfo().getLevel());
         }
 
-         */
         if (player.getBadgeManager().hasBadge(badgeCode)) {
             return;
         }

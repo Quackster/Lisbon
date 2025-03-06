@@ -17,6 +17,7 @@ import java.util.List;
 
 public class HousekeepingCatalogueFrontpageController {
     public static void edit(WebConnection client) {
+        /*
         if (!client.session().getBoolean(SessionUtil.LOGGED_IN_HOUSKEEPING)) {
             client.redirect("/" + Routes.HOUSEKEEPING_PATH);
             return;
@@ -62,6 +63,6 @@ public class HousekeepingCatalogueFrontpageController {
         tpl.render();
 
         // Delete alert after it's been rendered
-        client.session().delete("alertMessage");
+        client.session().delete("alertMessage");*/
     }
 }

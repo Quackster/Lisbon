@@ -1,6 +1,8 @@
 package net.h4bbo.lisbon.game.catalogue;
 
 import net.h4bbo.lisbon.dao.mysql.*;
+import net.h4bbo.lisbon.game.catalogue.collectables.CollectableData;
+import net.h4bbo.lisbon.game.catalogue.collectables.CollectablesManager;
 import net.h4bbo.lisbon.game.item.Item;
 import net.h4bbo.lisbon.game.item.ItemManager;
 import net.h4bbo.lisbon.game.item.base.ItemBehaviour;
@@ -12,9 +14,11 @@ import net.h4bbo.lisbon.game.player.PlayerRank;
 import net.h4bbo.lisbon.messages.outgoing.user.currencies.FILM;
 import net.h4bbo.lisbon.util.DateUtil;
 import net.h4bbo.lisbon.util.StringUtil;
+import net.h4bbo.lisbon.util.config.GameConfiguration;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class CatalogueManager {
@@ -203,8 +207,29 @@ public class CatalogueManager {
      * @param pageId the id of the page to get the items for
      * @return the list of items
      */
-    public List<CatalogueItem> getCataloguePageItems(int pageId) {
+    public List<CatalogueItem> getCataloguePageItems(int pageId, boolean rawItems) {
         List<CatalogueItem> items = new ArrayList<>();
+
+        // Ignore any game logic checks when requesting catalogue pages
+        if (!rawItems) {
+            /*
+            if (pageId == GameConfiguration.getInstance().getInteger("rare.cycle.page.id")) {
+                var itemList = getSeasonalItems();
+
+                if (itemList.size() > 0) {
+                    return itemList;
+                }
+            }
+             */
+            
+            // Do collectables
+            CollectableData collectableData = CollectablesManager.getInstance().getCollectableDataByPage(pageId);
+
+            if (collectableData != null) {
+                CatalogueItem catalogueItem = collectableData.getActiveItem();
+                return List.of(catalogueItem);
+            }
+        }
 
         for (CatalogueItem catalogueItem : this.catalogueItemList) {
             if (catalogueItem.isHidden()) {
@@ -216,6 +241,7 @@ public class CatalogueManager {
             }
         }
 
+        // items.sort(Comparator.comparingInt(CatalogueItem::getOrderId));
         return items;
     }
 

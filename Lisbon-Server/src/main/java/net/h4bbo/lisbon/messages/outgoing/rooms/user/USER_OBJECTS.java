@@ -98,7 +98,7 @@ public class USER_OBJECTS extends MessageComposer {
                 if (states.getRoom().getModel().getName().startsWith("pool_") ||
                         states.getRoom().getModel().getName().equals("md_a")) {
 
-                    if (states.getDetails().getPoolFigure().length() > 0) {
+                    if (states.getDetails().getPoolFigure() != null && states.getDetails().getPoolFigure().length() > 0) {
                         response.writeKeyValue("p", states.getDetails().getPoolFigure());
                     }
                 }

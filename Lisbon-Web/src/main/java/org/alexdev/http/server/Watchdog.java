@@ -66,7 +66,7 @@ public class Watchdog implements Runnable {
                 EmailDao.removeRecoveryCodeBatch();
             }
 
-            batchClean();
+            // batchClean();
 
         } catch (Exception ex) {
 
@@ -199,6 +199,7 @@ public class Watchdog implements Runnable {
         this.resetCounter();
     }
 
+    /*
     private void batchClean() {
         if (GameConfiguration.getInstance().getInteger("delete.chatlogs.after.x.age") > 0) {
             LogDao.deleteChatLogs(GameConfiguration.getInstance().getInteger("delete.chatlogs.after.x.age"));
@@ -211,7 +212,7 @@ public class Watchdog implements Runnable {
         if (GameConfiguration.getInstance().getInteger("delete.tradelogs.after.x.age") > 0) {
             LogDao.deleteTradeLogs(GameConfiguration.getInstance().getInteger("delete.tradelogs.after.x.age"));
         }
-    }
+    }*/
 
     private void resetCounter() {
         try {

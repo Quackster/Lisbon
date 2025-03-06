@@ -1,3 +1,55 @@
+CREATE TABLE IF NOT EXISTS `rooms_ads` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `is_loading_ad` tinyint(1) NOT NULL DEFAULT 0,
+  `room_id` int(11) NOT NULL,
+  `url` varchar(255) DEFAULT NULL,
+  `image` mediumtext NOT NULL,
+  `enabled` tinyint(1) NOT NULL DEFAULT 1,
+  KEY `room_ad id` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=82 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+DELETE FROM `rooms_ads`;
+INSERT INTO `rooms_ads` (`id`, `is_loading_ad`, `room_id`, `url`, `image`, `enabled`) VALUES
+	(1, 0, 1, 'http://classichabbo.com/credits/collectables', 'http://alex-dev.org/ads/billboards/billboard_collectibles_01.gif', 1),
+	(2, 0, 9, NULL, 'http://alex-dev.org/ads/billboards/billboard_diner_01.gif', 1),
+	(3, 0, 12, NULL, 'http://alex-dev.org/ads/billboards/billboard_idol_02.gif', 1),
+	(4, 0, 13, NULL, 'http://alex-dev.org/ads/billboards/ad_rooftoptgt_outside_L.gif', 1),
+	(5, 0, 14, NULL, 'http://alex-dev.org/ads/billboards/ad_rooftoptgt_inside_R.gif', 1),
+	(6, 0, 36, NULL, 'http://alex-dev.org/ads/billboards/ad_lido_L.gif', 1),
+	(60, 1, -1, NULL, 'http://cdn.classichabbo.com/c_images/room_ads/hc.gif', 1),
+	(61, 1, -1, NULL, 'http://cdn.classichabbo.com/c_images/room_ads/ai_1.gif', 1),
+	(62, 1, -1, NULL, 'http://cdn.classichabbo.com/c_images/room_ads/country.gif', 1),
+	(63, 1, -1, NULL, 'http://cdn.classichabbo.com/c_images/room_ads/diner.gif', 1),
+	(64, 1, -1, NULL, 'http://cdn.classichabbo.com/c_images/room_ads/interstitial_hc.gif', 1),
+	(65, 1, -1, NULL, 'http://cdn.classichabbo.com/c_images/room_ads/interstitial_hcpromo09_hcparty3.gif', 1),
+	(66, 1, -1, NULL, 'http://cdn.classichabbo.com/c_images/room_ads/interstitial_hween09.gif', 1),
+	(67, 1, -1, NULL, 'http://cdn.classichabbo.com/c_images/room_ads/interstitial_kitchen.gif', 1),
+	(68, 1, -1, NULL, 'http://cdn.classichabbo.com/c_images/room_ads/interstitial_pay2playscam.gif', 1),
+	(69, 1, -1, NULL, 'http://cdn.classichabbo.com/c_images/room_ads/roomloadtrophies.gif', 1),
+	(70, 1, -1, NULL, 'http://cdn.classichabbo.com/c_images/room_ads/roomloadpixels.gif', 1),
+	(71, 1, -1, NULL, 'http://cdn.classichabbo.com/c_images/room_ads/roomloadbobba.gif', 1),
+	(72, 1, -1, NULL, 'http://cdn.classichabbo.com/c_images/room_ads/mall.gif', 1),
+	(73, 1, -1, NULL, 'http://cdn.classichabbo.com/c_images/room_ads/love_earth.gif', 1),
+	(74, 1, -1, NULL, 'http://cdn.classichabbo.com/c_images/room_ads/loadingscreen.gif', 1),
+	(75, 1, -1, NULL, 'http://cdn.classichabbo.com/c_images/room_ads/jungle.gif', 1),
+	(76, 1, -1, NULL, 'http://cdn.classichabbo.com/c_images/room_ads/it_bolly.gif', 1),
+	(77, 1, -1, NULL, 'http://cdn.classichabbo.com/c_images/room_ads/safety_148.gif', 1),
+	(78, 1, -1, NULL, 'http://cdn.classichabbo.com/c_images/room_ads/trophies.gif', 1),
+	(79, 1, -1, NULL, 'http://cdn.classichabbo.com/c_images/room_ads/us_ying_yang_bb.gif', 1),
+	(80, 1, -1, NULL, 'http://cdn.classichabbo.com/c_images/room_ads/windows.gif', 1),
+	(81, 1, -1, NULL, 'http://cdn.classichabbo.com/c_images/room_ads/xmas.gif', 0);
+
+
+CREATE TABLE IF NOT EXISTS `catalogue_collectables` (
+  `store_page` int(11) NOT NULL,
+  `admin_page` int(11) NOT NULL,
+  `expiry` bigint(11) NOT NULL,
+  `lifetime` bigint(11) NOT NULL DEFAULT 2678400,
+  `current_position` int(11) NOT NULL,
+  `class_names` text NOT NULL,
+  PRIMARY KEY (`store_page`),
+  UNIQUE KEY `store_page` (`store_page`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE IF NOT EXISTS `games_played_history` (
   `id` varchar(255) NOT NULL,

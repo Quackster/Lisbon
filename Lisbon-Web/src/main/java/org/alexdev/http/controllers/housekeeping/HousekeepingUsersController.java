@@ -269,7 +269,7 @@ public class HousekeepingUsersController {
 
                     PlayerDao.saveDetails(player.getId(), player.getFigure(), player.getPoolFigure(), player.getSex());
                     PlayerDao.saveMotto(player.getId(), player.getMotto());
-                    PlayerDao.saveCurrency(player.getId(), player.getCredits();
+                    PlayerDao.saveCurrency(player.getId(), player.getCredits());
                     PlayerDao.saveEmail(player.getId(), player.getEmail());
 
                     client.session().set("alertColour", "success");

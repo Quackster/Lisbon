@@ -244,7 +244,7 @@ public class Widget {
         }
 
         for (Item item : ItemDao.getUserItemsByDefinition(userId, ItemManager.getInstance().getDefinitionBySprite("song_disk"))) {
-            int songId = JukeboxDao.getSongIdByItem(item.getDatabaseId());
+            int songId = JukeboxDao.getSongIdByItem(item.getId());
             Song song = SongMachineDao.getSong(songId);
 
             if (song == null) {

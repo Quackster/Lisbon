@@ -457,71 +457,6 @@ public class ProfileController {
         webConnection.redirect("/profile?tab=2");
     }
 
-    private static void tradesettings(Template template, WebConnection webConnection) {
-        if (!webConnection.session().getBoolean("authenticated")) {
-            webConnection.redirect("/");
-            return;
-        }
-
-        PlayerDetails playerDetails = (PlayerDetails) template.get("playerDetails");
-
-        /*boolean canUseTrade = TimeUnit.SECONDS.toDays(DateUtil.getCurrentTimeSeconds() - playerDetails.getJoinDate()) >= 3 &&
-                PlayerStatisticsDao.getStatistic(playerDetails.getId(), PlayerStatistic.ONLINE_TIME) >= TimeUnit.HOURS.toSeconds(1);*/
-        boolean canUseTrade = !GameConfiguration.getInstance().getBoolean("trade.email.verification") || isActivated(PlayerStatisticsDao.getStatisticString(playerDetails.getId(), PlayerStatistic.ACTIVATION_CODE));
-        template.set("canUseTrade", canUseTrade);
-
-        if (!playerDetails.isTradeEnabled()) {
-            //template.set("tradeDisabled", "checked=\"checked\"");
-        } else {
-            //template.set("tradeEnabled", "checked=\"checked\"");
-        }
-    }
-
-    public static void securitysettingupdate(WebConnection webConnection) {
-        if (!webConnection.session().getBoolean("authenticated")) {
-            webConnection.redirect("/");
-            return;
-        }
-
-        PlayerDetails playerDetails = PlayerDao.getDetails(webConnection.session().getInt("user.id"));
-        String currentPassword = webConnection.post().getString("password");
-
-        if (currentPassword.isEmpty()) {
-            webConnection.session().set("alertMessage", "You did not enter a password");
-            webConnection.session().set("alertColour", "red");
-        } else if (!PlayerDao.login(playerDetails, playerDetails.getName(), currentPassword)) {
-            webConnection.session().set("alertMessage", "Your current password is invalid");
-            webConnection.session().set("alertColour", "red");
-        } else if (GameConfiguration.getInstance().getBoolean("trade.email.verification") &&
-                !isActivated(PlayerStatisticsDao.getStatisticString(playerDetails.getId(), PlayerStatistic.ACTIVATION_CODE))) {
-            webConnection.session().set("alertMessage", "You must verify your email before enabling trade.");
-            webConnection.session().set("alertColour", "red");
-        } else if (EmailUtil.isAlreadyTradePass(playerDetails.getId(), playerDetails.getEmail())) {
-            webConnection.session().set("alertMessage", "This email is already used for a trade pass.");
-            webConnection.session().set("alertColour", "red");
-        } else {
-            webConnection.session().set("alertMessage", "Security settings updated successfully");
-            webConnection.session().set("alertColour", "green");
-
-            /*boolean canUseTrade = TimeUnit.SECONDS.toDays(DateUtil.getCurrentTimeSeconds() - playerDetails.getJoinDate()) >= 3 &&
-                    PlayerStatisticsDao.getStatistic(playerDetails.getId(), PlayerStatistic.ONLINE_TIME) >= TimeUnit.HOURS.toSeconds(1);
-
-            if (!canUseTrade) {
-                webConnection.post().setValue("tradesetting", "false");
-            }*/
-
-            boolean tradeSetting = webConnection.post().getString("tradingsetting").equals("true");
-            SessionDao.saveTrade(playerDetails.getId(), tradeSetting);
-
-            RconUtil.sendCommand(RconHeader.REFRESH_TRADE_SETTING, new HashMap<>() {{
-                put("userId", playerDetails.getId());
-                put("tradeEnabled", tradeSetting ? "1" : "0");
-            }});
-        }
-
-        webConnection.redirect("/profile?tab=6");
-    }
-
     public static void wardrobeStore(WebConnection webConnection) {
         if (!webConnection.session().getBoolean("authenticated")) {
             webConnection.redirect("/");
@@ -568,62 +503,6 @@ public class ProfileController {
         webConnection.send(httpResponse);
     }
 
-    public static void verify(WebConnection webConnection) {
-        if (!webConnection.session().getBoolean("authenticated")) {
-            webConnection.redirect("/");
-            return;
-        }
-
-        int userId = webConnection.session().getInt("user.id");
-        var statistics = new PlayerStatisticManager(userId, PlayerStatisticsDao.getStatistics(userId));
-
-        webConnection.session().set("page", "me");
-
-        var template = webConnection.template("profile/verify_email");
-        template.set("accountActivated", isActivated(statistics.getValue(PlayerStatistic.ACTIVATION_CODE)));
-        template.render();
-
-        webConnection.session().delete("alertMessage");
-        webConnection.session().delete("alertColour");
-    }
-
-    public static void send_email(WebConnection webConnection) throws AddressException {
-        if (!webConnection.session().getBoolean("authenticated")) {
-            webConnection.redirect("/");
-            return;
-        }
-
-        int userId = webConnection.session().getInt("user.id");
-
-        var playerDetails = PlayerDao.getDetails(userId);
-        var statistics = new PlayerStatisticManager(userId, PlayerStatisticsDao.getStatistics(userId));
-
-        if (isActivated(statistics.getValue(PlayerStatistic.ACTIVATION_CODE))) {
-            webConnection.session().set("alertMessage", "Your email is already activated");
-            webConnection.session().set("alertColour", "red");
-            webConnection.redirect("/profile/verify");
-            return;
-        }
-
-        statistics.setValue(PlayerStatistic.ACTIVATION_CODE, UUID.randomUUID().toString());
-
-        if (GameConfiguration.getInstance().getBoolean("email.smtp.enable")) {
-            webConnection.session().set("alertMessage", "A verification email has been sent to your email address");
-            webConnection.session().set("alertColour", "green");
-
-            EmailUtil.send(webConnection, playerDetails.getEmail(), "Activate your account at Classic Habbo",
-                    EmailUtil.renderActivate(
-                            userId,
-                            playerDetails.getName(),
-                            playerDetails.getEmail(),
-                            statistics.getValue(PlayerStatistic.ACTIVATION_CODE)
-                    )
-            );
-        }
-
-        webConnection.redirect("/profile/verify");
-    }
-
     public static void profile_flash(Template template, WebConnection webConnection) {
         XSSUtil.clear(webConnection);
 
@@ -650,7 +529,7 @@ public class ProfileController {
         changelooks(template, webConnection);
 
         if (template != null) {
-            template.set("accountActivated", isActivated(statistics.getValue(PlayerStatistic.ACTIVATION_CODE)));
+            // template.set("accountActivated", isActivated(statistics.getValue(PlayerStatistic.ACTIVATION_CODE)));
 
             if (webConnection.session().contains("settings.saved.successfully")) {
                 template.set("settingsSavedAlert", "true");

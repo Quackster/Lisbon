@@ -24,9 +24,17 @@ public class EventsManager {
     }
 
     /**
+     * Reload the events manager
+     */
+    public static void reset() {
+        instance = null;
+        EventsManager.getInstance();
+    }
+
+
+    /**
      * This method is used to call the create event method.
-     *
-     * @param player the player who created the event
+     *  @param player the player who created the event
      * @param category the category of the event
      * @param name the name of the event
      * @param description the description of the event

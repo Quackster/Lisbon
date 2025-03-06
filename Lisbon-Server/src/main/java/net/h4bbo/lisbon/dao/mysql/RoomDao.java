@@ -131,36 +131,33 @@ public class RoomDao {
      * @param limit the limit of rooms
      * @return the list of rooms
      */
-    public static List<Room> getRecommendedRooms(int limit, boolean allowStarterRooms) {
-        List<Room> rooms = new ArrayList<>();
+    public static List<Room> getRecommendedRooms(int limit, int offset) {
+        List<Room> roomList = new ArrayList<>();
 
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
 
-        //SELECT * FROM rooms LEFT JOIN users ON rooms.owner_id = users.id WHERE owner_id = 0
-
         try {
             sqlConnection = Storage.getStorage().getConnection();
-            preparedStatement = Storage.getStorage().prepare("SELECT * FROM rooms LEFT JOIN users ON rooms.owner_id = users.id WHERE owner_id > 0 AND accesstype = 0" + (allowStarterRooms ? "" : " AND model <> 'model_s'") + " ORDER BY rating DESC,visitors_now DESC LIMIT ?", sqlConnection);
-            preparedStatement.setInt(1, limit);
+            preparedStatement = Storage.getStorage().prepare("SELECT * FROM rooms LEFT JOIN users ON rooms.owner_id = users.id WHERE owner_id > 0 AND accesstype = 0 ORDER BY visitors_now DESC, rating DESC LIMIT " + limit + " OFFSET " + offset, sqlConnection);
             resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
                 Room room = new Room();
-                fill(room.getData(), resultSet);
-                rooms.add(room);
+                RoomDao.fill(room.getData(), resultSet);
+                roomList.add(room);
             }
 
         } catch (Exception e) {
             Storage.logError(e);
         } finally {
-            Storage.closeSilently(resultSet);
             Storage.closeSilently(preparedStatement);
             Storage.closeSilently(sqlConnection);
+            Storage.closeSilently(resultSet);
         }
 
-        return rooms;
+        return roomList;
     }
 
     /**
@@ -404,6 +401,55 @@ public class RoomDao {
     }
 
     /**
+     * Search query for when people use the navigator search, will search either by username or room name similarities.
+     *
+     * @param searchQuery the query to use
+     * @return the list of possible room matches
+     */
+    public static List<Room> searchRooms(String searchQuery, int roomOwner, int limit) {
+        List<Room> rooms = new ArrayList<>();
+
+        if (searchQuery.isBlank() && roomOwner == -1) {
+            return rooms;
+        }
+
+        Connection sqlConnection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            sqlConnection = Storage.getStorage().getConnection();
+            preparedStatement = Storage.getStorage().prepare("SELECT * FROM rooms INNER JOIN users ON rooms.owner_id = users.id WHERE" + (roomOwner > 0 ? (" owner_id = " + roomOwner + " AND") : " LOWER(users.username) LIKE ? OR") + " LOWER(rooms.name) LIKE ? ORDER BY visitors_now DESC, rating DESC LIMIT ? ", sqlConnection);
+
+            if (roomOwner > 0) {
+                preparedStatement.setString(1, "%" + searchQuery + "%");
+                preparedStatement.setInt(2, limit);
+            } else {
+                preparedStatement.setString(1, "%" + searchQuery + "%");
+                preparedStatement.setString(2, "%" + searchQuery + "%");
+                preparedStatement.setInt(3, limit);
+            }
+
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                Room room = new Room();
+                fill(room.getData(), resultSet);
+                rooms.add(room);
+            }
+
+        } catch (Exception e) {
+            Storage.logError(e);
+        } finally {
+            Storage.closeSilently(resultSet);
+            Storage.closeSilently(preparedStatement);
+            Storage.closeSilently(sqlConnection);
+        }
+
+        return rooms;
+    }
+
+    /**
      * Fill room data
      *
      * @param data the room data instance
@@ -426,4 +472,5 @@ public class RoomDao {
                 row.getInt("visitors_now"), row.getInt("visitors_max"), row.getInt("rating"), row.getBoolean("is_hidden"));
 
     }
+
 }

@@ -373,6 +373,42 @@ public class ItemDao {
     }
 
     /**
+     * Get the room list of items.
+     *
+     * @return the list of items
+     */
+    public static List<Item> getUserItemsByDefinition(int userId, ItemDefinition definition) {
+        List<Item> items = new ArrayList<>();
+
+        Connection sqlConnection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            sqlConnection = Storage.getStorage().getConnection();
+            preparedStatement = Storage.getStorage().prepare("SELECT * FROM items WHERE user_id = ? AND definition_id = ?", sqlConnection);
+            preparedStatement.setInt(1, userId);
+            preparedStatement.setInt(2, definition.getId());
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                Item item = new Item();
+                fill(item, resultSet);
+                items.add(item);
+            }
+
+        } catch (Exception e) {
+            Storage.logError(e);
+        } finally {
+            Storage.closeSilently(resultSet);
+            Storage.closeSilently(preparedStatement);
+            Storage.closeSilently(sqlConnection);
+        }
+
+        return items;
+    }
+
+    /**
      * Fill item with data retrieved from the SQL query.
      *
      * @param item the item to fill data for

@@ -5,9 +5,11 @@ import io.netty.util.ResourceLeakDetector;
 import net.h4bbo.lisbon.dao.Storage;
 import net.h4bbo.lisbon.dao.mysql.SettingsDao;
 import net.h4bbo.lisbon.game.GameScheduler;
+import net.h4bbo.lisbon.game.ads.AdManager;
 import net.h4bbo.lisbon.game.bot.BotManager;
 import net.h4bbo.lisbon.game.catalogue.CatalogueManager;
 import net.h4bbo.lisbon.game.catalogue.RareManager;
+import net.h4bbo.lisbon.game.catalogue.collectables.CollectablesManager;
 import net.h4bbo.lisbon.game.commands.CommandManager;
 import net.h4bbo.lisbon.game.events.EventsManager;
 import net.h4bbo.lisbon.game.fuserights.FuserightsManager;
@@ -116,6 +118,8 @@ public class Lisbon {
             TextsManager.getInstance();
             RecyclerManager.getInstance();
             InfobusManager.getInstance();
+            CollectablesManager.getInstance();
+            AdManager.getInstance();
 
             // Update players online back to 0
             SettingsDao.updateSetting("players.online", "0");

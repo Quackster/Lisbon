@@ -7,7 +7,7 @@ public enum AchievementType {
     ACHIEVEMENT_HC("HC", new AchievementHabboClub(), true),
     ACHIEVEMENT_MOTTO("ACH_Motto", new AchievementMotto(), true),
     // ACHIEVEMENT_RESPECT_GIVEN("ACH_RespectGiven", new AchievementRespectGiven(), true),
-    // ACHIEVEMENT_TAGS("ACH_AvatarTags", new AchievementTags(), true),
+    ACHIEVEMENT_TAGS("ACH_AvatarTags", new AchievementTags(), true),
     //ACHIEVEMENT_MGM("ACH_MGM", new AchievementMGM(), true),
     ACHIEVEMENT_GRADUATE("ACH_Graduate", new AchievementGraduate(), true),
     ACHIEVEMENT_HAPPYHOUR("ACH_HappyHour", new AchievementHappyHour(), true),
@@ -19,6 +19,7 @@ public enum AchievementType {
     ACHIEVEMENT_LOGIN("ACH_Login", new AchievementLogin(), true),
     // ACHIEVEMENT_ALL_TIME_HOTEL_PRESENCE("ACH_AllTimeHotelPresence", new AchievementAllTimeHotelPresence(), true),
     ACHIEVEMENT_GAME_PLAYED("ACH_GamePlayed", new AchievementGamePlayed(), true),
+    ACHIEVEMENT_GUIDE("GL", new AchievementGuide(), false),
     ACHIEVEMENT_STUDENT("ACH_Student", new AchievementStudent(), true),
     ACHIEVEMENT_EMAIL_VERIFICATION("ACH_EmailVerification", new AchievementEmailVerification(), true);
 
