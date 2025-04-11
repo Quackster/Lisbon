@@ -118,11 +118,11 @@
             <div id="subnavi-search">
                 <div id="subnavi-search-upper">
                 <ul id="subnavi-search-links">
-                    <li><a href="./iot/go.php" target="habbohelp" onclick="openOrFocusHelp(this); return false">Help</a></li>
-					<li><a href="logout.php?reason=site" class="userlink">Sign Out</a></li>
+                    <li><a href="./iot/go" target="habbohelp" onclick="openOrFocusHelp(this); return false">Help</a></li>
+					<li><a href="{{ site.sitePath }}/account/logout" class="userlink">Sign Out</a></li>
 				</ul>
                 </div>
-                <form name="tag_search_form" action="user_profile.php" class="search-box clearfix">
+                <form name="tag_search_form" action="./home" class="search-box clearfix">
 					<a id="search-button" class="new-button search-icon" href="#" onclick="$('search-button').up('form').submit(); return false;"><b><span></span></b><i></i></a>					
 					<input type="text" name="tag" id="search_query" value="User Profile.." class="search-box-query search-box-onfocus" style="float: right"/>
 				</form>

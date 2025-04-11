@@ -2315,3 +2315,6 @@ CREATE TABLE IF NOT EXISTS `room_visits` (
   `visited_at` datetime NOT NULL DEFAULT current_timestamp(),
   UNIQUE KEY `room_id_user_id` (`room_id`,`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+ALTER TABLE `catalogue_pages`
+	CHANGE COLUMN `id` `id` INT(11) NOT NULL AUTO_INCREMENT FIRST;

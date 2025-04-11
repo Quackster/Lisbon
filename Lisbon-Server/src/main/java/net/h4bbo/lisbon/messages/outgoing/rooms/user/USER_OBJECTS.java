@@ -78,6 +78,7 @@ public class USER_OBJECTS extends MessageComposer {
                 }
                 */
 
+                /*
                 String szNotify = "";
 
                 for (var badge : states.getBadges()) {
@@ -93,7 +94,7 @@ public class USER_OBJECTS extends MessageComposer {
                 if (states.getGroupMember() != null) {
                     response.writeKeyValue("g", states.getGroupMember().getGroupId());
                     response.writeKeyValue("t", states.getGroupMember().getMemberRank().getClientRank());
-                }
+                }*/
 
                 if (states.getRoom().getModel().getName().startsWith("pool_") ||
                         states.getRoom().getModel().getName().equals("md_a")) {

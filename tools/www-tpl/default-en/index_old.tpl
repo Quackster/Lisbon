@@ -97,7 +97,25 @@ body { behavior: url({{ site.staticContentPath }}/web-gallery/js/csshover.htc); 
 							<div id="landing-register-text"><a href="https://classichabbo.com/register"><span>Join now, it's free »</span></a></div>
 							<div id="landing-promotional-text"><span>Habbo is a virtual world where you can meet and make friends.</span></div>
 						</div>
+						
 					</div>
+					
+											<div id="create-habbo-flash">
+	<div id="create-habbo-nonflash">
+        <div id="landing-register-text"><a href="register.php"><span>Join now, it's free >></span></a></div>
+        <div id="landing-promotional-text"><span><?php echo $shortname; ?> is a virtual world where you can meet and make friends.</span></div>
+    </div>
+	<div class="cbb clearfix green" id="habbo-intro-nonflash">
+		<h2 class="title">To get most out of <?php echo $shortname; ?>, do this:</h2>
+		<div class="box-content">
+			<ul>
+				<li id="habbo-intro-install" style="display:none"><a href="http://www.adobe.com/go/getflashplayer">Install Flash Player 8 or higher</a></li>
+				<noscript><li>Enable JavaScript</li></noscript>
+			</ul>
+		</div>
+	</div>
+</div>
+
 				{% endif %}
 </div>
 	
@@ -199,7 +217,7 @@ body { behavior: url({{ site.staticContentPath }}/web-gallery/js/csshover.htc); 
 				
 						<div class="ad-container">
 <!-- <a href="{{ site.sitePath }}/register"><img src="{{ site.staticContentPath }}/web-gallery/v2/images/landing/filler_ad.png" alt="" /></a> -->
-<a href="{{ site.sitePath }}/games"><img src="https://i.imgur.com/ehgdoyS.png" alt="" /></a>
+<a href="{{ site.sitePath }}/games"><img src="{{ site.staticContentPath }}/web-gallery/v2/images/landing/uk_party_frontpage_image.gif" alt="" /></a>
 
 </div>
 	

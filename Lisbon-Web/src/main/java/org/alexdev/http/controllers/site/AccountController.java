@@ -106,6 +106,10 @@ public class AccountController {
             articles[i++] = article;
         }
 
+        if (articles[0] == null) {
+            articles[0] = new NewsArticle(0, "Installation Complete", 0, "", "Welcome to your brand new Web installation!", "", DateUtil.getCurrentTimeSeconds(), "Rel22_commu_topstory_300x187.gif", "", "", "0", true, 0, false);
+        }
+
         for (i = 0; i < 5; i++) {
             if (articles[i] == null) {
                 articles[i] = new NewsArticle(0, "No news", 0, "", "", "", DateUtil.getCurrentTimeSeconds(), "attention_topstory.png", "", "", "0", true, 0, false);

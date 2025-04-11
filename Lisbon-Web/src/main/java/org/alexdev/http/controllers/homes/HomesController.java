@@ -44,7 +44,17 @@ public class HomesController {
             playerDetails = (PlayerDetails) template.get("playerDetails");
         }
 
-        String username = webConnection.getMatches().get(0);
+        String username = null;
+
+        if (webConnection.getMatches().size() > 0) {
+
+            username = webConnection.getMatches().get(0);
+        }
+        else {
+            if (webConnection.get().contains("tag")) {
+                username = webConnection.get().getString("tag");
+            }
+        }
 
         if (webConnection.getRouteRequest().endsWith("/id")) {
             try {
