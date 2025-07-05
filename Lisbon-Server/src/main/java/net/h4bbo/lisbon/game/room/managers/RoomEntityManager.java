@@ -210,6 +210,7 @@ public class RoomEntityManager {
 
         player.send(new ROOM_URL());
         player.send(new ROOM_READY(this.room.getId(), this.room.getModel().getName()));
+        player.send(new FLATPROPERTY("landscape", this.room.getData().getLandscape()));
 
         if (this.room.getData().getWallpaper() > 0) {
             player.send(new FLATPROPERTY("wallpaper", this.room.getData().getWallpaper()));

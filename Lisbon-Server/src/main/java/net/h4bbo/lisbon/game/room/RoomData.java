@@ -18,6 +18,7 @@ public class RoomData {
     private String ccts;
     private int wallpaper;
     private int floor;
+    private String  landscape;
     private boolean showOwnerName;
     private boolean superUsers;
     private boolean isGameArena;
@@ -45,7 +46,7 @@ public class RoomData {
         this.ownerName = "";
     }
 
-    public void fill(int id, int ownerId, String ownerName, int category, String name, String description, String model, String ccts, int wallpaper, int floor, boolean showName, boolean superUsers, int accessType, String password, int visitorsNow, int visitorsMax, int rating,
+    public void fill(int id, int ownerId, String ownerName, int category, String name, String description, String model, String ccts, int wallpaper, int floor, String landscape, boolean showName, boolean superUsers, int accessType, String password, int visitorsNow, int visitorsMax, int rating,
                      int groupId, boolean isHidden) {
         this.id = id;
         this.ownerId = ownerId;
@@ -57,6 +58,7 @@ public class RoomData {
         this.ccts = ccts;
         this.wallpaper = wallpaper;
         this.floor = floor;
+        this.landscape = landscape;
         this.showOwnerName = showName;
         this.superUsers = superUsers;
         this.accessType = accessType;
@@ -198,6 +200,14 @@ public class RoomData {
 
     public void setFloor(int floor) {
         this.floor = floor;
+    }
+
+    public String getLandscape() {
+        return landscape;
+    }
+
+    public void setLandscape(String landscape) {
+        this.landscape = landscape;
     }
 
     public boolean showOwnerName() {

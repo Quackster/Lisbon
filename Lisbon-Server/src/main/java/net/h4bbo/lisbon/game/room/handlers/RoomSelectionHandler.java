@@ -129,14 +129,13 @@ public class RoomSelectionHandler {
             table.setOwnerId(userId);
             ItemDao.newItem(table);
 
-            /*
             Item window = new Item();
             window.setWallPosition(":w=3,0 l=13,71 r");
             window.setDefinitionId(ItemManager.getInstance().getDefinitionBySprite("noob_window_double").getId());
             window.setOwnerId(userId);
             window.setRoomId(roomId);
             ItemDao.newItem(window);
-            ItemDao.updateItem(window);*/
+            ItemDao.updateItem(window);
 
             PlayerDao.saveSelectedRoom(userId, roomId);
             return true;
