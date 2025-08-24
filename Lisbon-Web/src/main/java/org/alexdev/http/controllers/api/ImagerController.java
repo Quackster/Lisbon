@@ -37,7 +37,15 @@ public class ImagerController {
                     .setDefaultRequestConfig(reqConfig)
                     .build()) {
 
-                HttpGet request = new HttpGet(GameConfiguration.getInstance().getString("site.imaging.endpoint") + webConnection.request().uri());
+                String requestUri = webConnection.request().uri();
+
+                // Ignore all the weird shit from the promo_habbos_v2 swf (it has stuff like figure,s-0.g-1.d-3.h-3.a-0,7e9a0bafa6863e224cdbb2a3b53dcec0 (hash))
+                if (requestUri.contains("/avatar/") && requestUri.contains(",")) {
+                    requestUri = "/habbo-imaging/avatarimage?figure=" + requestUri.replace("/habbo-imaging/avatar/", "").split(",")[0]
+                            + "&size=b&direction=3&head_direction=3&gesture=sml&frame=1";
+                }
+
+                HttpGet request = new HttpGet(GameConfiguration.getInstance().getString("site.imaging.endpoint") + requestUri);
                 request.addHeader(HttpHeaders.USER_AGENT, "Imager");
 
                 try (var r = httpClient.execute(request)) {

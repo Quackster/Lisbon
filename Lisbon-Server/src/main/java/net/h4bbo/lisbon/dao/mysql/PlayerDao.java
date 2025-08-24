@@ -222,23 +222,89 @@ public class PlayerDao {
         return habbos;
     }
 
-    public static List<PlayerDetails> getRecentHabbos(int limit) {
+    /**
+     * Retrieves a list of recent Habbo players ordered by their last online time.
+     * If there are fewer users in the database than the specified limit and fillToLimit
+     * is true, the method will cycle through all available users repeatedly to fill
+     * the list up to the requested limit, ensuring equal distribution.
+     *
+     * @param limit The maximum number of player details to return. Must be greater than 0.
+     * @param fillToLimit If true, will repeat users to reach the specified limit when
+     *                    there are fewer users than the limit. If false, will only
+     *                    return the actual number of users available.
+     * @return A list of PlayerDetails objects containing recent Habbo players.
+     *         If fillToLimit is true and there are fewer users than the limit,
+     *         users will be repeated equally to fill the list. Returns an empty
+     *         list if no users exist in the database or if an error occurs during
+     *         database operations.
+     *
+     * @example
+     * // If database contains 3 users and limit is 7:
+     * // fillToLimit = true:  Returns [User1, User2, User3, User1, User2, User3, User1]
+     * // fillToLimit = false: Returns [User1, User2, User3]
+     *
+     * @throws No exceptions are thrown - errors are logged via Storage.logError()
+     *
+     * @since Latest version compatible with MariaDB
+     */
+    public static List<PlayerDetails> getRecentHabbos(int limit, boolean fillToLimit) {
         List<PlayerDetails> habbos = new ArrayList<>();
-
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
 
         try {
             sqlConnection = Storage.getStorage().getConnection();
-            preparedStatement = Storage.getStorage().prepare("SELECT * FROM users ORDER BY last_online DESC LIMIT " + limit, sqlConnection);
+
+            // First, get the count of total users
+            PreparedStatement countStatement = Storage.getStorage().prepare(
+                    "SELECT COUNT(*) as total_users FROM users", sqlConnection);
+            ResultSet countResult = countStatement.executeQuery();
+
+            int totalUsers = 0;
+            if (countResult.next()) {
+                totalUsers = countResult.getInt("total_users");
+            }
+            countResult.close();
+            countStatement.close();
+
+            if (totalUsers == 0) {
+                return habbos; // Return empty list if no users exist
+            }
+
+            // Get recent users ordered by last_online
+            preparedStatement = Storage.getStorage().prepare(
+                    "SELECT * FROM users ORDER BY last_online DESC", sqlConnection);
             resultSet = preparedStatement.executeQuery();
 
+            // Store all users in a temporary list
+            List<PlayerDetails> allUsers = new ArrayList<>();
             while (resultSet.next()) {
                 PlayerDetails details = new PlayerDetails();
                 fill(details, resultSet);
+                allUsers.add(details);
+            }
 
-                habbos.add(details);
+            // Fill the result list up to the limit
+            if (allUsers.size() >= limit) {
+                // If we have enough users, just take the first 'limit' users
+                habbos.addAll(allUsers.subList(0, limit));
+            } else if (fillToLimit) {
+                // If we don't have enough users and fillToLimit is true, repeat them equally
+                int usersNeeded = limit;
+                int currentIndex = 0;
+
+                while (usersNeeded > 0) {
+                    // Add the current user
+                    habbos.add(allUsers.get(currentIndex));
+                    usersNeeded--;
+
+                    // Move to next user, cycling back to beginning if needed
+                    currentIndex = (currentIndex + 1) % allUsers.size();
+                }
+            } else {
+                // If fillToLimit is false, just return the available users without repeating
+                habbos.addAll(allUsers);
             }
 
         } catch (Exception e) {

@@ -25,14 +25,11 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class XmlController {
     public static void promoHabbos(WebConnection webConnection) throws ParserConfigurationException, TransformerException {
-        var habbos = PlayerDao.getRecentHabbos(10);
+        var habbos = PlayerDao.getRecentHabbos(10, false);
 
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder();
@@ -94,8 +91,40 @@ public class XmlController {
         webConnection.send(ResponseBuilder.create("text/xml", xmlResponse));
     }
 
-    public static void promoHabbosV2(WebConnection webConnection) {
+    public static void promoHabbosV2(WebConnection webConnection) throws ParserConfigurationException, TransformerException {
+        var habbos = PlayerDao.getRecentHabbos(30, true);
 
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        Document doc = db.newDocument();
 
+        // Root <habbos>
+        Element root = doc.createElement("habbos");
+        root.setAttribute("url", GameConfiguration.getInstance().getString("site.path") + "/habbo-imaging/avatar/");
+        doc.appendChild(root);
+
+        for (var h : habbos) {
+            String gender = h.getSex().toLowerCase();
+            String figure = h.getFigure();
+
+            Element habbo = doc.createElement("habbo");
+            habbo.setAttribute("gender", gender);
+            habbo.setAttribute("figure", figure);
+            habbo.setAttribute("hash", StringUtil.md5(figure));
+
+            root.appendChild(habbo);
+        }
+
+        TransformerFactory tf = TransformerFactory.newInstance();
+        Transformer transformer = tf.newTransformer();
+        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
+
+        StreamResult result = new StreamResult(new java.io.StringWriter());
+        transformer.transform(new DOMSource(doc), result);
+
+        String xmlResponse = result.getWriter().toString();
+        webConnection.send(ResponseBuilder.create("text/xml", xmlResponse));
     }
 }

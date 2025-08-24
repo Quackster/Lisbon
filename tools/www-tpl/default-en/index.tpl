@@ -74,7 +74,7 @@ body { behavior: url({{ site.staticContentPath }}/web-gallery/js/csshover.htc); 
 
 						<div id="create-habbo-flash">
 	<div id="create-habbo-nonflash" style="background-image: url({{ site.staticContentPath }}/web-gallery/v2/images/landing/landing_group.png)">
-        <div id="landing-register-text"><a href="register.php"><span>Join now, it's free >></span></a></div>
+        <div id="landing-register-text"><a href="register"><span>Join now, it's free >></span></a></div>
         <div id="landing-promotional-text"><span>{{ site.siteName }} is a virtual world where you can meet and make friends.</span></div>
     </div>
 	<div class="cbb clearfix green" id="habbo-intro-nonflash">
@@ -93,13 +93,13 @@ var swfobj = new SWFObject("{{ site.staticContentPath }}/web-gallery/flash/intro
 swfobj.addParam("AllowScriptAccess", "always");
 swfobj.addParam("wmode", "transparent");
 swfobj.addVariable("base_url", "{{ site.staticContentPath }}/web-gallery/flash/intro");
-swfobj.addVariable("habbos_url", "{{ site.staticContentPath }}/xml/promo_habbos.php");
+swfobj.addVariable("habbos_url", "{{ site.staticContentPath }}/xml/promo_habbos.xml");
 swfobj.addVariable("create_button_text", "Register today! &raquo;");
 swfobj.addVariable("in_hotel_text", "Online now!");
 swfobj.addVariable("slogan", "{{ site.siteName }} Hotel is a virtual world where you can meet and make friends!");
 swfobj.addVariable("video_start", "PLAY VIDEO");
 swfobj.addVariable("video_stop", "STOP VIDEO");
-swfobj.addVariable("button_link", "register.php");
+swfobj.addVariable("button_link", "register");
 swfobj.addVariable("localization_url", "{{ site.staticContentPath }}/xml/landing_intro.xml");
 swfobj.addVariable("video_link", "{{ site.staticContentPath }}/web-gallery/flash/intro/Habbo_intro.swf");
 swfobj.write("create-habbo-flash");
