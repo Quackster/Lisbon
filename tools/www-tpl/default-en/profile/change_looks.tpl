@@ -218,13 +218,13 @@ Your {{ site.siteName }} had clothes or colors that are not selectable anymore. 
 <a href="#" id="settings-submit" class="new-button disabled-button"><b>Save changes</b><i></i></a>
 
 <script type="text/javascript" language="JavaScript">
-var swfobj = new SWFObject("{{ site.sitePath }}/flash/HabboRegistration.swf", "habboreg", "435", "400", "8");
-swfobj.addParam("base", "{{ site.sitePath }}/flash/");
+var swfobj = new SWFObject("{{ site.sitePath }}/web-gallery/flash/HabboRegistration.swf", "habboreg", "435", "400", "8");
+swfobj.addParam("base", "{{ site.sitePath }}/web-gallery/flash/");
 swfobj.addParam("wmode", "opaque");
 swfobj.addParam("AllowScriptAccess", "always");
-swfobj.addVariable("figuredata_url", "{{ site.sitePath }}/xml/figuredata.xml");
-swfobj.addVariable("draworder_url", "{{ site.sitePath }}/xml/draworder.xml");
-swfobj.addVariable("localization_url", "{{ site.sitePath }}/xml/figure_editor.xml");
+swfobj.addVariable("figuredata_url", "{{ site.sitePath }}/web-gallery/xml/figuredata.xml");
+swfobj.addVariable("draworder_url", "{{ site.sitePath }}/web-gallery/xml/draworder.xml");
+swfobj.addVariable("localization_url", "{{ site.sitePath }}/web-gallery/xml/figure_editor.xml");
 swfobj.addVariable("figure", "{{ playerDetails.figure }}");
 swfobj.addVariable("gender", "{{ playerDetails.sex }}");
 
