@@ -286,6 +286,10 @@ public class Routes {
         RouteManager.addRoute("/api/verify/clear/*", VerifyController::clear);
         RouteManager.addRoute("/habbo-imaging/*", ImagerController::imager_redirect);
 
+        // XML Promo habbos
+        RouteManager.addRoute("/xml/promo_habbos.xml", XmlController::promoHabbos);
+        RouteManager.addRoute("/xml/promo_habbos_v2.xml", XmlController::promoHabbosV2);
+
         // Housekeeping
         RouteManager.addRoute("/" + HOUSEKEEPING_PATH + "", HousekeepingController::dashboard);
         RouteManager.addRoute("/" + HOUSEKEEPING_PATH + "/", HousekeepingController::dashboard);

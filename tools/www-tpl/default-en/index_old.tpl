@@ -67,46 +67,18 @@ body { behavior: url({{ site.staticContentPath }}/web-gallery/js/csshover.htc); 
 <div id="container">
 	<div class="cbb process-template-box clearfix">
 		<div id="content">
-			{% include "base/frontpage_header.tpl" %}
+			{% include "base/frontpage_header.tpl" %}		
 			<div id="process-content">
 	        	<div id="column1" class="column">
-			     		
-				<div class="habblet-container " id="create-habbo">		
-	
-				{% if isValentinesMonth %}
-					<div id="create-habbo" class="layout-static">
-						<div id="create-habbo-nonflash" style="background-image: url({{ site.staticContentPath }}/web-gallery/v2/images/landing/custom/{{ randomValentinesImage }})">
-							<div class="landing-text-1"><span>Valentine's Day</span></div>
-							{% if randomValentinesImage == "valentines_2_ultra.png" %}
-							<div class="landing-text-2" style="left:60px"><span>Find your partner...</span></div>
-							<div class="landing-text-3" style="left:170px"><span>...and make new friends :)</span></div>
-							{% else %}
-							<div class="landing-text-2"><span>Find your partner...</span></div>
-							<div class="landing-text-3"><span>...and make new friends :)</span></div>							
-							{% endif %}
-							<div id="landing-register-text"><a href="https://classichabbo.com/register"><span>Join now, it's free »</span></a></div>
-							<div id="landing-promotional-text"><span>Habbo is a virtual world where you can meet and find your true love.</span></div>
-						</div>
-					</div>			
-				{% else %}
-					<div id="create-habbo" class="layout-static">
-						<div id="create-habbo-nonflash" style="background-image: url({{ site.staticContentPath }}/web-gallery/v2/images/landing/pixel.gif)">
-							<div class="landing-text-1"><span>Virtual world, real fun</span></div>
-							<div class="landing-text-2"><span>Create your Habbo...</span></div>
-							<div class="landing-text-3"><span>...and make new friends :)</span></div>
-							<div id="landing-register-text"><a href="https://classichabbo.com/register"><span>Join now, it's free »</span></a></div>
-							<div id="landing-promotional-text"><span>Habbo is a virtual world where you can meet and make friends.</span></div>
-						</div>
-						
-					</div>
-					
-											<div id="create-habbo-flash">
-	<div id="create-habbo-nonflash">
-        <div id="landing-register-text"><a href="register.php"><span>Join now, it's free >></span></a></div>
-        <div id="landing-promotional-text"><span><?php echo $shortname; ?> is a virtual world where you can meet and make friends.</span></div>
+				<div class="habblet-container " id="create-habbo">
+
+						<div id="create-habbo-flash">
+	<div id="create-habbo-nonflash" style="background-image: url({{ site.staticContentPath }}/web-gallery/v2/images/landing/landing_group.png)">
+        <div id="landing-register-text"><a href="register"><span>Join now, it's free >></span></a></div>
+        <div id="landing-promotional-text"><span>{{ site.siteName }} is a virtual world where you can meet and make friends.</span></div>
     </div>
 	<div class="cbb clearfix green" id="habbo-intro-nonflash">
-		<h2 class="title">To get most out of <?php echo $shortname; ?>, do this:</h2>
+		<h2 class="title">To get most out of {{ site.siteName }}, do this:</h2>
 		<div class="box-content">
 			<ul>
 				<li id="habbo-intro-install" style="display:none"><a href="http://www.adobe.com/go/getflashplayer">Install Flash Player 8 or higher</a></li>
@@ -116,11 +88,33 @@ body { behavior: url({{ site.staticContentPath }}/web-gallery/js/csshover.htc); 
 	</div>
 </div>
 
-				{% endif %}
-</div>
-	
-						
-					
+<script type="text/javascript" language="JavaScript">
+var swfobj = new SWFObject("{{ site.staticContentPath }}/web-gallery/flash/intro/habbos.swf", "ch", "396", "378", "8");
+swfobj.addParam("AllowScriptAccess", "always");
+swfobj.addParam("wmode", "transparent");
+swfobj.addVariable("base_url", "{{ site.staticContentPath }}/web-gallery/flash/intro");
+swfobj.addVariable("habbos_url", "{{ site.staticContentPath }}/xml/promo_habbos.xml");
+swfobj.addVariable("create_button_text", "Register today! &raquo;");
+swfobj.addVariable("in_hotel_text", "Online now!");
+swfobj.addVariable("slogan", "{{ site.siteName }} Hotel is a virtual world where you can meet and make friends!");
+swfobj.addVariable("video_start", "PLAY VIDEO");
+swfobj.addVariable("video_stop", "STOP VIDEO");
+swfobj.addVariable("button_link", "register");
+swfobj.addVariable("localization_url", "{{ site.staticContentPath }}/xml/landing_intro.xml");
+swfobj.addVariable("video_link", "{{ site.staticContentPath }}/web-gallery/flash/intro/Habbo_intro.swf");
+swfobj.write("create-habbo-flash");
+HabboView.add(function() {
+	if (deconcept.SWFObjectUtil.getPlayerVersion()["major"] >= 8) {
+		try { $("habbo-intro-nonflash").hide(); } catch (e) {}
+	} else {
+		$("habbo-intro-install").show();
+	}
+});
+var PromoHabbos = { track:function(n) { if (!!n && window.pageTracker) { pageTracker._trackPageview("/landingpromo/" + n); } } }
+</script>
+
+
+
 				</div>
 				<script type="text/javascript">if (!$(document.body).hasClassName('process-template')) { Rounder.init(); }</script>
 			 

@@ -222,6 +222,36 @@ public class PlayerDao {
         return habbos;
     }
 
+    public static List<PlayerDetails> getRecentHabbos(int limit) {
+        List<PlayerDetails> habbos = new ArrayList<>();
+
+        Connection sqlConnection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            sqlConnection = Storage.getStorage().getConnection();
+            preparedStatement = Storage.getStorage().prepare("SELECT * FROM users ORDER BY last_online DESC LIMIT " + limit, sqlConnection);
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                PlayerDetails details = new PlayerDetails();
+                fill(details, resultSet);
+
+                habbos.add(details);
+            }
+
+        } catch (Exception e) {
+            Storage.logError(e);
+        } finally {
+            Storage.closeSilently(resultSet);
+            Storage.closeSilently(preparedStatement);
+            Storage.closeSilently(sqlConnection);
+        }
+
+        return habbos;
+    }
+
     /**
      * Gets the details by user id
      *
