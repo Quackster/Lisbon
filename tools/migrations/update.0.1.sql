@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS `cms_forums_read_replies` (
   `reply_id` int(11) NOT NULL,
   KEY `user_id` (`user_id`),
   KEY `reply_id` (`reply_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 DELETE FROM `cms_forums_read_replies`;
 
 CREATE TABLE IF NOT EXISTS `cms_forum_replies` (
@@ -2143,7 +2143,18 @@ INSERT INTO `achievements` (`id`, `achievement`, `level`, `reward_pixels`, `prog
 	(50, 'ACH_GamePlayed', 9, 280, 360, 0),
 	(51, 'ACH_GamePlayed', 10, 340, 440, 0),
 	(52, 'ACH_Student', 1, 20, 1, 0),
-	(53, 'ACH_EmailVerification', 1, 200, 1, 0);
+	(53, 'ACH_EmailVerification', 1, 200, 1, 0),
+	(56, 'ACH_AvatarTags', 1, 50, 5, 0),
+	(57, 'GL', 1, 15, 1, 0),
+	(58, 'GL', 2, 32, 4, 0),
+	(59, 'GL', 3, 34, 10, 0),
+	(60, 'GL', 4, 90, 20, 0),
+	(61, 'GL', 5, 285, 35, 0),
+	(62, 'GL', 6, 600, 56, 0),
+	(63, 'GL', 7, 660, 77, 0),
+	(64, 'GL', 8, 735, 96, 0),
+	(65, 'GL', 9, 920, 132, 0),
+	(66, 'GL', 10, 1000, 177, 0),
 
 DROP TABLE IF EXISTS `users_achievements`;
 CREATE TABLE IF NOT EXISTS `users_achievements` (
