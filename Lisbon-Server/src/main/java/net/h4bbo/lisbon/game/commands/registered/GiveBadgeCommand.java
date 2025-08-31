@@ -84,6 +84,7 @@ public class GiveBadgeCommand extends Command {
 
             // Add badge
             badgeManager.tryAddBadge(badge, null);
+            
             player.send(new CHAT_MESSAGE(CHAT_MESSAGE.ChatMessageType.WHISPER, player.getRoomUser().getInstanceId(), "Badge " + badge + " added to user " + targetUserDetails.getName()));
         } else {
             // Check if user already owns badge
@@ -102,6 +103,7 @@ public class GiveBadgeCommand extends Command {
 
             // Add badge
             targetUser.getBadgeManager().tryAddBadge(badge, null, 0);
+            targetUser.getBadgeManager().refreshBadges();
 
             Room targetRoom = targetUser.getRoomUser().getRoom();
 
