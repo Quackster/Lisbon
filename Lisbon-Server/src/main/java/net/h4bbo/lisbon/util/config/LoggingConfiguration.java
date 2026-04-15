@@ -7,6 +7,10 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
 public class LoggingConfiguration {
+    private static final String DIST_LOGGING_CONFIG_PATH = "config/log4j.properties";
+    private static final String LEGACY_LOGGING_CONFIG_PATH = "log4j.properties";
+    private static final String LOG_DIRECTORY = "logs";
+
     /**
      * Create the configuration files for this application, with the default values. Will throw an
      * exception if it could not create such files.
@@ -33,7 +37,7 @@ public class LoggingConfiguration {
                 "\n" +
                 "# Define the file appender for errors\n" +
                 "log4j.appender.ERROR_FILE=org.apache.log4j.FileAppender\n" +
-                "log4j.appender.ERROR_FILE.File=error.log\n" +
+                "log4j.appender.ERROR_FILE.File=logs/error.log\n" +
                 "log4j.appender.ERROR_FILE.ImmediateFlush=true\n" +
                 "log4j.appender.ERROR_FILE.Threshold=debug\n" +
                 "log4j.appender.ERROR_FILE.Append=true\n" +
@@ -42,14 +46,25 @@ public class LoggingConfiguration {
                 "\n" +
                 "# Define the file appender for server output\n" +
                 "log4j.appender.SERVER_LOG=org.apache.log4j.FileAppender\n" +
-                "log4j.appender.SERVER_LOG.File=server.log\n" +
+                "log4j.appender.SERVER_LOG.File=logs/server.log\n" +
                 "log4j.appender.SERVER_LOG.ImmediateFlush=true\n" +
                 "log4j.appender.SERVER_LOG.Threshold=debug\n" +
                 "log4j.appender.SERVER_LOG.Append=true\n" +
                 "log4j.appender.SERVER_LOG.layout=org.apache.log4j.PatternLayout\n" +
                 "log4j.appender.SERVER_LOG.layout.conversionPattern=%d{yyyy-MM-dd'T'HH:mm:ss.SSS} - [%c] - %m%n\n";
 
-        File loggingConfig = new File("log4j.properties");
+        File logDirectory = new File(LOG_DIRECTORY);
+
+        if (!logDirectory.exists()) {
+            logDirectory.mkdirs();
+        }
+
+        File loggingConfig = resolveLoggingConfigFile();
+        File parentDirectory = loggingConfig.getParentFile();
+
+        if (parentDirectory != null && !parentDirectory.exists()) {
+            parentDirectory.mkdirs();
+        }
 
         if (!loggingConfig.exists()) {
             PrintWriter writer = new PrintWriter(loggingConfig.getAbsoluteFile());
@@ -60,5 +75,15 @@ public class LoggingConfiguration {
 
         //Change the path where the logger property should be read from
         PropertyConfigurator.configure(loggingConfig.getAbsolutePath());
+    }
+
+    private static File resolveLoggingConfigFile() {
+        File distLoggingConfig = new File(DIST_LOGGING_CONFIG_PATH);
+
+        if (distLoggingConfig.exists() || new File("config").isDirectory()) {
+            return distLoggingConfig;
+        }
+
+        return new File(LEGACY_LOGGING_CONFIG_PATH);
     }
 }

@@ -22,12 +22,15 @@ import org.alexdev.http.util.config.WebSettingsConfigWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class HavanaWeb {
+    private static final String DIST_CONFIG_PATH = "config/webserver-config.ini";
+    private static final String LEGACY_CONFIG_PATH = "webserver-config.ini";
     private static Logger logger = LoggerFactory.getLogger(HavanaWeb.class);
 
     private static final Gson gson = new Gson();
@@ -37,7 +40,7 @@ public class HavanaWeb {
     public static void main(String[] args) throws Exception {
         WebLoggingConfiguration.checkLoggingConfig();
         ServerConfiguration.setWriter(new WebServerConfigWriter());
-        ServerConfiguration.load("webserver-config.ini");
+        ServerConfiguration.load(resolveWebServerConfigPath());
 
         logger.info("HavanaWeb by Quackster");
         logger.info("Loading configuration..");
@@ -102,6 +105,26 @@ public class HavanaWeb {
 
         WebServer instance = new WebServer(port);
         instance.start();
+    }
+
+    private static String resolveWebServerConfigPath() {
+        String configuredPath = System.getenv("LISBON_WEB_CONFIG");
+
+        if (configuredPath == null || configuredPath.isBlank()) {
+            configuredPath = System.getenv("LISBON_CONFIG");
+        }
+
+        if (configuredPath != null && !configuredPath.isBlank()) {
+            return configuredPath;
+        }
+
+        File distConfig = new File(DIST_CONFIG_PATH);
+
+        if (distConfig.exists() || new File("config").isDirectory()) {
+            return distConfig.getPath();
+        }
+
+        return LEGACY_CONFIG_PATH;
     }
 
     /**

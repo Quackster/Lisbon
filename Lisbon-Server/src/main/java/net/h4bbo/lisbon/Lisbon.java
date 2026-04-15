@@ -42,12 +42,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 
+import java.io.File;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Locale;
 
 public class Lisbon {
+    private static final String DIST_CONFIG_PATH = "config/server.ini";
+    private static final String LEGACY_CONFIG_PATH = "server.ini";
     private static final Gson gson = new Gson();
     private static long startupTime;
 
@@ -79,7 +82,7 @@ public class Lisbon {
             LoggingConfiguration.checkLoggingConfig();
 
             ServerConfiguration.setWriter(new DefaultConfigWriter());
-            ServerConfiguration.load("server.ini");
+            ServerConfiguration.load(resolveServerConfigPath());
 
             log = LoggerFactory.getLogger(Lisbon.class);
             ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.ADVANCED);
@@ -170,6 +173,26 @@ public class Lisbon {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private static String resolveServerConfigPath() {
+        String configuredPath = System.getenv("LISBON_SERVER_CONFIG");
+
+        if (configuredPath == null || configuredPath.isBlank()) {
+            configuredPath = System.getenv("LISBON_CONFIG");
+        }
+
+        if (configuredPath != null && !configuredPath.isBlank()) {
+            return configuredPath;
+        }
+
+        File distConfig = new File(DIST_CONFIG_PATH);
+
+        if (distConfig.exists() || new File("config").isDirectory()) {
+            return distConfig.getPath();
+        }
+
+        return LEGACY_CONFIG_PATH;
     }
 
     private static void setupServer() {

@@ -1,12 +1,14 @@
-apply plugin: 'java'
-apply plugin: 'application'
+plugins {
+    id 'java'
+    id 'application'
+}
 
 java {
     sourceCompatibility = JavaVersion.toVersion("1.17")
     targetCompatibility = JavaVersion.toVersion("1.17")
 }
 
-mainClassName = 'net.h4bbo.http.HavanaWeb'
+mainClassName = 'org.alexdev.http.HavanaWeb'
 
 repositories {
     flatDir {
@@ -69,27 +71,3 @@ dependencies {
     implementation "net.java.dev.jna:jna:5.8.0"
 }
 
-task fatJar(type: Jar) {
-    zip64 true
-    duplicatesStrategy 'exclude'
-    manifest {
-        attributes 'Main-Class': mainClassName
-    }
-    baseName = project.name + '-all'
-    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
-    with jar
-}
-
-// Create jar with no libraries inside of it, used when creating with "gradle distZip" and
-// libraries are then to be stored in the folder next to it called 'dependency-jars'
-// https://vocon-it.com/2016/11/15/how-to-build-a-lean-jar-file-with-gradle/
-/*jar {
-    manifest {
-        attributes (
-                'Main-Class': mainClassName,
-                "Class-Path": '. dependency-jars/' + configurations.compile.collect {
-                    it.getName()
-                }.join(' dependency-jars/')
-        )
-    }
-}*/
