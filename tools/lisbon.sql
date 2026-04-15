@@ -11,7 +11,7 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
--- Dumping structure for table lisbon.catalogue_items
+-- Dumping structure for table kepler.catalogue_items
 CREATE TABLE IF NOT EXISTS `catalogue_items` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `sale_code` varchar(255) DEFAULT NULL,
@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `catalogue_items` (
   KEY `id` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1351 DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table lisbon.catalogue_items: ~940 rows (approximately)
+-- Dumping data for table kepler.catalogue_items: ~940 rows (approximately)
 /*!40000 ALTER TABLE `catalogue_items` DISABLE KEYS */;
 INSERT INTO `catalogue_items` (`id`, `sale_code`, `page_id`, `order_id`, `price`, `is_hidden`, `amount`, `definition_id`, `item_specialspriteid`, `name`, `description`, `is_package`, `package_name`, `package_description`) VALUES
 	(1, 'floor', '3', 1, 2, 0, 1, 249, 0, '', '', 0, NULL, NULL),
@@ -978,7 +978,7 @@ INSERT INTO `catalogue_items` (`id`, `sale_code`, `page_id`, `order_id`, `price`
 
 /*!40000 ALTER TABLE `catalogue_items` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.catalogue_packages
+-- Dumping structure for table kepler.catalogue_packages
 CREATE TABLE IF NOT EXISTS `catalogue_packages` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `salecode` varchar(255) DEFAULT NULL,
@@ -988,7 +988,7 @@ CREATE TABLE IF NOT EXISTS `catalogue_packages` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table lisbon.catalogue_packages: ~18 rows (approximately)
+-- Dumping data for table kepler.catalogue_packages: ~18 rows (approximately)
 /*!40000 ALTER TABLE `catalogue_packages` DISABLE KEYS */;
 INSERT INTO `catalogue_packages` (`id`, `salecode`, `definition_id`, `special_sprite_id`, `amount`) VALUES
 	(1, 'a0 deal102', 184, 0, 5),
@@ -1011,7 +1011,7 @@ INSERT INTO `catalogue_packages` (`id`, `salecode`, `definition_id`, `special_sp
 	(18, 'deal_throne', 107, 0, 10);
 /*!40000 ALTER TABLE `catalogue_packages` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.catalogue_pages
+-- Dumping structure for table kepler.catalogue_pages
 CREATE TABLE IF NOT EXISTS `catalogue_pages` (
   `id` int(11) NOT NULL,
   `order_id` int(11) DEFAULT NULL,
@@ -1031,7 +1031,7 @@ CREATE TABLE IF NOT EXISTS `catalogue_pages` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table lisbon.catalogue_pages: ~60 rows (approximately)
+-- Dumping data for table kepler.catalogue_pages: ~60 rows (approximately)
 /*!40000 ALTER TABLE `catalogue_pages` DISABLE KEYS */;
 INSERT INTO `catalogue_pages` (`id`, `order_id`, `min_role`, `index_visible`, `is_club_only`, `name_index`, `link_list`, `name`, `layout`, `image_headline`, `image_teasers`, `body`, `label_pick`, `label_extra_s`, `label_extra_t`) VALUES
 	(1, 1, 1, 1, 0, 'Frontpage', '', 'Frontpage', 'ctlg_frontpage2', 'catal_fp_header', 'catal_fp_pic4,catal_fp_pic5,', 'Welcome to the Hotel Catalogue. It\'s packed full of fab things for your room - there\'s something for everyone! Browse the ranges by clicking the tabs on the right.<br><br>Some ranges are seasonal, so check back regularly for new items.<br><br>We regularly', NULL, 'Home sweet home!', '1:You need Credits to buy Furni for your room, click the Purse at the bottom of your screen for more information about Credits.'),
@@ -1096,14 +1096,14 @@ INSERT INTO `catalogue_pages` (`id`, `order_id`, `min_role`, `index_visible`, `i
 	(92, 116, 5, 1, 0, 'Recycler Furni', '', 'Recycler Furni', 'ctlg_layout2', 'catalog_rares_headline1', '', 'Yet another special page.', 'Click on the item you want for more information', NULL, NULL);
 /*!40000 ALTER TABLE `catalogue_pages` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.external_texts
+-- Dumping structure for table kepler.external_texts
 CREATE TABLE IF NOT EXISTS `external_texts` (
   `entry` varchar(255) NOT NULL,
   `text` text NOT NULL,
   UNIQUE KEY `entry` (`entry`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table lisbon.external_texts: ~31 rows (approximately)
+-- Dumping data for table kepler.external_texts: ~31 rows (approximately)
 /*!40000 ALTER TABLE `external_texts` DISABLE KEYS */;
 INSERT INTO `external_texts` (`entry`, `text`) VALUES
 	('handitem1', 'Tea'),
@@ -1139,7 +1139,7 @@ INSERT INTO `external_texts` (`entry`, `text`) VALUES
 	('successfully_purchase_gift_for', 'Successfully purchased gift for user %user%!');
 /*!40000 ALTER TABLE `external_texts` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.games_maps
+-- Dumping structure for table kepler.games_maps
 CREATE TABLE IF NOT EXISTS `games_maps` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `game_type` enum('battleball','snowstorm') NOT NULL DEFAULT 'battleball',
@@ -1149,7 +1149,7 @@ CREATE TABLE IF NOT EXISTS `games_maps` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table lisbon.games_maps: ~5 rows (approximately)
+-- Dumping data for table kepler.games_maps: ~5 rows (approximately)
 /*!40000 ALTER TABLE `games_maps` DISABLE KEYS */;
 INSERT INTO `games_maps` (`id`, `game_type`, `map_id`, `heightmap`, `tile_map`) VALUES
 	(1, 'battleball', '5', 'xxxx000000000000000xxxx|xxxx000000000000000xxxx|xxxx000000000000000xxxx|xxxx000000000000000xxxx|00000000000000000000000|00000000000000000000000|00000000000000000000000|00000000000000000000000|00000000000000000000000|00000000000000000000000|00000000000000000000000|00000000000000000000000|00000000000000000000000|00000000000000000000000|00000000000000000000000|00000000000000000000000|00000000000000000000000|00000000000000000000000|00000000000000000000000|xxxx000000000000000xxxx|xxxx000000000000000xxxx|xxxx000000000000000xxxx|xxxx000000000000000xxxx|', '00001111111111111110000|00001111111111111110000|00001111111111111110000|00001111111111111110000|11111111111111111111111|11111111111111111111111|11111111111111111111111|11111111111111111111111|11111111111111111111111|11111111111111111111111|11111111111111111111111|11111111111111111111111|11111111111111111111111|11111111111111111111111|11111111111111111111111|11111111111111111111111|11111111111111111111111|11111111111111111111111|11111111111111111111111|00001111111111111110000|00001111111111111110000|00001111111111111110000|00001111111111111110000|'),
@@ -1159,7 +1159,7 @@ INSERT INTO `games_maps` (`id`, `game_type`, `map_id`, `heightmap`, `tile_map`) 
 	(5, 'battleball', '4', 'xxxxxxx222222222222222xxxxxxxx|xxxxxxx222222222222222xxxxxxxx|xxxxxxx222222222222222xxxxxxxx|xxxxxxx222222222222222xxxxxxxx|xxxxxxx222222222222222xxxxxxxx|00012222222222222222222211111x|00012222222222222222222211111x|00012222222222222222222211111x|00012222222222222222222211111x|00xxxxx222222222222222xxx1111x|000xxxx222222222222222xxx0000x|0000xxx222222222222222x0000000|0000xxx22222222222222210000000|0000xxx22222222222222210000000|0000xxx222222222222222x0000000|0000xxx222222222222222xxxxxxxx|00000xx222222222222222xxxxxxxx|000000xxxx11xx11xx11xxxxxxxxxx|x0000000000000000000000xxxxxxx|xx000000000000000000000xxxxxxx|xxx00000000000000000000xxxxxxx|xxxx0000000000000000000xxxxxxx|', '000000011111111111111100000000|000000011111111111111100000000|000000011111111111111100000000|000000011111111111111100000000|000000011111111111111100000000|000000011111111111111100011110|000000011111111111111100011110|000000011111111111111100011110|000000011111111111111100011110|110000011111111111111100000000|111000011111111111111100000000|111100011111111111111101111111|111100011111111111111101111111|111100011111111111111101111111|111100011111111111111101111111|111100011111111111111100000000|111110011111111111111100000000|111111000000000000000000000000|011111111111111111111110000000|001111111111111111111110000000|000111111111111111111110000000|000011111111111111111110000000|');
 /*!40000 ALTER TABLE `games_maps` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.games_player_spawns
+-- Dumping structure for table kepler.games_player_spawns
 CREATE TABLE IF NOT EXISTS `games_player_spawns` (
   `type` enum('battleball','snowstorm') NOT NULL DEFAULT 'battleball',
   `map_id` int(11) NOT NULL,
@@ -1169,7 +1169,7 @@ CREATE TABLE IF NOT EXISTS `games_player_spawns` (
   `rotation` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table lisbon.games_player_spawns: ~240 rows (approximately)
+-- Dumping data for table kepler.games_player_spawns: ~240 rows (approximately)
 /*!40000 ALTER TABLE `games_player_spawns` DISABLE KEYS */;
 INSERT INTO `games_player_spawns` (`type`, `map_id`, `team_id`, `x`, `y`, `rotation`) VALUES
 	('battleball', 5, 0, 22, 14, 6),
@@ -1414,7 +1414,7 @@ INSERT INTO `games_player_spawns` (`type`, `map_id`, `team_id`, `x`, `y`, `rotat
 	('battleball', 4, 3, 21, 10, 6);
 /*!40000 ALTER TABLE `games_player_spawns` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.games_ranks
+-- Dumping structure for table kepler.games_ranks
 CREATE TABLE IF NOT EXISTS `games_ranks` (
   `id` int(5) NOT NULL AUTO_INCREMENT,
   `type` enum('battleball','snowstorm') NOT NULL DEFAULT 'battleball',
@@ -1424,7 +1424,7 @@ CREATE TABLE IF NOT EXISTS `games_ranks` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table lisbon.games_ranks: 8 rows
+-- Dumping data for table kepler.games_ranks: 8 rows
 /*!40000 ALTER TABLE `games_ranks` DISABLE KEYS */;
 INSERT INTO `games_ranks` (`id`, `type`, `title`, `min_points`, `max_points`) VALUES
 	(1, 'battleball', 'Beginner', 0, 10000),
@@ -1437,7 +1437,7 @@ INSERT INTO `games_ranks` (`id`, `type`, `title`, `min_points`, `max_points`) VA
 	(8, 'snowstorm', 'Expert', 500001, 0);
 /*!40000 ALTER TABLE `games_ranks` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.housekeeping_audit_log
+-- Dumping structure for table kepler.housekeeping_audit_log
 CREATE TABLE IF NOT EXISTS `housekeeping_audit_log` (
   `action` enum('alert_user','kick_user','ban_user','room_alert','room_kick') NOT NULL,
   `user_id` int(11) NOT NULL,
@@ -1447,11 +1447,11 @@ CREATE TABLE IF NOT EXISTS `housekeeping_audit_log` (
   `created_at` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table lisbon.housekeeping_audit_log: ~0 rows (approximately)
+-- Dumping data for table kepler.housekeeping_audit_log: ~0 rows (approximately)
 /*!40000 ALTER TABLE `housekeeping_audit_log` DISABLE KEYS */;
 /*!40000 ALTER TABLE `housekeeping_audit_log` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.items
+-- Dumping structure for table kepler.items
 CREATE TABLE IF NOT EXISTS `items` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `order_id` int(11) NOT NULL DEFAULT 0,
@@ -1471,11 +1471,11 @@ CREATE TABLE IF NOT EXISTS `items` (
   UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table lisbon.items: ~29 rows (approximately)
+-- Dumping data for table kepler.items: ~29 rows (approximately)
 /*!40000 ALTER TABLE `items` DISABLE KEYS */;
 /*!40000 ALTER TABLE `items` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.items_definitions
+-- Dumping structure for table kepler.items_definitions
 CREATE TABLE IF NOT EXISTS `items_definitions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `sprite` varchar(50) DEFAULT NULL,
@@ -1495,7 +1495,7 @@ CREATE TABLE IF NOT EXISTS `items_definitions` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1417 DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table lisbon.items_definitions: ~826 rows (approximately)
+-- Dumping data for table kepler.items_definitions: ~826 rows (approximately)
 /*!40000 ALTER TABLE `items_definitions` DISABLE KEYS */;
 INSERT INTO `items_definitions` (`id`, `sprite`, `sprite_id`, `name`, `description`, `colour`, `length`, `width`, `top_height`, `max_status`, `behaviour`, `interactor`, `is_tradable`, `is_recyclable`, `drink_ids`) VALUES
 	(1, 'shelves_norja', 293, 'Bookcase', 'For nic naks and art deco books', '#FFFFFF,#F7EBBC', 1, 1, 2, '2', 'solid,requires_rights_for_interaction', 'default', 1, 1, ''),
@@ -2327,7 +2327,7 @@ INSERT INTO `items_definitions` (`id`, `sprite`, `sprite_id`, `name`, `descripti
 	(1416, 'rclr_sofa', -1, 'Polar Sofa', 'Snuggle up together', '0,0,0', 2, 1, 1, '0', 'can_sit_on_top', 'chair', 1, 0, '');
 /*!40000 ALTER TABLE `items_definitions` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.items_moodlight_presets
+-- Dumping structure for table kepler.items_moodlight_presets
 CREATE TABLE IF NOT EXISTS `items_moodlight_presets` (
   `item_id` int(11) NOT NULL,
   `current_preset` int(11) NOT NULL DEFAULT 1,
@@ -2337,11 +2337,11 @@ CREATE TABLE IF NOT EXISTS `items_moodlight_presets` (
   PRIMARY KEY (`item_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table lisbon.items_moodlight_presets: ~0 rows (approximately)
+-- Dumping data for table kepler.items_moodlight_presets: ~0 rows (approximately)
 /*!40000 ALTER TABLE `items_moodlight_presets` DISABLE KEYS */;
 /*!40000 ALTER TABLE `items_moodlight_presets` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.items_pets
+-- Dumping structure for table kepler.items_pets
 CREATE TABLE IF NOT EXISTS `items_pets` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `item_id` bigint(11) NOT NULL,
@@ -2365,11 +2365,11 @@ CREATE TABLE IF NOT EXISTS `items_pets` (
   UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table lisbon.items_pets: ~0 rows (approximately)
+-- Dumping data for table kepler.items_pets: ~0 rows (approximately)
 /*!40000 ALTER TABLE `items_pets` DISABLE KEYS */;
 /*!40000 ALTER TABLE `items_pets` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.items_photos
+-- Dumping structure for table kepler.items_photos
 CREATE TABLE IF NOT EXISTS `items_photos` (
   `photo_id` int(11) NOT NULL,
   `photo_user_id` bigint(11) NOT NULL,
@@ -2380,32 +2380,32 @@ CREATE TABLE IF NOT EXISTS `items_photos` (
   UNIQUE KEY `photo_id` (`photo_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table lisbon.items_photos: ~0 rows (approximately)
+-- Dumping data for table kepler.items_photos: ~0 rows (approximately)
 /*!40000 ALTER TABLE `items_photos` DISABLE KEYS */;
 /*!40000 ALTER TABLE `items_photos` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.items_teleporter_links
+-- Dumping structure for table kepler.items_teleporter_links
 CREATE TABLE IF NOT EXISTS `items_teleporter_links` (
   `item_id` int(11) NOT NULL,
   `linked_id` int(11) NOT NULL,
   UNIQUE KEY `item_id` (`item_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table lisbon.items_teleporter_links: ~0 rows (approximately)
+-- Dumping data for table kepler.items_teleporter_links: ~0 rows (approximately)
 /*!40000 ALTER TABLE `items_teleporter_links` DISABLE KEYS */;
 /*!40000 ALTER TABLE `items_teleporter_links` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.messenger_friends
+-- Dumping structure for table kepler.messenger_friends
 CREATE TABLE IF NOT EXISTS `messenger_friends` (
   `from_id` int(11) NOT NULL,
   `to_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table lisbon.messenger_friends: ~2 rows (approximately)
+-- Dumping data for table kepler.messenger_friends: ~2 rows (approximately)
 /*!40000 ALTER TABLE `messenger_friends` DISABLE KEYS */;
 /*!40000 ALTER TABLE `messenger_friends` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.messenger_messages
+-- Dumping structure for table kepler.messenger_messages
 CREATE TABLE IF NOT EXISTS `messenger_messages` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `receiver_id` int(11) DEFAULT NULL,
@@ -2417,21 +2417,21 @@ CREATE TABLE IF NOT EXISTS `messenger_messages` (
   UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table lisbon.messenger_messages: ~3 rows (approximately)
+-- Dumping data for table kepler.messenger_messages: ~3 rows (approximately)
 /*!40000 ALTER TABLE `messenger_messages` DISABLE KEYS */;
 /*!40000 ALTER TABLE `messenger_messages` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.messenger_requests
+-- Dumping structure for table kepler.messenger_requests
 CREATE TABLE IF NOT EXISTS `messenger_requests` (
   `from_id` int(11) DEFAULT NULL,
   `to_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table lisbon.messenger_requests: ~0 rows (approximately)
+-- Dumping data for table kepler.messenger_requests: ~0 rows (approximately)
 /*!40000 ALTER TABLE `messenger_requests` DISABLE KEYS */;
 /*!40000 ALTER TABLE `messenger_requests` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.public_items
+-- Dumping structure for table kepler.public_items
 CREATE TABLE IF NOT EXISTS `public_items` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `room_model` varchar(255) NOT NULL,
@@ -2450,7 +2450,7 @@ CREATE TABLE IF NOT EXISTS `public_items` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3466 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
--- Dumping data for table lisbon.public_items: ~3,465 rows (approximately)
+-- Dumping data for table kepler.public_items: ~3,465 rows (approximately)
 /*!40000 ALTER TABLE `public_items` DISABLE KEYS */;
 INSERT INTO `public_items` (`id`, `room_model`, `sprite`, `x`, `y`, `z`, `rotation`, `top_height`, `length`, `width`, `behaviour`, `current_program`, `teleport_to`, `swim_to`) VALUES
 	(1, 'picnic', 'picnic_cloth1', 5, 16, 0.001, 0, 0.001, 0, 0, 'can_stand_on_top', '', NULL, NULL),
@@ -5920,7 +5920,7 @@ INSERT INTO `public_items` (`id`, `room_model`, `sprite`, `x`, `y`, `z`, `rotati
 	(3465, 'park_a', 'queue_tile2', 19, 6, 0, 2, 0.001, 1, 1, 'extra_parameter,can_stand_on_top', '', NULL, NULL);
 /*!40000 ALTER TABLE `public_items` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.public_roomwalkways
+-- Dumping structure for table kepler.public_roomwalkways
 CREATE TABLE IF NOT EXISTS `public_roomwalkways` (
   `room_id` int(11) DEFAULT NULL,
   `to_id` int(1) DEFAULT NULL,
@@ -5928,7 +5928,7 @@ CREATE TABLE IF NOT EXISTS `public_roomwalkways` (
   `door_position` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table lisbon.public_roomwalkways: ~54 rows (approximately)
+-- Dumping data for table kepler.public_roomwalkways: ~54 rows (approximately)
 /*!40000 ALTER TABLE `public_roomwalkways` DISABLE KEYS */;
 INSERT INTO `public_roomwalkways` (`room_id`, `to_id`, `coords_map`, `door_position`) VALUES
 	(45, 69, '20,23 20,24 20,25 21,23 21,24 21,25', '3,23,0,2'),
@@ -5987,23 +5987,23 @@ INSERT INTO `public_roomwalkways` (`room_id`, `to_id`, `coords_map`, `door_posit
 	(37, 36, '0,13 1,14 2,15 3,16 4,17 5,18 6,19 7,20 8,21 9,22 10,23 11,24 12,25', '23,7,7,5');
 /*!40000 ALTER TABLE `public_roomwalkways` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.rank_badges
+-- Dumping structure for table kepler.rank_badges
 CREATE TABLE IF NOT EXISTS `rank_badges` (
   `rank` tinyint(1) unsigned NOT NULL DEFAULT 1,
   `badge` char(3) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table lisbon.rank_badges: ~0 rows (approximately)
+-- Dumping data for table kepler.rank_badges: ~0 rows (approximately)
 /*!40000 ALTER TABLE `rank_badges` DISABLE KEYS */;
 /*!40000 ALTER TABLE `rank_badges` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.rank_fuserights
+-- Dumping structure for table kepler.rank_fuserights
 CREATE TABLE IF NOT EXISTS `rank_fuserights` (
   `min_rank` int(11) NOT NULL,
   `fuseright` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table lisbon.rank_fuserights: ~48 rows (approximately)
+-- Dumping data for table kepler.rank_fuserights: ~48 rows (approximately)
 /*!40000 ALTER TABLE `rank_fuserights` DISABLE KEYS */;
 INSERT INTO `rank_fuserights` (`min_rank`, `fuseright`) VALUES
 	(1, 'default'),
@@ -6056,18 +6056,18 @@ INSERT INTO `rank_fuserights` (`min_rank`, `fuseright`) VALUES
 	(5, 'fuse_credits');
 /*!40000 ALTER TABLE `rank_fuserights` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.rare_cycle
+-- Dumping structure for table kepler.rare_cycle
 CREATE TABLE IF NOT EXISTS `rare_cycle` (
   `sale_code` varchar(255) NOT NULL,
   `reuse_time` bigint(11) NOT NULL,
   PRIMARY KEY (`sale_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table lisbon.rare_cycle: ~1 rows (approximately)
+-- Dumping data for table kepler.rare_cycle: ~1 rows (approximately)
 /*!40000 ALTER TABLE `rare_cycle` DISABLE KEYS */;
 /*!40000 ALTER TABLE `rare_cycle` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.recycler_rewards
+-- Dumping structure for table kepler.recycler_rewards
 CREATE TABLE IF NOT EXISTS `recycler_rewards` (
   `id` int(11) NOT NULL,
   `sale_code` varchar(255) NOT NULL,
@@ -6076,7 +6076,7 @@ CREATE TABLE IF NOT EXISTS `recycler_rewards` (
   `collection_time_seconds` int(11) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table lisbon.recycler_rewards: ~6 rows (approximately)
+-- Dumping data for table kepler.recycler_rewards: ~6 rows (approximately)
 /*!40000 ALTER TABLE `recycler_rewards` DISABLE KEYS */;
 INSERT INTO `recycler_rewards` (`id`, `sale_code`, `item_cost`, `recycling_session_time_seconds`, `collection_time_seconds`) VALUES
 	(2, 'rclr_garden', 30, 7200, 1800),
@@ -6087,7 +6087,7 @@ INSERT INTO `recycler_rewards` (`id`, `sale_code`, `item_cost`, `recycling_sessi
 	(1, 'rclr_chair', 20, 3600, 1800);
 /*!40000 ALTER TABLE `recycler_rewards` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.recycler_sessions
+-- Dumping structure for table kepler.recycler_sessions
 CREATE TABLE IF NOT EXISTS `recycler_sessions` (
   `user_id` int(11) NOT NULL,
   `reward_id` int(11) NOT NULL,
@@ -6096,11 +6096,11 @@ CREATE TABLE IF NOT EXISTS `recycler_sessions` (
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table lisbon.recycler_sessions: ~0 rows (approximately)
+-- Dumping data for table kepler.recycler_sessions: ~0 rows (approximately)
 /*!40000 ALTER TABLE `recycler_sessions` DISABLE KEYS */;
 /*!40000 ALTER TABLE `recycler_sessions` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.rooms
+-- Dumping structure for table kepler.rooms
 CREATE TABLE IF NOT EXISTS `rooms` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `owner_id` varchar(11) NOT NULL,
@@ -6125,7 +6125,7 @@ CREATE TABLE IF NOT EXISTS `rooms` (
   UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1002 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
--- Dumping data for table lisbon.rooms: ~69 rows (approximately)
+-- Dumping data for table kepler.rooms: ~69 rows (approximately)
 /*!40000 ALTER TABLE `rooms` DISABLE KEYS */;
 INSERT INTO `rooms` (`id`, `owner_id`, `category`, `name`, `description`, `model`, `ccts`, `wallpaper`, `floor`, `showname`, `superusers`, `accesstype`, `password`, `visitors_now`, `visitors_max`, `rating`, `is_hidden`, `created_at`, `updated_at`) VALUES
 	(1, '0', 3, 'Welcome Lounge', 'welcome_lounge', 'newbie_lobby', 'hh_room_nlobby', 0, 0, 0, 0, 0, '', 0, 40, 0, 0, '2018-08-11 07:54:01', '2019-10-16 23:35:48'),
@@ -6199,7 +6199,7 @@ INSERT INTO `rooms` (`id`, `owner_id`, `category`, `name`, `description`, `model
 	(69, '0', 5, 'Beauty Salon II', 'beauty_salon_loreal', 'beauty_salon1', 'hh_room_beauty_salon_general', 0, 0, 0, 0, 0, '', 0, 25, 0, 1, '2018-08-11 07:54:01', '2022-05-25 22:12:01');
 /*!40000 ALTER TABLE `rooms` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.rooms_bots
+-- Dumping structure for table kepler.rooms_bots
 CREATE TABLE IF NOT EXISTS `rooms_bots` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(25) NOT NULL,
@@ -6217,7 +6217,7 @@ CREATE TABLE IF NOT EXISTS `rooms_bots` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table lisbon.rooms_bots: ~34 rows (approximately)
+-- Dumping data for table kepler.rooms_bots: ~34 rows (approximately)
 /*!40000 ALTER TABLE `rooms_bots` DISABLE KEYS */;
 INSERT INTO `rooms_bots` (`id`, `name`, `mission`, `x`, `y`, `start_look`, `figure`, `walkspace`, `room_id`, `speech`, `response`, `unrecognised_response`, `hand_items`) VALUES
 	(5, 'Xenia', 'The belle of the Battle Ball', 1, 8, '2,2', 'sd=001&sh=002/54,178,190&lg=200/230,49,57&ch=506/230,49,57,141&lh=001/168,123,67&rh=001/168,123,67&hd=001/168,123,67&ey=001&fc=001/168,123,67&hr=506/194,26,134,190&hrb=506/2,3,4&rs=002/230,49,57&ls=002/230,49,57&bd=001/168,123,67', '0,5 0,6 0,7 1,5 1,6 1,7 1,8', 66, 'Welcome to the BattleBall lobby!|Play games for free here|I\'m super pumped to beat other users in Battleball! :)|Calm down, other people are trying to score!#SHOUT|I\'m the best BattleBall player! *smirks*|I wonder how long it would take me to reach the highest level...|You can earn XP when playing BattleBall!', '', 'Hello there!|Hi, said the person who lost BattleBall|Hey!|Hey, I\'m just chilling here.. doing nothing', ''),
@@ -6256,7 +6256,7 @@ INSERT INTO `rooms_bots` (`id`, `name`, `mission`, `x`, `y`, `start_look`, `figu
 	(45, 'Miho', 'My katana thinks you\'re cute!', 14, 25, '2,2', 'sd=001&sh=001/36&lg=200/204,204,204&ch=204/204,204,204&lh=001/215,175,125&rh=001/215,175,125&hd=001/215,175,125&ey=001&fc=001/215,175,125&hr=504/50,91,106&rs=002/204,204,204&ls=002/204,204,204&bd=001/8', '14,24 14,25', 27, 'Zen Garden is the ultimate in relaxation|Listen to the breeze blowing through the leaves|Welcome to my garden a place of quiet reflection...|Listen to the breeze blowing through the leaves...', 'I hope you make peace with this|Relax with this|Relaxation can be achieved this this', 'That is my name.|Say again - it\'s a bit noisy in here#WHISPER|You bring confusion to my mind, and pain to my ears...#WHISPER|', 'Water');
 /*!40000 ALTER TABLE `rooms_bots` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.rooms_categories
+-- Dumping structure for table kepler.rooms_categories
 CREATE TABLE IF NOT EXISTS `rooms_categories` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `order_id` int(11) NOT NULL,
@@ -6271,7 +6271,7 @@ CREATE TABLE IF NOT EXISTS `rooms_categories` (
   UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=121 DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table lisbon.rooms_categories: ~21 rows (approximately)
+-- Dumping data for table kepler.rooms_categories: ~21 rows (approximately)
 /*!40000 ALTER TABLE `rooms_categories` DISABLE KEYS */;
 INSERT INTO `rooms_categories` (`id`, `order_id`, `parent_id`, `isnode`, `name`, `public_spaces`, `allow_trading`, `minrole_access`, `minrole_setflatcat`) VALUES
 	(2, 0, 0, 0, 'No category', 0, 0, 1, 1),
@@ -6297,7 +6297,7 @@ INSERT INTO `rooms_categories` (`id`, `order_id`, `parent_id`, `isnode`, `name`,
 	(120, 0, 4, 0, 'Miscellaneous', 0, 0, 1, 1);
 /*!40000 ALTER TABLE `rooms_categories` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.rooms_events
+-- Dumping structure for table kepler.rooms_events
 CREATE TABLE IF NOT EXISTS `rooms_events` (
   `room_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
@@ -6309,11 +6309,11 @@ CREATE TABLE IF NOT EXISTS `rooms_events` (
   UNIQUE KEY `room_id` (`room_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table lisbon.rooms_events: ~0 rows (approximately)
+-- Dumping data for table kepler.rooms_events: ~0 rows (approximately)
 /*!40000 ALTER TABLE `rooms_events` DISABLE KEYS */;
 /*!40000 ALTER TABLE `rooms_events` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.rooms_models
+-- Dumping structure for table kepler.rooms_models
 CREATE TABLE IF NOT EXISTS `rooms_models` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `model_id` varchar(255) NOT NULL,
@@ -6328,7 +6328,7 @@ CREATE TABLE IF NOT EXISTS `rooms_models` (
   KEY `id` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=92 DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table lisbon.rooms_models: ~91 rows (approximately)
+-- Dumping data for table kepler.rooms_models: ~91 rows (approximately)
 /*!40000 ALTER TABLE `rooms_models` DISABLE KEYS */;
 INSERT INTO `rooms_models` (`id`, `model_id`, `model_name`, `door_x`, `door_y`, `door_z`, `door_dir`, `heightmap`, `trigger_class`) VALUES
 	(1, 'model_a', 'model_a', 3, 5, 0, 2, 'xxxxxxxxxxxx|xxxx00000000|xxxx00000000|xxxx00000000|xxxx00000000|xxxx00000000|xxxx00000000|xxxx00000000|xxxx00000000|xxxx00000000|xxxx00000000|xxxx00000000|xxxx00000000|xxxx00000000|xxxxxxxxxxxx|xxxxxxxxxxxx', 'flat_trigger'),
@@ -6424,17 +6424,17 @@ INSERT INTO `rooms_models` (`id`, `model_id`, `model_name`, `door_x`, `door_y`, 
 	(91, 'beauty_salon1', 'beauty_salon1', 14, 3, 0, 1, 'xxxxxxxxxxxxxxxxxxxxxxxx|xxxxxxxxxxxxxxxxxxxxxxxx|xxxxxxxxxxxxxxxxxxxxxxxx|xxxxxxxxxxxxxx0xxxxxxxxx|xxxxxxx000000000000000xx|xxxxxx0000000000000000xx|xxxxx000000000000xxxxxxx|xxxx000000000000000000xx|xxx0000000000000000000xx|xxx0000000000000000000xx|xxx0000000000000000000xx|xxxxxxxxxxxxxxxx000000xx|xx0000000000000x000000xx|000000000000000x000000xx|000000000000000x000000xx|000000000000000x000000xx|00x000000000000x000000xx|00xxxxxxxxxxxxxx000000xx|00xxxxxxxxxxxxxx000000xx|00x0000000000000000000xx|00x0000000000000000000xx|00x0000000000000000000xx|0000000000000000000000xx|x000000000000000000000xx|xxx0000000000000000000xx', 'none');
 /*!40000 ALTER TABLE `rooms_models` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.rooms_rights
+-- Dumping structure for table kepler.rooms_rights
 CREATE TABLE IF NOT EXISTS `rooms_rights` (
   `user_id` int(11) NOT NULL,
   `room_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table lisbon.rooms_rights: ~0 rows (approximately)
+-- Dumping data for table kepler.rooms_rights: ~0 rows (approximately)
 /*!40000 ALTER TABLE `rooms_rights` DISABLE KEYS */;
 /*!40000 ALTER TABLE `rooms_rights` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.room_chatlogs
+-- Dumping structure for table kepler.room_chatlogs
 CREATE TABLE IF NOT EXISTS `room_chatlogs` (
   `user_id` int(11) NOT NULL,
   `room_id` int(11) NOT NULL,
@@ -6443,17 +6443,17 @@ CREATE TABLE IF NOT EXISTS `room_chatlogs` (
   `message` longtext NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table lisbon.room_chatlogs: ~2 rows (approximately)
+-- Dumping data for table kepler.room_chatlogs: ~2 rows (approximately)
 /*!40000 ALTER TABLE `room_chatlogs` DISABLE KEYS */;
 /*!40000 ALTER TABLE `room_chatlogs` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.schema_migrations
+-- Dumping structure for table kepler.schema_migrations
 CREATE TABLE IF NOT EXISTS `schema_migrations` (
   `version` varchar(255) NOT NULL,
   PRIMARY KEY (`version`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table lisbon.schema_migrations: ~61 rows (approximately)
+-- Dumping data for table kepler.schema_migrations: ~61 rows (approximately)
 /*!40000 ALTER TABLE `schema_migrations` DISABLE KEYS */;
 INSERT INTO `schema_migrations` (`version`) VALUES
 	('20180605202455'),
@@ -6519,18 +6519,18 @@ INSERT INTO `schema_migrations` (`version`) VALUES
 	('20180916030415');
 /*!40000 ALTER TABLE `schema_migrations` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.settings
+-- Dumping structure for table kepler.settings
 CREATE TABLE IF NOT EXISTS `settings` (
   `setting` varchar(50) NOT NULL,
   `value` text NOT NULL DEFAULT '',
   PRIMARY KEY (`setting`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table lisbon.settings: ~64 rows (approximately)
+-- Dumping data for table kepler.settings: ~64 rows (approximately)
 /*!40000 ALTER TABLE `settings` DISABLE KEYS */;
 /*!40000 ALTER TABLE `settings` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.soundmachine_disks
+-- Dumping structure for table kepler.soundmachine_disks
 CREATE TABLE IF NOT EXISTS `soundmachine_disks` (
   `item_id` bigint(11) NOT NULL,
   `soundmachine_id` int(11) NOT NULL DEFAULT 0,
@@ -6539,11 +6539,11 @@ CREATE TABLE IF NOT EXISTS `soundmachine_disks` (
   `burned_at` bigint(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table lisbon.soundmachine_disks: ~0 rows (approximately)
+-- Dumping data for table kepler.soundmachine_disks: ~0 rows (approximately)
 /*!40000 ALTER TABLE `soundmachine_disks` DISABLE KEYS */;
 /*!40000 ALTER TABLE `soundmachine_disks` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.soundmachine_playlists
+-- Dumping structure for table kepler.soundmachine_playlists
 CREATE TABLE IF NOT EXISTS `soundmachine_playlists` (
   `item_id` int(11) NOT NULL,
   `song_id` int(11) NOT NULL,
@@ -6552,11 +6552,11 @@ CREATE TABLE IF NOT EXISTS `soundmachine_playlists` (
   KEY `songid` (`song_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table lisbon.soundmachine_playlists: ~0 rows (approximately)
+-- Dumping data for table kepler.soundmachine_playlists: ~0 rows (approximately)
 /*!40000 ALTER TABLE `soundmachine_playlists` DISABLE KEYS */;
 /*!40000 ALTER TABLE `soundmachine_playlists` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.soundmachine_songs
+-- Dumping structure for table kepler.soundmachine_songs
 CREATE TABLE IF NOT EXISTS `soundmachine_songs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL DEFAULT 0,
@@ -6568,22 +6568,22 @@ CREATE TABLE IF NOT EXISTS `soundmachine_songs` (
   UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table lisbon.soundmachine_songs: ~1 rows (approximately)
+-- Dumping data for table kepler.soundmachine_songs: ~1 rows (approximately)
 /*!40000 ALTER TABLE `soundmachine_songs` DISABLE KEYS */;
 /*!40000 ALTER TABLE `soundmachine_songs` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.soundmachine_tracks
+-- Dumping structure for table kepler.soundmachine_tracks
 CREATE TABLE IF NOT EXISTS `soundmachine_tracks` (
   `soundmachine_id` int(11) NOT NULL,
   `track_id` int(11) NOT NULL,
   `slot_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table lisbon.soundmachine_tracks: ~1 rows (approximately)
+-- Dumping data for table kepler.soundmachine_tracks: ~1 rows (approximately)
 /*!40000 ALTER TABLE `soundmachine_tracks` DISABLE KEYS */;
 /*!40000 ALTER TABLE `soundmachine_tracks` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.users
+-- Dumping structure for table kepler.users
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(255) NOT NULL,
@@ -6619,11 +6619,11 @@ CREATE TABLE IF NOT EXISTS `users` (
   UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table lisbon.users: ~2 rows (approximately)
+-- Dumping data for table kepler.users: ~2 rows (approximately)
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.users_badges
+-- Dumping structure for table kepler.users_badges
 CREATE TABLE IF NOT EXISTS `users_badges` (
   `user_id` int(11) NOT NULL,
   `badge` char(3) NOT NULL,
@@ -6631,11 +6631,11 @@ CREATE TABLE IF NOT EXISTS `users_badges` (
   CONSTRAINT `users_badges_users_FK` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table lisbon.users_badges: ~0 rows (approximately)
+-- Dumping data for table kepler.users_badges: ~0 rows (approximately)
 /*!40000 ALTER TABLE `users_badges` DISABLE KEYS */;
 /*!40000 ALTER TABLE `users_badges` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.users_bans
+-- Dumping structure for table kepler.users_bans
 CREATE TABLE IF NOT EXISTS `users_bans` (
   `ban_type` enum('MACHINE_ID','IP_ADDRESS','USER_ID') NOT NULL,
   `banned_value` varchar(250) NOT NULL,
@@ -6644,53 +6644,53 @@ CREATE TABLE IF NOT EXISTS `users_bans` (
   PRIMARY KEY (`banned_value`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table lisbon.users_bans: ~0 rows (approximately)
+-- Dumping data for table kepler.users_bans: ~0 rows (approximately)
 /*!40000 ALTER TABLE `users_bans` DISABLE KEYS */;
 /*!40000 ALTER TABLE `users_bans` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.users_club_gifts
+-- Dumping structure for table kepler.users_club_gifts
 CREATE TABLE IF NOT EXISTS `users_club_gifts` (
   `user_id` int(11) NOT NULL,
   `sprite` varchar(50) NOT NULL,
   `date_received` bigint(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table lisbon.users_club_gifts: ~0 rows (approximately)
+-- Dumping data for table kepler.users_club_gifts: ~0 rows (approximately)
 /*!40000 ALTER TABLE `users_club_gifts` DISABLE KEYS */;
 /*!40000 ALTER TABLE `users_club_gifts` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.users_ip_logs
+-- Dumping structure for table kepler.users_ip_logs
 CREATE TABLE IF NOT EXISTS `users_ip_logs` (
   `user_id` int(11) NOT NULL,
   `ip_address` varchar(256) NOT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table lisbon.users_ip_logs: ~2 rows (approximately)
+-- Dumping data for table kepler.users_ip_logs: ~2 rows (approximately)
 /*!40000 ALTER TABLE `users_ip_logs` DISABLE KEYS */;
 /*!40000 ALTER TABLE `users_ip_logs` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.users_mutes
+-- Dumping structure for table kepler.users_mutes
 CREATE TABLE IF NOT EXISTS `users_mutes` (
   `user_id` int(11) NOT NULL,
   `muted_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table lisbon.users_mutes: ~0 rows (approximately)
+-- Dumping data for table kepler.users_mutes: ~0 rows (approximately)
 /*!40000 ALTER TABLE `users_mutes` DISABLE KEYS */;
 /*!40000 ALTER TABLE `users_mutes` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.users_room_favourites
+-- Dumping structure for table kepler.users_room_favourites
 CREATE TABLE IF NOT EXISTS `users_room_favourites` (
   `room_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table lisbon.users_room_favourites: ~0 rows (approximately)
+-- Dumping data for table kepler.users_room_favourites: ~0 rows (approximately)
 /*!40000 ALTER TABLE `users_room_favourites` DISABLE KEYS */;
 /*!40000 ALTER TABLE `users_room_favourites` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.users_room_votes
+-- Dumping structure for table kepler.users_room_votes
 CREATE TABLE IF NOT EXISTS `users_room_votes` (
   `user_id` int(11) NOT NULL,
   `room_id` int(11) NOT NULL,
@@ -6698,11 +6698,11 @@ CREATE TABLE IF NOT EXISTS `users_room_votes` (
   `expire_time` bigint(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table lisbon.users_room_votes: ~0 rows (approximately)
+-- Dumping data for table kepler.users_room_votes: ~0 rows (approximately)
 /*!40000 ALTER TABLE `users_room_votes` DISABLE KEYS */;
 /*!40000 ALTER TABLE `users_room_votes` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.vouchers
+-- Dumping structure for table kepler.vouchers
 CREATE TABLE IF NOT EXISTS `vouchers` (
   `voucher_code` varchar(100) NOT NULL,
   `credits` int(11) NOT NULL DEFAULT 0,
@@ -6711,11 +6711,11 @@ CREATE TABLE IF NOT EXISTS `vouchers` (
   UNIQUE KEY `voucher_code` (`voucher_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
--- Dumping data for table lisbon.vouchers: ~0 rows (approximately)
+-- Dumping data for table kepler.vouchers: ~0 rows (approximately)
 /*!40000 ALTER TABLE `vouchers` DISABLE KEYS */;
 /*!40000 ALTER TABLE `vouchers` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.vouchers_history
+-- Dumping structure for table kepler.vouchers_history
 CREATE TABLE IF NOT EXISTS `vouchers_history` (
   `voucher_code` varchar(100) NOT NULL,
   `user_id` int(11) NOT NULL,
@@ -6724,18 +6724,18 @@ CREATE TABLE IF NOT EXISTS `vouchers_history` (
   `items_redeemed` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
--- Dumping data for table lisbon.vouchers_history: ~0 rows (approximately)
+-- Dumping data for table kepler.vouchers_history: ~0 rows (approximately)
 /*!40000 ALTER TABLE `vouchers_history` DISABLE KEYS */;
 /*!40000 ALTER TABLE `vouchers_history` ENABLE KEYS */;
 
--- Dumping structure for table lisbon.vouchers_items
+-- Dumping structure for table kepler.vouchers_items
 CREATE TABLE IF NOT EXISTS `vouchers_items` (
   `voucher_code` varchar(100) NOT NULL,
   `catalogue_sale_code` varchar(100) NOT NULL,
   KEY `voucher_code` (`voucher_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
--- Dumping data for table lisbon.vouchers_items: ~0 rows (approximately)
+-- Dumping data for table kepler.vouchers_items: ~0 rows (approximately)
 /*!40000 ALTER TABLE `vouchers_items` DISABLE KEYS */;
 /*!40000 ALTER TABLE `vouchers_items` ENABLE KEYS */;
 

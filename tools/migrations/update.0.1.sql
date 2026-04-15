@@ -2154,13 +2154,15 @@ INSERT INTO `achievements` (`id`, `achievement`, `level`, `reward_pixels`, `prog
 	(63, 'GL', 7, 660, 77, 0),
 	(64, 'GL', 8, 735, 96, 0),
 	(65, 'GL', 9, 920, 132, 0),
-	(66, 'GL', 10, 1000, 177, 0),
+	(66, 'GL', 10, 1000, 177, 0);
 
 DROP TABLE IF EXISTS `users_achievements`;
 CREATE TABLE IF NOT EXISTS `users_achievements` (
   `achievement_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `progress` int(11) NOT NULL
+  `progress` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`achievement_id`, `user_id`),
+  KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 DROP TABLE IF EXISTS `groups_details`;
