@@ -4,6 +4,7 @@
 .gradle/
 .idea/
 /out/
+/dist/
 **.iml
 /build/
 /bin/
@@ -13,7 +14,6 @@
 /tmp
 *.ini
 
-gradlew.bat
 /tools/db/schema.sql
 log4j.properties
 
@@ -26,3 +26,4 @@ Kepler-Server/src/main/java/META-INF/MANIFEST.MF
 *.log
 .env
 .vscode
+/tools/www

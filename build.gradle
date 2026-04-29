@@ -1,0 +1,27 @@
+plugins {
+    id 'base'
+}
+
+def packagedDistDir = layout.projectDirectory.dir('dist')
+
+tasks.register('packageDist', Sync) {
+    dependsOn ':Lisbon-Server:shadowJar'
+
+    into(packagedDistDir)
+
+    from(layout.projectDirectory.dir('packaging/dist'))
+    from(layout.projectDirectory.file('figuredata.xml'))
+    from(layout.projectDirectory.file('Lisbon-Server/build/libs/Lisbon-Server.jar'))
+
+    into('tools/snowstorm_maps') {
+        from(layout.projectDirectory.dir('tools/snowstorm_maps'))
+    }
+}
+
+tasks.named('build') {
+    dependsOn(tasks.named('packageDist'))
+}
+
+tasks.named('clean') {
+    delete(packagedDistDir)
+}
