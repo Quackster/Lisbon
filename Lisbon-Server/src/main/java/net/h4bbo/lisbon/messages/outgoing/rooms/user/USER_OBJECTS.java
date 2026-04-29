@@ -6,12 +6,13 @@ import net.h4bbo.lisbon.game.entity.EntityType;
 import net.h4bbo.lisbon.game.player.Player;
 import net.h4bbo.lisbon.messages.types.MessageComposer;
 import net.h4bbo.lisbon.server.netty.streams.NettyResponse;
-import net.h4bbo.lisbon.util.FigureUtil;
 import net.h4bbo.lisbon.util.StringUtil;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.stream.Collectors;
 
 public class USER_OBJECTS extends MessageComposer {
     private List<EntityState> states;
@@ -52,8 +53,6 @@ public class USER_OBJECTS extends MessageComposer {
     @Override
     public void compose(NettyResponse response) {
         for (EntityState states : states) {
-            response.write("\r");
-
             if (states.getEntityType() == EntityType.PET) {
                 response.writeKeyValue("i", states.getInstanceId());
                 response.writeKeyValue("n", states.getInstanceId() + Character.toString((char) 4) + states.getDetails().getName());
@@ -65,36 +64,10 @@ public class USER_OBJECTS extends MessageComposer {
                 response.writeKeyValue("a", states.getEntityId());
                 response.writeKeyValue("n", states.getDetails().getName());
                 response.writeKeyValue("f", states.getDetails().getFigure());
-                response.writeKeyValue("s", states.getDetails().getSex());
                 response.writeKeyValue("l", states.getPosition().getX() + " " + states.getPosition().getY() + " " + Double.toString(StringUtil.format(states.getPosition().getZ())));
-
-                if (states.getDetails().getMotto().length() > 0) {
-                    response.writeKeyValue("c", states.getDetails().getMotto());
-                }
-
-                /*
-                if (states.getDetails().getShowBadge()) {
-                    response.writeKeyValue("b", states.getDetails().getCurrentBadge());
-                }
-                */
-
-                /*
-                String szNotify = "";
-
-                for (var badge : states.getBadges()) {
-                    szNotify += badge.getSlotId();
-                    szNotify += ":";
-                    szNotify += badge.getBadgeCode();
-                    szNotify += ",";
-                }
-
-                if (szNotify.length() > 0)
-                    response.writeKeyValue("b", szNotify); // s += "b:" + szNotify + Convert.ToChar(13);
-
-                if (states.getGroupMember() != null) {
-                    response.writeKeyValue("g", states.getGroupMember().getGroupId());
-                    response.writeKeyValue("t", states.getGroupMember().getMemberRank().getClientRank());
-                }*/
+                response.writeKeyValue("c", states.getDetails().getMotto());
+                response.writeKeyValue("s", states.getDetails().getSex());
+                response.writeKeyValue("b", this.serialiseBadges(states));
 
                 if (states.getRoom().getModel().getName().startsWith("pool_") ||
                         states.getRoom().getModel().getName().equals("md_a")) {
@@ -104,11 +77,24 @@ public class USER_OBJECTS extends MessageComposer {
                     }
                 }
 
+                if (states.getGroupMember() != null) {
+                    response.writeKeyValue("g", states.getGroupMember().getGroupId());
+                    response.writeKeyValue("t", states.getGroupMember().getMemberRank().getClientRank());
+                }
+
                 if (states.getEntityType() == EntityType.BOT) {
                     response.writeDelimeter("[bot]", (char) 13);
                 }
             }
         }
+    }
+
+    private String serialiseBadges(EntityState states) {
+        return states.getBadges().stream()
+                .filter(badge -> badge.getSlotId() > 0 && badge.getBadgeCode() != null && !badge.getBadgeCode().isBlank())
+                .sorted(Comparator.comparingInt(badge -> badge.getSlotId()))
+                .map(badge -> badge.getSlotId() + ":" + badge.getBadgeCode())
+                .collect(Collectors.joining(","));
     }
 
     @Override

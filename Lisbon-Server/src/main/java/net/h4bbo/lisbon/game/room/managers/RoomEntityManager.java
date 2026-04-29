@@ -184,7 +184,7 @@ public class RoomEntityManager {
 
                 GameScheduler.getInstance().getService().schedule(() -> {
                     room.send(new BROADCAST_TELEPORTER(teleporter, player.getDetails().getName(), false));
-                }, 500, TimeUnit.SECONDS);
+                }, 500, TimeUnit.MILLISECONDS);
 
                 GameScheduler.getInstance().getService().schedule(() -> {
                     teleporter.setCustomData(TeleportInteractor.TELEPORTER_OPEN);
