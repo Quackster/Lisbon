@@ -43,8 +43,8 @@ dependencies {
     // https://mvnrepository.com/artifact/commons-validator/commons-validator
     implementation group: 'commons-validator', name: 'commons-validator', version: '1.6'
 
-    // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
-    implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5'
+    // https://github.com/Quackster/Avatara4j
+    implementation 'com.github.Quackster:Avatara4j:v1.0.2'
 
     // https://github.com/Quackster/duckHTTPD/
     implementation name: 'duckHTTPD-all'

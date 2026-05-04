@@ -220,8 +220,7 @@ Your {{ site.siteName }} had clothes or colors that are not selectable anymore. 
 
 <script type="text/javascript" language="JavaScript">
 HabboView.add(function() {
-	$("settings-editor").setStyle({ textAlign: "center" });
-	HabboRegistration.init({
+	var settingsEditorConfig = {
 		basePath: "{{ site.staticContentPath }}/habbo-registration/",
 		containerId: "settings-editor",
 		figureInputId: "settings-figure",
@@ -239,7 +238,40 @@ HabboView.add(function() {
 			"settings-form"
 			{% if playerDetails.hasClubSubscription() %}, "settings-wardrobe"{% endif %}
 		]
-	});
+	};
+
+	var installWardrobeEditorCompat = function() {
+		if (!window.HabboEditor || window.HabboEditor.setGender) {
+			return;
+		}
+
+		window.HabboEditor.setGender = function(gender) {
+			this.setGenderAndFigure(gender, $("settings-figure").value);
+		};
+
+		window.HabboEditor.setFigure = function(figure) {
+			this.setGenderAndFigure($("settings-gender").value, figure);
+		};
+
+		window.swfobj = {
+			vars: {},
+			addVariable: function(key, value) {
+				this.vars[key] = value;
+			},
+			write: function(containerId) {
+				settingsEditorConfig.containerId = containerId;
+				settingsEditorConfig.figure = this.vars.figure || $("settings-figure").value;
+				settingsEditorConfig.gender = this.vars.gender || $("settings-gender").value;
+				HabboRegistration.init(settingsEditorConfig);
+				installWardrobeEditorCompat();
+				HabboEditor.setAllowedToProceed(true);
+			}
+		};
+	};
+
+	$("settings-editor").setStyle({ textAlign: "center" });
+	HabboRegistration.init(settingsEditorConfig);
+	installWardrobeEditorCompat();
 });
 </script>
 
