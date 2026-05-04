@@ -1779,6 +1779,15 @@ CREATE TABLE IF NOT EXISTS `users_transactions` (
   KEY `is_visible` (`is_visible`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+CREATE TABLE IF NOT EXISTS `users_wardrobes` (
+  `user_id` int(11) NOT NULL,
+  `slot_id` int(11) NOT NULL,
+  `figure` varchar(255) NOT NULL,
+  `sex` char(1) NOT NULL,
+  PRIMARY KEY (`user_id`,`slot_id`),
+  CONSTRAINT `users_wardrobes_users_FK` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 
 ALTER TABLE `rooms`
 	ADD COLUMN `group_id` INT(11) NOT NULL DEFAULT '0' AFTER `rating`;

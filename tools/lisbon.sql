@@ -6702,6 +6702,20 @@ CREATE TABLE IF NOT EXISTS `users_room_votes` (
 /*!40000 ALTER TABLE `users_room_votes` DISABLE KEYS */;
 /*!40000 ALTER TABLE `users_room_votes` ENABLE KEYS */;
 
+-- Dumping structure for table kepler.users_wardrobes
+CREATE TABLE IF NOT EXISTS `users_wardrobes` (
+  `user_id` int(11) NOT NULL,
+  `slot_id` int(11) NOT NULL,
+  `figure` varchar(255) NOT NULL,
+  `sex` char(1) NOT NULL,
+  PRIMARY KEY (`user_id`,`slot_id`),
+  CONSTRAINT `users_wardrobes_users_FK` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Dumping data for table kepler.users_wardrobes: ~0 rows (approximately)
+/*!40000 ALTER TABLE `users_wardrobes` DISABLE KEYS */;
+/*!40000 ALTER TABLE `users_wardrobes` ENABLE KEYS */;
+
 -- Dumping structure for table kepler.vouchers
 CREATE TABLE IF NOT EXISTS `vouchers` (
   `voucher_code` varchar(100) NOT NULL,
