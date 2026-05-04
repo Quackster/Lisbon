@@ -141,30 +141,35 @@ You need to have a Flash player installed on your computer before being able to 
 	   		<span id="wardrobe-store-1" class="wardrobe-store"></span>
 	   		<span id="wardrobe-dress-1" class="wardrobe-dress"></span>
    		</p>
+		{% if wardrobe1 %}<input type="hidden" id="wardrobe-figure-1" value="{{ wardrobeFigure1 }}" /><input type="hidden" id="wardrobe-gender-1" value="{{ wardrobeSex1 }}" />{% endif %}
     </li>
 	<li>
 		<p id="wardrobe-slot-2" style="background-image: url({{ wardrobeUrl2 }})">
 	   		<span id="wardrobe-store-2" class="wardrobe-store"></span>
 	   		<span id="wardrobe-dress-2" class="wardrobe-dress"></span>
    		</p>
+		{% if wardrobe2 %}<input type="hidden" id="wardrobe-figure-2" value="{{ wardrobeFigure2 }}" /><input type="hidden" id="wardrobe-gender-2" value="{{ wardrobeSex2 }}" />{% endif %}
     </li>
 	<li>
 		<p id="wardrobe-slot-3" style="background-image: url({{ wardrobeUrl3 }})">
 	   		<span id="wardrobe-store-3" class="wardrobe-store"></span>
 	   		<span id="wardrobe-dress-3" class="wardrobe-dress"></span>
    		</p>
+		{% if wardrobe3 %}<input type="hidden" id="wardrobe-figure-3" value="{{ wardrobeFigure3 }}" /><input type="hidden" id="wardrobe-gender-3" value="{{ wardrobeSex3 }}" />{% endif %}
     </li>
 	<li>
 		<p id="wardrobe-slot-4" style="background-image: url({{ wardrobeUrl4 }})">
 	   		<span id="wardrobe-store-4" class="wardrobe-store"></span>
 	   		<span id="wardrobe-dress-4" class="wardrobe-dress"></span>
    		</p>
+		{% if wardrobe4 %}<input type="hidden" id="wardrobe-figure-4" value="{{ wardrobeFigure4 }}" /><input type="hidden" id="wardrobe-gender-4" value="{{ wardrobeSex4 }}" />{% endif %}
     </li>
 	<li>
 		<p id="wardrobe-slot-5" style="background-image: url({{ wardrobeUrl5 }})">
 	   		<span id="wardrobe-store-5" class="wardrobe-store"></span>
 	   		<span id="wardrobe-dress-5" class="wardrobe-dress"></span>
    		</p>
+		{% if wardrobe5 %}<input type="hidden" id="wardrobe-figure-5" value="{{ wardrobeFigure5 }}" /><input type="hidden" id="wardrobe-gender-5" value="{{ wardrobeSex5 }}" />{% endif %}
     </li>
 </ol>
 
@@ -269,9 +274,44 @@ HabboView.add(function() {
 		};
 	};
 
+	var applyWardrobeFigure = function(gender, figure) {
+		settingsEditorConfig.figure = figure;
+		settingsEditorConfig.gender = gender;
+		$("settings-figure").value = figure;
+		$("settings-gender").value = gender;
+		HabboRegistration.init(settingsEditorConfig);
+		installWardrobeEditorCompat();
+		HabboEditor.setAllowedToProceed(true);
+	};
+
+	var bindWardrobeDressCompat = function() {
+		$$("span.wardrobe-dress").each(function(element) {
+			if (element._wardrobeDressCompat) {
+				return;
+			}
+
+			element._wardrobeDressCompat = true;
+			element.addEventListener("click", function(event) {
+				var slotId = element.id.split("-").last();
+				var figure = $("wardrobe-figure-" + slotId);
+				var gender = $("wardrobe-gender-" + slotId);
+
+				if (figure && gender && $("settings-figure").value != figure.value) {
+					event.preventDefault();
+					event.stopPropagation();
+					if (event.stopImmediatePropagation) {
+						event.stopImmediatePropagation();
+					}
+					applyWardrobeFigure(gender.value, figure.value);
+				}
+			}, true);
+		});
+	};
+
 	$("settings-editor").setStyle({ textAlign: "center" });
 	HabboRegistration.init(settingsEditorConfig);
 	installWardrobeEditorCompat();
+	bindWardrobeDressCompat();
 });
 </script>
 
