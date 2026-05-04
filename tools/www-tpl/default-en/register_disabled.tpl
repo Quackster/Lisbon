@@ -93,24 +93,6 @@ if (typeof HabboClient != "undefined") { HabboClient.windowName = "client"; }
 			{% endif %}
                     });
 
-        HabboView.add(function() {
-            var swfobj = new SWFObject("{{ site.sitePath }}/flash/HabboRegistration.swf", "habboreg", "435", "400", "8");
-            swfobj.addParam("base", "{{ site.sitePath }}/flash/");
-            swfobj.addParam("wmode", "opaque");
-            swfobj.addParam("AllowScriptAccess", "always");
-            swfobj.addVariable("figuredata_url", "{{ site.sitePath }}/xml/figuredata.xml");
-            swfobj.addVariable("draworder_url", "{{ site.sitePath }}/xml/draworder.xml");
-            swfobj.addVariable("localization_url", "{{ site.sitePath }}/xml/figure_editor.xml");
-            swfobj.addVariable("habbos_url", "{{ site.sitePath }}/xml/promo_habbos_v2.xml");
-            swfobj.addVariable("figure", "{{ registerFigure }}");
-            swfobj.addVariable("gender", "{{ registerGender }}");
-
-            swfobj.addVariable("showClubSelections", "0");
-
-            swfobj.write("register-avatar-editor");
-            window.habboreg = $("habboreg"); // for MSIE and Flash Player 8
-        });
-
     </script>
 
 

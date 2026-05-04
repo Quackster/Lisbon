@@ -5,6 +5,9 @@ import net.h4bbo.lisbon.game.wordfilter.WordfilterManager;
 import org.alexdev.http.controllers.habblet.NameCheckController;
 import org.apache.commons.validator.routines.EmailValidator;
 
+import java.time.DateTimeException;
+import java.time.LocalDate;
+
 public class RegisterUtil {
     public static boolean isValidName(String username) {
         return getNameErrorCode(username) == 0;
@@ -50,5 +53,18 @@ public class RegisterUtil {
         }
 
         return true;
+    }
+
+    public static String formatBirthday(String day, String month, String year) {
+        try {
+            int dayValue = Integer.parseInt(day);
+            int monthValue = Integer.parseInt(month);
+            int yearValue = Integer.parseInt(year);
+
+            LocalDate.of(yearValue, monthValue, dayValue);
+            return String.format("%02d.%02d.%04d", dayValue, monthValue, yearValue);
+        } catch (DateTimeException | NumberFormatException e) {
+            return null;
+        }
     }
 }

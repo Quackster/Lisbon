@@ -27,3 +27,7 @@ Kepler-Server/src/main/java/META-INF/MANIFEST.MF
 .env
 .vscode
 /tools/www
+!/tools/www/
+!/tools/www/habbo-registration/
+!/tools/www/habbo-registration/**
+/tools/www

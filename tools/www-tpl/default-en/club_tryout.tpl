@@ -16,6 +16,7 @@ var andSoItBegins = (new Date()).getTime();
 <script src="{{ site.staticContentPath }}/web-gallery/static/js/libs.js" type="text/javascript"></script>
 <script src="{{ site.staticContentPath }}/web-gallery/static/js/common.js" type="text/javascript"></script>
 <script src="{{ site.staticContentPath }}/web-gallery/static/js/fullcontent.js" type="text/javascript"></script>
+<script src="{{ site.staticContentPath }}/habbo-registration/habbo-registration.js" type="text/javascript"></script>
 <link rel="stylesheet" href="{{ site.staticContentPath }}/web-gallery/v2/styles/style.css" type="text/css" />
 <link rel="stylesheet" href="{{ site.staticContentPath }}/web-gallery/v2/styles/buttons.css" type="text/css" />
 <link rel="stylesheet" href="{{ site.staticContentPath }}/web-gallery/v2/styles/boxes.css" type="text/css" />
@@ -106,21 +107,17 @@ body { behavior: url({{ site.staticContentPath }}/web-gallery/js/csshover.htc); 
 </div>
 
 <script type="text/javascript" language="JavaScript">
-    var swfobj = new SWFObject("{{ site.sitePath }}/flash/HabboRegistration.swf", "habboreg", "435", "400", "8");
-    swfobj.addParam("base", "{{ site.sitePath }}/flash/");
-    swfobj.addParam("wmode", "opaque");
-    swfobj.addParam("AllowScriptAccess", "always");
-    swfobj.addVariable("figuredata_url", "{{ site.sitePath }}/xml/figuredata.xml");
-    swfobj.addVariable("draworder_url", "{{ site.sitePath }}/xml/draworder.xml");
-    swfobj.addVariable("localization_url", "{{ site.sitePath }}/xml/figure_editor.xml");
-    swfobj.addVariable("habbos_url", "{{ site.sitePath }}/xml/promo_habbos_v2.xml");
-    swfobj.addVariable("figure", "{{ ("figure" is present) ? figure : "" }}");
-    swfobj.addVariable("gender", "{{ ("sex" is present) ? sex : ""  }}");
-    swfobj.addVariable("showClubSelections", "1");
-    if (deconcept.SWFObjectUtil.getPlayerVersion()["major"] >= 8) {
-	    $("flashcontent").setStyle({ textAlign: "center", "marginTop" : "10px" });
-	    swfobj.write("flashcontent");	    
-    }
+    HabboView.add(function() {
+        $("flashcontent").setStyle({ textAlign: "center", "marginTop" : "10px" });
+        HabboRegistration.init({
+            basePath: "{{ site.staticContentPath }}/habbo-registration/",
+            containerId: "flashcontent",
+            figure: "{{ ("figure" is present) ? figure : "" }}",
+            gender: "{{ ("sex" is present) ? sex : ""  }}",
+            userHasClub: false,
+            showClubSelections: true
+        });
+    });
 </script>			
 					</div>
 				</div>

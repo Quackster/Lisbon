@@ -38,6 +38,7 @@ if (typeof HabboClient != "undefined") { HabboClient.windowName = "client"; }
 </script>
 
 <script src="{{ site.staticContentPath }}/web-gallery/static/js/settings.js?{{ randomNumber }}" type="text/javascript"></script>
+<script src="{{ site.staticContentPath }}/habbo-registration/habbo-registration.js" type="text/javascript"></script>
 <link rel="stylesheet" href="{{ site.staticContentPath }}/web-gallery/v2/styles/settings.css" type="text/css" />
 <link rel="stylesheet" href="{{ site.staticContentPath }}/web-gallery/v2/styles/friendmanagement.css" type="text/css" />
 
@@ -218,31 +219,28 @@ Your {{ site.siteName }} had clothes or colors that are not selectable anymore. 
 <a href="#" id="settings-submit" class="new-button disabled-button"><b>Save changes</b><i></i></a>
 
 <script type="text/javascript" language="JavaScript">
-var swfobj = new SWFObject("{{ site.sitePath }}/web-gallery/flash/HabboRegistration.swf", "habboreg", "435", "400", "8");
-swfobj.addParam("base", "{{ site.sitePath }}/web-gallery/flash/");
-swfobj.addParam("wmode", "opaque");
-swfobj.addParam("AllowScriptAccess", "always");
-swfobj.addVariable("figuredata_url", "{{ site.sitePath }}/web-gallery/xml/figuredata.xml");
-swfobj.addVariable("draworder_url", "{{ site.sitePath }}/web-gallery/xml/draworder.xml");
-swfobj.addVariable("localization_url", "{{ site.sitePath }}/web-gallery/xml/figure_editor.xml");
-swfobj.addVariable("figure", "{{ playerDetails.figure }}");
-swfobj.addVariable("gender", "{{ playerDetails.sex }}");
-
-swfobj.addVariable("showClubSelections", "1");
-
-{% if playerDetails.hasClubSubscription() %}
-swfobj.addVariable("userHasClub", "1");
-{% endif %}
-
-if (deconcept.SWFObjectUtil.getPlayerVersion()["major"] >= 8) {
-	$("settings-editor").setStyle({ textAlign: "center"});	swfobj.write("settings-editor");
-	$("settings-form").show();
-	
-	{% if playerDetails.hasClubSubscription() %}
-		$("settings-wardrobe").show();}
-	{% else %}
-		}
-	{% endif %}
+HabboView.add(function() {
+	$("settings-editor").setStyle({ textAlign: "center" });
+	HabboRegistration.init({
+		basePath: "{{ site.staticContentPath }}/habbo-registration/",
+		containerId: "settings-editor",
+		figureInputId: "settings-figure",
+		genderInputId: "settings-gender",
+		stateInputId: "settings-state",
+		figure: "{{ playerDetails.figure }}",
+		gender: "{{ playerDetails.sex }}",
+		userHasClub: {% if playerDetails.hasClubSubscription() %}true{% else %}false{% endif %},
+		showClubSelections: true,
+		formId: "settings-form",
+		submitButtonId: "settings-submit",
+		clubNoticeId: "settings-hc",
+		oldFigureNoticeId: "settings-oldfigure",
+		showOnInit: [
+			"settings-form"
+			{% if playerDetails.hasClubSubscription() %}, "settings-wardrobe"{% endif %}
+		]
+	});
+});
 </script>
 
 </form>

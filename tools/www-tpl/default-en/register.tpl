@@ -39,6 +39,7 @@ if (typeof HabboClient != "undefined") { HabboClient.windowName = "client"; }
 
 <link rel="stylesheet" href="{{ site.staticContentPath }}/web-gallery/v2/styles/registration.css" type="text/css" />
 <script src="{{ site.staticContentPath }}/web-gallery/static/js/registration.js" type="text/javascript"></script>
+<script src="{{ site.staticContentPath }}/habbo-registration/habbo-registration.js" type="text/javascript"></script>
     <script type="text/javascript">		
         L10N.put("register.tooltip.name", "Your name can contain lowercase and uppercase letters, numbers and the characters -=?!@:.");
         L10N.put("register.tooltip.password", "Your password must have at least 6 characters and it must contain both letters and numbers.");
@@ -94,21 +95,17 @@ if (typeof HabboClient != "undefined") { HabboClient.windowName = "client"; }
                     });
 
         HabboView.add(function() {
-            var swfobj = new SWFObject("{{ site.sitePath }}/flash/HabboRegistration.swf", "habboreg", "435", "400", "8");
-            swfobj.addParam("base", "{{ site.sitePath }}/flash/");
-            swfobj.addParam("wmode", "opaque");
-            swfobj.addParam("AllowScriptAccess", "always");
-            swfobj.addVariable("figuredata_url", "{{ site.sitePath }}/xml/figuredata.xml");
-            swfobj.addVariable("draworder_url", "{{ site.sitePath }}/xml/draworder.xml");
-            swfobj.addVariable("localization_url", "{{ site.sitePath }}/xml/figure_editor.xml");
-            swfobj.addVariable("habbos_url", "{{ site.sitePath }}/xml/promo_habbos_v2.xml");
-            swfobj.addVariable("figure", "{{ registerFigure }}");
-            swfobj.addVariable("gender", "{{ registerGender }}");
-
-            swfobj.addVariable("showClubSelections", "0");
-
-            swfobj.write("register-avatar-editor");
-            window.habboreg = $("habboreg"); // for MSIE and Flash Player 8
+            HabboRegistration.init({
+                basePath: "{{ site.staticContentPath }}/habbo-registration/",
+                containerId: "register-avatar-editor",
+                figureInputId: "register-figure",
+                genderInputId: "register-gender",
+                stateInputId: "register-editor-state",
+                figure: "{{ registerFigure }}",
+                gender: "{{ registerGender }}",
+                userHasClub: false,
+                showClubSelections: false
+            });
         });
 
     </script>

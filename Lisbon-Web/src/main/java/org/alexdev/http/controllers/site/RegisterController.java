@@ -159,13 +159,25 @@ public class RegisterController {
                     return;
                 }
 
+                String birthday = RegisterUtil.formatBirthday(
+                        webConnection.session().getString("registerDay"),
+                        webConnection.session().getString("registerMonth"),
+                        webConnection.session().getString("registerYear"));
+
+                if (birthday == null) {
+                    webConnection.redirect("/register?error=bad_birthday");
+                    return;
+                }
+
                 String hashedPassword = PlayerManager.getInstance().createPassword(webConnection.session().getString("registerPassword"));
+
                 int userId = RegisterDao.newUser(
                         webConnection.session().getString("registerUsername"),
                         hashedPassword,
                         webConnection.session().getString("registerFigure"),
                         webConnection.session().getString("registerGender"),
-                        webConnection.session().getString("registerEmail"));
+                        webConnection.session().getString("registerEmail"),
+                        birthday);
 
                 String activationCode = UUID.randomUUID().toString();
                 PlayerStatisticsDao.newStatistics(userId, activationCode);
