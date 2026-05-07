@@ -14,6 +14,7 @@ var andSoItBegins = (new Date()).getTime();
 
 <script src="{{ site.staticContentPath }}/web-gallery/static/js/libs2.js" type="text/javascript"></script>
 <script src="{{ site.staticContentPath }}/web-gallery/static/js/landing.js" type="text/javascript"></script>
+<script src="{{ site.staticContentPath }}/habbo-landing/habbo-landing.js" type="text/javascript"></script>
 <link rel="stylesheet" href="{{ site.staticContentPath }}/web-gallery/v2/styles/style.css" type="text/css" />
 <link rel="stylesheet" href="{{ site.staticContentPath }}/web-gallery/v2/styles/buttons.css" type="text/css" />
 <link rel="stylesheet" href="{{ site.staticContentPath }}/web-gallery/v2/styles/boxes.css" type="text/css" />
@@ -58,6 +59,20 @@ try { document.execCommand('BackgroundImageCache', false, true); } catch(e) {}
 body { behavior: url({{ site.staticContentPath }}/web-gallery/js/csshover.htc); }
 </style>
 <![endif]-->
+<style type="text/css">
+#create-habbo-html5 {
+	width: 396px;
+	height: 378px;
+	overflow: hidden;
+	background: #000;
+}
+
+#create-habbo-html5 canvas {
+	display: block;
+	width: 396px;
+	height: 378px;
+}
+</style>
 <meta name="build" content="HavanaWeb" />
 </head>
 <body id="landing" class="process-template">
@@ -72,45 +87,29 @@ body { behavior: url({{ site.staticContentPath }}/web-gallery/js/csshover.htc); 
 	        	<div id="column1" class="column">
 				<div class="habblet-container " id="create-habbo">
 
-						<div id="create-habbo-flash">
-	<div id="create-habbo-nonflash" style="background-image: url({{ site.staticContentPath }}/web-gallery/v2/images/landing/landing_group.png)">
-        <div id="landing-register-text"><a href="register"><span>Join now, it's free >></span></a></div>
-        <div id="landing-promotional-text"><span>{{ site.siteName }} is a virtual world where you can meet and make friends.</span></div>
-    </div>
-	<div class="cbb clearfix green" id="habbo-intro-nonflash">
-		<h2 class="title">To get most out of {{ site.siteName }}, do this:</h2>
-		<div class="box-content">
-			<ul>
-				<li id="habbo-intro-install" style="display:none"><a href="http://www.adobe.com/go/getflashplayer">Install Flash Player 8 or higher</a></li>
-				<noscript><li>Enable JavaScript</li></noscript>
-			</ul>
-		</div>
-	</div>
-</div>
+						<div id="create-habbo-html5"></div>
 
-<script type="text/javascript" language="JavaScript">
-var swfobj = new SWFObject("{{ site.staticContentPath }}/web-gallery/flash/intro/habbos.swf", "ch", "396", "378", "8");
-swfobj.addParam("AllowScriptAccess", "always");
-swfobj.addParam("wmode", "transparent");
-swfobj.addVariable("base_url", "{{ site.staticContentPath }}/web-gallery/flash/intro");
-swfobj.addVariable("habbos_url", "{{ site.staticContentPath }}/xml/promo_habbos.xml");
-swfobj.addVariable("create_button_text", "Register today! &raquo;");
-swfobj.addVariable("in_hotel_text", "Online now!");
-swfobj.addVariable("slogan", "{{ site.siteName }} Hotel is a virtual world where you can meet and make friends!");
-swfobj.addVariable("video_start", "PLAY VIDEO");
-swfobj.addVariable("video_stop", "STOP VIDEO");
-swfobj.addVariable("button_link", "register");
-swfobj.addVariable("localization_url", "{{ site.staticContentPath }}/xml/landing_intro.xml");
-swfobj.addVariable("video_link", "{{ site.staticContentPath }}/web-gallery/flash/intro/Habbo_intro.swf");
-swfobj.write("create-habbo-flash");
+<script type="text/javascript">
 HabboView.add(function() {
-	if (deconcept.SWFObjectUtil.getPlayerVersion()["major"] >= 8) {
-		try { $("habbo-intro-nonflash").hide(); } catch (e) {}
-	} else {
-		$("habbo-intro-install").show();
+	var container = document.getElementById("create-habbo-html5");
+	if (!container || !window.HabboLandingWidget) {
+		return;
 	}
+
+	new window.HabboLandingWidget(container, {
+		assetsPath: "{{ site.staticContentPath }}/habbo-landing/",
+		assetsZipUrl: "{{ site.staticContentPath }}/habbo-landing/assets.zip",
+		habbosUrl: "{{ site.staticContentPath }}/habbo-landing/habbos.xml",
+		localizationUrl: "{{ site.staticContentPath }}/habbo-landing/localization.xml",
+		createButtonText: "Register today! \u00BB",
+		inHotelText: "Online now!",
+		slogan: "{{ site.siteName }} Hotel is a virtual world where\nyou can meet and make friends!",
+		videoStartText: "PLAY\nVIDEO",
+		videoStopText: "STOP",
+		buttonLink: "{{ site.sitePath }}/register"
+	});
 });
-var PromoHabbos = { track:function(n) { if (!!n && window.pageTracker) { pageTracker._trackPageview("/landingpromo/" + n); } } }
+var PromoHabbos = { track:function(n) { if (!!n && window.pageTracker) { pageTracker._trackPageview("/landingpromo/" + n); } } };
 </script>
 
 

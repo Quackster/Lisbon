@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<texts>
+  <text name="landing.slogan">Habbo is a virtual world where
+you can meet and make friends.</text>
+  <text name="landing.create_button">Create Your Habbo &#187;</text>
+  <text name="landing.video.play">PLAY
+VIDEO</text>
+  <text name="landing.video.stop">STOP</text>
+  <text name="landing.in_hotel">Now in Habbo Hotel</text>
+  <text name="landing.loading">Loading...</text>
+  <text name="landing.connecting">Connecting to Habbo...</text>
+  <text name="landing.error">Oops! Something went wrong.</text>
+  <text name="landing.online_count">Habbos online right now</text>
+  <text name="landing.motto.default">I love Habbo!</text>
+  <text name="landing.badge.earned">Badge earned!</text>
+  <text name="landing.welcome">Welcome to Habbo Hotel</text>
+</texts>
