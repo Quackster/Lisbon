@@ -1,17 +1,29 @@
-<div id="badge-editor-flash">
- <p>Adobe Flash player is required.</p>
- <p><a href="http://www.adobe.com/go/getflashplayer">Click here to install Adobe Flash player</a>.</p>
-</div>
-<script type="text/javascript" language="JavaScript">
-var swfobj = new SWFObject("{{ site.staticContentPath }}/web-gallery/flash/BadgeEditor.swf", "badgeEditor", "280", "366", "8");
-swfobj.addParam("base", "{{ site.staticContentPath }}/web-gallery/flash/");
-swfobj.addParam("bgcolor", "#FFFFFF");
-swfobj.addVariable("post_url", "{{ site.sitePath }}/groups/actions/update_group_badge?");
-swfobj.addVariable("__app_key", "HavanaWeb");
-swfobj.addVariable("groupId", "{{ group.getId() }}");
-swfobj.addVariable("badge_data", "{{ group.getBadge() }}");
-swfobj.addVariable("localization_url", "{{ site.staticContentPath }}/web-gallery/xml/badge_editor.xml");
-swfobj.addVariable("xml_url", "{{ site.staticContentPath }}/web-gallery/xml/badge_data.xml");
-swfobj.addParam("allowScriptAccess", "always");
-swfobj.write("badge-editor-flash");
+<div id="editor-container"></div>
+
+<form id="badge-editor-save-form" action="{{ site.sitePath }}/groups/actions/update_group_badge" method="post" style="display:none">
+    <input type="hidden" name="groupId" id="badge-editor-group-id" value="{{ group.getId() }}" />
+    <input type="hidden" name="code" id="badge-editor-code" value="" />
+</form>
+
+<script type="text/javascript">
+window.HabboBadgeEditorConfig = {
+    badge_data: "{{ group.getBadge() }}",
+    assetsPath: "{{ site.staticContentPath }}/badge-editor/",
+    assetBundlePath: "assets.zip",
+    badge_data_url: "data/badge_data.xml",
+    localization_url: "data/badge_editor.xml",
+    groupId: "{{ group.getId() }}"
+};
+
+window.HabboBadgeEditor = {
+    onSave: function(code, groupId) {
+        document.getElementById("badge-editor-group-id").value = groupId;
+        document.getElementById("badge-editor-code").value = code;
+        document.getElementById("badge-editor-save-form").submit();
+    },
+    onCancel: function() {
+        window.location.href = "{{ group.generateClickLink() }}";
+    }
+};
 </script>
+<script src="{{ site.staticContentPath }}/badge-editor/badge-editor.js" type="text/javascript"></script>
