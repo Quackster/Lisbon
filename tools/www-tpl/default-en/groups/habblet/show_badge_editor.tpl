@@ -1,4 +1,19 @@
-<div id="editor-container"></div>
+<div id="badge-editor-flash">
+    <div id="editor-container"></div>
+</div>
+
+<style type="text/css">
+#badge-editor-flash,
+#editor-container {
+    width: 280px;
+    height: 366px;
+    overflow: hidden;
+}
+
+#editor-container canvas {
+    display: block;
+}
+</style>
 
 <form id="badge-editor-save-form" action="{{ site.sitePath }}/groups/actions/update_group_badge" method="post" style="display:none">
     <input type="hidden" name="groupId" id="badge-editor-group-id" value="{{ group.getId() }}" />
@@ -25,5 +40,11 @@ window.HabboBadgeEditor = {
         window.location.href = "{{ group.generateClickLink() }}";
     }
 };
+
+(function() {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src = "{{ site.staticContentPath }}/badge-editor/badge-editor.js";
+    document.getElementsByTagName("head")[0].appendChild(script);
+})();
 </script>
-<script src="{{ site.staticContentPath }}/badge-editor/badge-editor.js" type="text/javascript"></script>
