@@ -99,7 +99,7 @@ HabboView.add(function() {
 	new window.HabboLandingWidget(container, {
 		assetsPath: "{{ site.staticContentPath }}/habbo-landing/",
 		assetsZipUrl: "{{ site.staticContentPath }}/habbo-landing/assets.zip",
-		habbosUrl: "{{ site.staticContentPath }}/habbo-landing/habbos.xml",
+		habbosUrl: "{{ site.staticContentPath }}/xml/promo_habbos.xml",
 		localizationUrl: "{{ site.staticContentPath }}/habbo-landing/localization.xml",
 		createButtonText: "Register today! \u00BB",
 		inHotelText: "Online now!",
