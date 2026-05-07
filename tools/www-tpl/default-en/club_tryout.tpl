@@ -16,7 +16,7 @@ var andSoItBegins = (new Date()).getTime();
 <script src="{{ site.staticContentPath }}/web-gallery/static/js/libs.js" type="text/javascript"></script>
 <script src="{{ site.staticContentPath }}/web-gallery/static/js/common.js" type="text/javascript"></script>
 <script src="{{ site.staticContentPath }}/web-gallery/static/js/fullcontent.js" type="text/javascript"></script>
-<script src="{{ site.staticContentPath }}/habbo-registration/habbo-registration.js" type="text/javascript"></script>
+<script src="{{ site.staticContentPath }}/habbo-widgets/change-looks/habbo-registration.js" type="text/javascript"></script>
 <link rel="stylesheet" href="{{ site.staticContentPath }}/web-gallery/v2/styles/style.css" type="text/css" />
 <link rel="stylesheet" href="{{ site.staticContentPath }}/web-gallery/v2/styles/buttons.css" type="text/css" />
 <link rel="stylesheet" href="{{ site.staticContentPath }}/web-gallery/v2/styles/boxes.css" type="text/css" />
@@ -110,7 +110,7 @@ body { behavior: url({{ site.staticContentPath }}/web-gallery/js/csshover.htc); 
     HabboView.add(function() {
         $("flashcontent").setStyle({ textAlign: "center", "marginTop" : "10px" });
         HabboRegistration.init({
-            basePath: "{{ site.staticContentPath }}/habbo-registration/",
+            basePath: "{{ site.staticContentPath }}/habbo-widgets/change-looks/",
             containerId: "flashcontent",
             figure: "{{ ("figure" is present) ? figure : "" }}",
             gender: "{{ ("sex" is present) ? sex : ""  }}",

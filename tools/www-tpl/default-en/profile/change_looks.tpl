@@ -38,7 +38,7 @@ if (typeof HabboClient != "undefined") { HabboClient.windowName = "client"; }
 </script>
 
 <script src="{{ site.staticContentPath }}/web-gallery/static/js/settings.js?{{ randomNumber }}" type="text/javascript"></script>
-<script src="{{ site.staticContentPath }}/habbo-registration/habbo-registration.js" type="text/javascript"></script>
+<script src="{{ site.staticContentPath }}/habbo-widgets/change-looks/habbo-registration.js" type="text/javascript"></script>
 <link rel="stylesheet" href="{{ site.staticContentPath }}/web-gallery/v2/styles/settings.css" type="text/css" />
 <link rel="stylesheet" href="{{ site.staticContentPath }}/web-gallery/v2/styles/friendmanagement.css" type="text/css" />
 
@@ -226,7 +226,7 @@ Your {{ site.siteName }} had clothes or colors that are not selectable anymore. 
 <script type="text/javascript" language="JavaScript">
 HabboView.add(function() {
 	var settingsEditorConfig = {
-		basePath: "{{ site.staticContentPath }}/habbo-registration/",
+		basePath: "{{ site.staticContentPath }}/habbo-widgets/change-looks/",
 		containerId: "settings-editor",
 		figureInputId: "settings-figure",
 		genderInputId: "settings-gender",

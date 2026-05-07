@@ -39,7 +39,7 @@ if (typeof HabboClient != "undefined") { HabboClient.windowName = "client"; }
 
 <link rel="stylesheet" href="{{ site.staticContentPath }}/web-gallery/v2/styles/registration.css" type="text/css" />
 <script src="{{ site.staticContentPath }}/web-gallery/static/js/registration.js" type="text/javascript"></script>
-<script src="{{ site.staticContentPath }}/habbo-registration/habbo-registration.js" type="text/javascript"></script>
+<script src="{{ site.staticContentPath }}/habbo-widgets/change-looks/habbo-registration.js" type="text/javascript"></script>
     <script type="text/javascript">		
         L10N.put("register.tooltip.name", "Your name can contain lowercase and uppercase letters, numbers and the characters -=?!@:.");
         L10N.put("register.tooltip.password", "Your password must have at least 6 characters and it must contain both letters and numbers.");
@@ -96,7 +96,7 @@ if (typeof HabboClient != "undefined") { HabboClient.windowName = "client"; }
 
         HabboView.add(function() {
             HabboRegistration.init({
-                basePath: "{{ site.staticContentPath }}/habbo-registration/",
+                basePath: "{{ site.staticContentPath }}/habbo-widgets/change-looks/",
                 containerId: "register-avatar-editor",
                 figureInputId: "register-figure",
                 genderInputId: "register-gender",

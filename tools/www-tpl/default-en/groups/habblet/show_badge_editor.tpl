@@ -23,7 +23,7 @@
 <script type="text/javascript">
 window.HabboBadgeEditorConfig = {
     badge_data: "{{ group.getBadge() }}",
-    assetsPath: "{{ site.staticContentPath }}/badge-editor/",
+    assetsPath: "{{ site.staticContentPath }}/habbo-widgets/badge-editor/",
     assetBundlePath: "assets.zip",
     badge_data_url: "data/badge_data.xml",
     localization_url: "data/badge_editor.xml",
@@ -44,7 +44,7 @@ window.HabboBadgeEditor = {
 (function() {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src = "{{ site.staticContentPath }}/badge-editor/badge-editor.js";
+    script.src = "{{ site.staticContentPath }}/habbo-widgets/badge-editor/badge-editor.js";
     document.getElementsByTagName("head")[0].appendChild(script);
 })();
 </script>

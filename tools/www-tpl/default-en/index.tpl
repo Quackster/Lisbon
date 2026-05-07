@@ -14,7 +14,7 @@ var andSoItBegins = (new Date()).getTime();
 
 <script src="{{ site.staticContentPath }}/web-gallery/static/js/libs2.js" type="text/javascript"></script>
 <script src="{{ site.staticContentPath }}/web-gallery/static/js/landing.js" type="text/javascript"></script>
-<script src="{{ site.staticContentPath }}/habbo-landing/habbo-landing.js" type="text/javascript"></script>
+<script src="{{ site.staticContentPath }}/habbo-widgets/landing/habbo-landing.js" type="text/javascript"></script>
 <link rel="stylesheet" href="{{ site.staticContentPath }}/web-gallery/v2/styles/style.css" type="text/css" />
 <link rel="stylesheet" href="{{ site.staticContentPath }}/web-gallery/v2/styles/buttons.css" type="text/css" />
 <link rel="stylesheet" href="{{ site.staticContentPath }}/web-gallery/v2/styles/boxes.css" type="text/css" />
@@ -97,10 +97,10 @@ HabboView.add(function() {
 	}
 
 	new window.HabboLandingWidget(container, {
-		assetsPath: "{{ site.staticContentPath }}/habbo-landing/",
-		assetsZipUrl: "{{ site.staticContentPath }}/habbo-landing/assets.zip",
+		assetsPath: "{{ site.staticContentPath }}/habbo-widgets/landing/",
+		assetsZipUrl: "{{ site.staticContentPath }}/habbo-widgets/landing/assets.zip",
 		habbosUrl: "{{ site.staticContentPath }}/xml/promo_habbos.xml",
-		localizationUrl: "{{ site.staticContentPath }}/habbo-landing/localization.xml",
+		localizationUrl: "{{ site.staticContentPath }}/habbo-widgets/landing/localization.xml",
 		createButtonText: "Register today! \u00BB",
 		inHotelText: "Online now!",
 		slogan: "{{ site.siteName }} Hotel is a virtual world where\nyou can meet and make friends!",
