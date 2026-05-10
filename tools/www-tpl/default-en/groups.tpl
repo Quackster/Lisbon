@@ -53,8 +53,8 @@ if (typeof HabboClient != "undefined") { HabboClient.windowName = "client"; }
 <link rel="stylesheet" href="{{ site.staticContentPath }}/web-gallery/v2/styles/group.css" type="text/css" />
 
 <!-- HTML5 trax player -->
-<script src="{{ site.staticContentPath }}/web-gallery/static/js/webbanditten/traxplayer.js" type="text/javascript"></script>
-<link rel="stylesheet" href="{{ site.staticContentPath }}/web-gallery/v2/styles/webbanditten/traxplayer.css" type="text/css" />
+<link rel="stylesheet" href="{{ site.staticContentPath }}/habbo-widgets/traxplayer/habbo-trax-player.css" type="text/css" />
+<script src="{{ site.staticContentPath }}/habbo-widgets/traxplayer/habbo-trax-player.iife.js" type="text/javascript"></script>
 
 <style type="text/css">
     #playground, #playground-outer {

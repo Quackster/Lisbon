@@ -18,8 +18,9 @@ Event.observe("widget-{{ sticker.getId() }}-edit", "click", function(e) { openEd
 	{% if (sticker.hasSong() == false) or (editMode == true) %}
 	<div id="traxplayer-content" style="text-align: center;"><img src="{{ site.staticContentPath }}/web-gallery/images/traxplayer/player.png"/></div>
 	{% else %}
-	<div id="traxplayer-content" style="text-align: center;"></div>
+	<div id="traxplayer-content" style="text-align: center;">
 	{% include "homes/widget/habblet/trax_song.tpl" %}
+	</div>
 	{% endif %}
 {% if editMode %}
 <div id="edit-menu-trax-select-temp" style="display:none">
