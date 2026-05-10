@@ -13,9 +13,11 @@
 /*.jar
 /tmp
 *.ini
+!/packaging/dist/config/*.ini
 
 /tools/db/schema.sql
 log4j.properties
+!/packaging/dist/config/*.properties
 
 Kepler-Server-all.jar
 

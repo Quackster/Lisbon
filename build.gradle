@@ -5,7 +5,7 @@ plugins {
 def packagedDistDir = layout.projectDirectory.dir('dist')
 
 tasks.register('packageDist', Sync) {
-    dependsOn ':Lisbon-Server:shadowJar'
+    dependsOn ':Lisbon-Server:shadowJar', ':Lisbon-Web:installDist'
 
     into(packagedDistDir)
 
@@ -13,8 +13,36 @@ tasks.register('packageDist', Sync) {
     from(layout.projectDirectory.file('figuredata.xml'))
     from(layout.projectDirectory.file('Lisbon-Server/build/libs/Lisbon-Server.jar'))
 
+    into('web') {
+        from(layout.projectDirectory.dir('Lisbon-Web/build/install/Lisbon-Web'))
+    }
+
+    into('tools') {
+        from(layout.projectDirectory.dir('tools')) {
+            include 'lisbon.sql'
+            include 'groups.sql'
+            include 'cleanup.sql'
+        }
+    }
+
+    into('tools/migrations') {
+        from(layout.projectDirectory.dir('tools/migrations'))
+    }
+
+    into('tools/gamedata') {
+        from(layout.projectDirectory.dir('tools/gamedata'))
+    }
+
     into('tools/snowstorm_maps') {
         from(layout.projectDirectory.dir('tools/snowstorm_maps'))
+    }
+
+    into('tools/www') {
+        from(layout.projectDirectory.dir('tools/www'))
+    }
+
+    into('tools/www-tpl') {
+        from(layout.projectDirectory.dir('tools/www-tpl'))
     }
 }
 
