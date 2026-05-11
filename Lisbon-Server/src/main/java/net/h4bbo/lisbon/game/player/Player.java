@@ -1,6 +1,7 @@
 package net.h4bbo.lisbon.game.player;
 
 import io.netty.util.AttributeKey;
+import net.h4bbo.lisbon.crypto.HabboCipher;
 import net.h4bbo.lisbon.dao.mysql.*;
 import net.h4bbo.lisbon.game.GameScheduler;
 import net.h4bbo.lisbon.game.achievements.user.UserAchievementManager;
@@ -56,6 +57,12 @@ public class Player extends Entity {
     private boolean loggedIn;
     private boolean disconnected;
     private boolean pingOK;
+    private boolean possibleAchievementsSent;
+    private volatile boolean inboundEncrypted;
+    private volatile boolean outboundEncrypted;
+    private HabboCipher inboundCipher;
+    private HabboCipher outboundCipher;
+    private CryptoMode cryptoMode = CryptoMode.NONE;
     private int timeConnected;
     private String lastGift;
     private PlayerGuideManager guideManager;
@@ -395,6 +402,70 @@ public class Player extends Entity {
     }
 
     /**
+     * Get if the client has received its possible achievement list.
+     *
+     * @return true, if the list has been sent
+     */
+    public boolean hasPossibleAchievementsSent() {
+        return possibleAchievementsSent;
+    }
+
+    /**
+     * Mark the possible achievement list as sent to the client.
+     */
+    public void setPossibleAchievementsSent() {
+        this.possibleAchievementsSent = true;
+    }
+
+    public HabboCipher getInboundCipher() {
+        return inboundCipher;
+    }
+
+    public void setInboundCipher(HabboCipher inboundCipher) {
+        this.inboundCipher = inboundCipher;
+    }
+
+    public HabboCipher getOutboundCipher() {
+        return outboundCipher;
+    }
+
+    public void setOutboundCipher(HabboCipher outboundCipher) {
+        this.outboundCipher = outboundCipher;
+    }
+
+    public boolean isInboundEncrypted() {
+        return inboundEncrypted;
+    }
+
+    public void setInboundEncrypted(boolean inboundEncrypted) {
+        this.inboundEncrypted = inboundEncrypted;
+    }
+
+    public boolean isOutboundEncrypted() {
+        return outboundEncrypted;
+    }
+
+    public void setOutboundEncrypted(boolean outboundEncrypted) {
+        this.outboundEncrypted = outboundEncrypted;
+    }
+
+    public CryptoMode getCryptoMode() {
+        return cryptoMode;
+    }
+
+    public void setCryptoMode(CryptoMode cryptoMode) {
+        this.cryptoMode = cryptoMode == null ? CryptoMode.NONE : cryptoMode;
+    }
+
+    public void resetCrypto() {
+        this.inboundCipher = null;
+        this.outboundCipher = null;
+        this.inboundEncrypted = false;
+        this.outboundEncrypted = false;
+        this.cryptoMode = CryptoMode.NONE;
+    }
+
+    /**
      * Set if the connection has timed out or not.
      *
      * @param pingOK the value to determine of the connection has timed out
@@ -501,4 +572,9 @@ public class Player extends Entity {
     /*public int getVersion() {
         return Kepler.getServer().getConnectionRule(this.network.getPort()).getVersion();
     }*/
+
+    public enum CryptoMode {
+        NONE,
+        INIT
+    }
 }

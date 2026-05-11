@@ -1,12 +1,11 @@
 package net.h4bbo.lisbon.messages.incoming.handshake;
 
 import net.h4bbo.lisbon.game.player.Player;
-import net.h4bbo.lisbon.messages.outgoing.handshake.CRYPTO_PARAMETERS;
+import net.h4bbo.lisbon.messages.outgoing.handshake.SESSION_PARAMETERS;
 import net.h4bbo.lisbon.messages.types.MessageEvent;
-import net.h4bbo.lisbon.server.netty.GameChannelPipeline;
 import net.h4bbo.lisbon.server.netty.streams.NettyRequest;
 
-public class INIT_CRYPTO implements MessageEvent {
+public class GET_SESSION_PARAMETERS implements MessageEvent {
 
     @Override
     public void handle(Player player, NettyRequest reader) {
@@ -14,7 +13,6 @@ public class INIT_CRYPTO implements MessageEvent {
             return;
         }
 
-        GameChannelPipeline.resetCrypto(player);
-        player.send(new CRYPTO_PARAMETERS());
+        player.send(new SESSION_PARAMETERS(player.getDetails()));
     }
 }

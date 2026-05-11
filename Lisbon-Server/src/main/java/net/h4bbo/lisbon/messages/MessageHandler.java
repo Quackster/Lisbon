@@ -14,7 +14,9 @@ import net.h4bbo.lisbon.messages.incoming.club.SUBSCRIBE_CLUB;
 import net.h4bbo.lisbon.messages.incoming.events.*;
 import net.h4bbo.lisbon.messages.incoming.games.*;
 import net.h4bbo.lisbon.messages.incoming.handshake.GENERATEKEY;
+import net.h4bbo.lisbon.messages.incoming.handshake.GET_SESSION_PARAMETERS;
 import net.h4bbo.lisbon.messages.incoming.handshake.INIT_CRYPTO;
+import net.h4bbo.lisbon.messages.incoming.handshake.SECRETKEY;
 import net.h4bbo.lisbon.messages.incoming.handshake.SSO;
 import net.h4bbo.lisbon.messages.incoming.handshake.TRY_LOGIN;
 import net.h4bbo.lisbon.messages.incoming.infobus.CHANGEWORLD;
@@ -171,6 +173,8 @@ public class MessageHandler {
         registerEvent(206, new INIT_CRYPTO());
         registerEvent(2002, new GENERATEKEY());
         registerEvent(202, new GENERATEKEY());
+        registerEvent(207, new SECRETKEY());
+        registerEvent(1817, new GET_SESSION_PARAMETERS());
         registerEvent(204, new SSO());
         registerEvent(4, new TRY_LOGIN());
     }
