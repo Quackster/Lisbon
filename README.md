@@ -6,6 +6,8 @@ All the gamedata files can be found [HERE](https://h4bbo.net/archive/dcr_packs/d
 
 # Screenshots
 
+<img width="794" height="622" alt="image" src="https://github.com/user-attachments/assets/02a221bf-5f08-4fe9-a68d-5f7da6262ab1" />
+
 ![](https://i.imgur.com/8EdTzmb.png)
 
 ## Linux install
