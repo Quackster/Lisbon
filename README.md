@@ -2,6 +2,12 @@
 
 Lisbon is a Habbo Hotel emulator that is designed to fully emulate the v26 version from 2008 era. 
 
+All the gamedata files can be found [HERE](https://h4bbo.net/archive/dcr_packs/dcr_complete_r26_20080915_0408_7984_61ccb5f8b8797a3aba62c1fa2ca80169.zip).
+
+# Screenshots
+
+![](https://i.imgur.com/8EdTzmb.png)
+
 ## Linux install
 
 The Linux installer deploys Lisbon with Java 17, MariaDB, Nginx, the emulator service, the web service, database imports, and systemd units.
