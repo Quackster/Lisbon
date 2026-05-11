@@ -6,9 +6,17 @@ All the gamedata files can be found [HERE](https://h4bbo.net/archive/dcr_packs/d
 
 # Screenshots
 
+Website:
+
 <img width="794" height="622" alt="image" src="https://github.com/user-attachments/assets/02a221bf-5f08-4fe9-a68d-5f7da6262ab1" />
 
-![](https://i.imgur.com/8EdTzmb.png)
+Logged in:
+
+<img width="1438" height="1018" alt="basilisk_SN5B5EZHaQ" src="https://github.com/user-attachments/assets/ca5cc487-08ea-4b62-9627-4b2d9c4c3f71" />
+
+Hotel:
+
+<img width="960" height="540" alt="basilisk_h44Zb4dNb6" src="https://github.com/user-attachments/assets/daa685f6-5891-4f88-8783-34d6b135ebfb" />
 
 ## Linux install
 
