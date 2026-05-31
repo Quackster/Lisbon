@@ -174,7 +174,7 @@ public class Player extends Entity {
         }
 
         if (ClubSubscription.isGiftDue(this)) {
-            this.send(new CLUB_GIFT(1));
+            this.send(new CLUB_GIFT(Math.max(1, this.statisticManager.getIntValue(PlayerStatistic.GIFTS_DUE))));
         }
 
         this.messenger.sendStatusUpdate();

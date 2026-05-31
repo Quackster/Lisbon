@@ -148,15 +148,15 @@ public class ClubSubscription {
             return false;
         }
 
-        if (player.getDetails().getFirstClubSubscription() == 0) {
-            return true;
-        }
-
         if (player.getStatisticManager().getIntValue(PlayerStatistic.GIFTS_DUE) > 0) {
             return true;
         }
 
-        return true;
+        if (player.getDetails().getFirstClubSubscription() == 0) {
+            return true;
+        }
+
+        return false;
     }
 
     public static void tryNextGift(Player player) throws SQLException {

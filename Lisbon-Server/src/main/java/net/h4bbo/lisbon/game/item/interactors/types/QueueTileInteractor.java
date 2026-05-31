@@ -19,10 +19,12 @@ public class QueueTileInteractor extends GenericTrigger {
         }
 
         Player player = (Player)entity;
+        String roomModel = roomEntity.getRoom().getData().getModel();
 
-        if (!roomEntity.getRoom().getData().getModel().equals("pool_b")) {
+        if (!roomModel.equals("pool_b")) {
             return;
         }
+
         if (player.getDetails().getTickets() == 0 || player.getDetails().getPoolFigure().isEmpty()) {
             oldPosition.setRotation(2); // Make user face this way, like the original Lido behaviour
             player.getRoomUser().stopWalking();
@@ -48,8 +50,7 @@ public class QueueTileInteractor extends GenericTrigger {
             }
         }
 
-        // When they stop walking, check if the player is on a pool lido queue and walk to the next one
+        // When they stop walking, advance public room queues one square at a time.
         StatusTask.processPoolQueue(player);
     }
 }
-

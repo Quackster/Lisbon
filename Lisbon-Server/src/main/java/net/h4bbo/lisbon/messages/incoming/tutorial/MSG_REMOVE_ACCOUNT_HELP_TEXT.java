@@ -18,6 +18,8 @@ public class MSG_REMOVE_ACCOUNT_HELP_TEXT implements MessageEvent {
         if (player.getGuideManager().isBlockingTutorial()) {
             player.getGuideManager().setBlockingTutorial(false);
             player.getGuideManager().setCancelTutorial(true);
+            GuideManager.getInstance().tryClearTutorial(player);
+            player.getStatisticManager().setLongValue(PlayerStatistic.IS_GUIDABLE, 0);
             return;
         }
 

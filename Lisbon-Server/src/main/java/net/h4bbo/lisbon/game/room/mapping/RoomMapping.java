@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class RoomMapping {
-    public static final String TELEPORTER_CLOSE = "0";
-    public static final String TELEPORTER_OPEN = "1";
+    public static final String TELEPORTER_CLOSE = "FALSE";
+    public static final String TELEPORTER_OPEN = "TRUE";
 
     public static int FORTUNE_OFF = 8;
     public static int FORTUNE_NO_STATE = -1;

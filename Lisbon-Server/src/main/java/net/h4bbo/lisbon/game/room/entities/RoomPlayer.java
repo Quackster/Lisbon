@@ -7,6 +7,7 @@ import net.h4bbo.lisbon.game.games.GameManager;
 import net.h4bbo.lisbon.game.games.player.GamePlayer;
 import net.h4bbo.lisbon.game.item.Item;
 import net.h4bbo.lisbon.game.item.base.ItemBehaviour;
+import net.h4bbo.lisbon.game.item.interactors.types.TeleportInteractor;
 import net.h4bbo.lisbon.game.player.Player;
 import net.h4bbo.lisbon.game.room.RoomManager;
 import net.h4bbo.lisbon.game.room.managers.RoomTradeManager;
@@ -24,6 +25,8 @@ public class RoomPlayer extends RoomEntity {
 
     private int authenticateId;
     private int authenticateTelporterId;
+    private int pendingTeleporterId;
+    private int queuedTeleporterId;
     private int observingGameId;
     private int lidoVote;
 
@@ -46,6 +49,8 @@ public class RoomPlayer extends RoomEntity {
         this.player = player;
         this.authenticateId = -1;
         this.authenticateTelporterId = -1;
+        this.pendingTeleporterId = -1;
+        this.queuedTeleporterId = -1;
         this.tradeItems = new ArrayList<>();
     }
 
@@ -92,6 +97,8 @@ public class RoomPlayer extends RoomEntity {
         this.isDiving = false;
         this.observingGameId = -1;
         this.lidoVote = 0;
+        this.pendingTeleporterId = -1;
+        this.queuedTeleporterId = -1;
         RoomTradeManager.close(this);
     }
 
@@ -142,6 +149,40 @@ public class RoomPlayer extends RoomEntity {
                 }
             }
         }
+
+        if (this.pendingTeleporterId != -1 && this.getRoom() != null && this.authenticateTelporterId == -1) {
+            Item pendingTeleporter = this.getRoom().getItemManager().getById(this.pendingTeleporterId);
+
+            if (pendingTeleporter != null && pendingTeleporter.hasBehaviour(ItemBehaviour.TELEPORTER)) {
+                if (pendingTeleporter.getPosition().equals(this.getPosition())) {
+                    this.pendingTeleporterId = -1;
+
+                    if (this.queuedTeleporterId == pendingTeleporter.getId()) {
+                        this.queuedTeleporterId = -1;
+                        new TeleportInteractor().onInteract(this.player, this.getRoom(), pendingTeleporter, 2);
+                    }
+                } else {
+                    this.pendingTeleporterId = -1;
+                }
+            } else {
+                this.pendingTeleporterId = -1;
+            }
+        }
+
+        if (this.authenticateTelporterId == -1 || this.getRoom() == null) {
+            return;
+        }
+
+        Item activeTeleporter = this.getRoom().getItemManager().getById(this.authenticateTelporterId);
+
+        if (activeTeleporter != null
+                && activeTeleporter.hasBehaviour(ItemBehaviour.TELEPORTER)
+                && !activeTeleporter.getPosition().equals(this.getPosition())) {
+            activeTeleporter.setCustomData(TeleportInteractor.TELEPORTER_CLOSE);
+            activeTeleporter.updateStatus();
+            this.setWalkingAllowed(true);
+            this.setAuthenticateTelporterId(-1);
+        }
     }
 
     @Override
@@ -151,6 +192,8 @@ public class RoomPlayer extends RoomEntity {
         // Remove authentications
         this.authenticateId = -1;
         this.authenticateTelporterId = -1;
+        this.pendingTeleporterId = -1;
+        this.queuedTeleporterId = -1;
     }
 
     public void stopObservingGame() {
@@ -202,6 +245,22 @@ public class RoomPlayer extends RoomEntity {
 
     public void setAuthenticateTelporterId(int authenticateTelporterId) {
         this.authenticateTelporterId = authenticateTelporterId;
+    }
+
+    public int getPendingTeleporterId() {
+        return pendingTeleporterId;
+    }
+
+    public void setPendingTeleporterId(int pendingTeleporterId) {
+        this.pendingTeleporterId = pendingTeleporterId;
+    }
+
+    public int getQueuedTeleporterId() {
+        return queuedTeleporterId;
+    }
+
+    public void setQueuedTeleporterId(int queuedTeleporterId) {
+        this.queuedTeleporterId = queuedTeleporterId;
     }
 
     public boolean isTyping() {

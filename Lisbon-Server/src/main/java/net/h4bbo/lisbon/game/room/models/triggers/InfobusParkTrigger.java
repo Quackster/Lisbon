@@ -6,11 +6,6 @@ import net.h4bbo.lisbon.game.infobus.InfobusManager;
 import net.h4bbo.lisbon.game.player.Player;
 import net.h4bbo.lisbon.game.room.Room;
 import net.h4bbo.lisbon.game.triggers.GenericTrigger;
-import net.h4bbo.lisbon.messages.outgoing.infobus.BUS_DOOR;
-import net.h4bbo.lisbon.messages.types.MessageComposer;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class InfobusParkTrigger extends GenericTrigger {
     @Override
@@ -20,7 +15,7 @@ public class InfobusParkTrigger extends GenericTrigger {
         }
 
         Player player = (Player) entity;
-        player.send(new BUS_DOOR(InfobusManager.getInstance().isDoorOpen()));
+        InfobusManager.getInstance().sendDoorStatus(player);
 
         /*
         List<MessageComposer> messageComposers = new ArrayList<>();

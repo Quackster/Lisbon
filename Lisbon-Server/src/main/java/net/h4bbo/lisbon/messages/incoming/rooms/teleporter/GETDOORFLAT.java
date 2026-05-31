@@ -25,7 +25,7 @@ public class GETDOORFLAT implements MessageEvent {
         }
 
         var interaction = new TeleportInteractor();
-        interaction.onInteract(player, room, item, 0);
+        interaction.onInteract(player, room, item, 2);
 
         /*Item linkedTeleporter = ItemDao.getItem(item.getTeleporterId());
 

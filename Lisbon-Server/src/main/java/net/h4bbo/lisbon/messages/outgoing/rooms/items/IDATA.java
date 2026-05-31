@@ -22,14 +22,20 @@ public class IDATA extends MessageComposer {
 
     @Override
     public void compose(NettyResponse response) {
+        boolean isPhoto = "photo".equalsIgnoreCase(this.item.getDefinition().getSprite());
+
         if (this.item.hasBehaviour(ItemBehaviour.POST_IT)) {
             response.writeDelimeter(this.item.getId(), (char) 9);
             response.writeDelimeter(this.colour, ' ');
             response.write(this.text);
         } else {
             response.writeDelimeter(this.item.getId(), (char) 9);
-            response.writeDelimeter(this.item.getId(), ' ');
-            response.writeDelimeter(this.item.getOwnerId(), ' ');
+            if (isPhoto) {
+                response.writeDelimeter("I", ' ');
+            } else {
+                response.writeDelimeter(this.item.hasBehaviour(ItemBehaviour.WALL_ITEM) ? "I" : "S", ' ');
+                response.writeDelimeter(this.item.getOwnerId(), ' ');
+            }
             response.write(this.item.getCustomData());
         }
     }
@@ -39,4 +45,3 @@ public class IDATA extends MessageComposer {
         return 48; // "@p"
     }
 }
-

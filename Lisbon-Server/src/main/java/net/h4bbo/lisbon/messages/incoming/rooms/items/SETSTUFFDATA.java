@@ -3,7 +3,6 @@ package net.h4bbo.lisbon.messages.incoming.rooms.items;
 import net.h4bbo.lisbon.game.fuserights.Fuseright;
 import net.h4bbo.lisbon.game.item.Item;
 import net.h4bbo.lisbon.game.item.base.ItemBehaviour;
-import net.h4bbo.lisbon.game.item.interactors.types.TeleportInteractor;
 import net.h4bbo.lisbon.game.pathfinder.Position;
 import net.h4bbo.lisbon.game.player.Player;
 import net.h4bbo.lisbon.game.room.Room;
@@ -46,8 +45,6 @@ public class SETSTUFFDATA implements MessageEvent {
         }
 
         if (item.hasBehaviour(ItemBehaviour.TELEPORTER)) {
-            var interaction = new TeleportInteractor();
-            interaction.onInteract(player, room, item, 0);
             return;
         }
 

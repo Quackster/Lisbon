@@ -41,7 +41,7 @@ public class PhotoDao {
 
         try {
             sqlConnection = Storage.getStorage().getConnection();
-            preparedStatement = Storage.getStorage().prepare("SELECT * FROM items_photos WHERE photo_id = ? AND is_active = 1", sqlConnection);// (photo_id, photo_user_id, timestamp, photo_data, photo_checksum) VALUES (?, ?, ?, ?, ?)", sqlConnection);
+            preparedStatement = Storage.getStorage().prepare("SELECT * FROM items_photos WHERE photo_id = ?", sqlConnection);
             preparedStatement.setLong(1, photoId);
             resultSet = preparedStatement.executeQuery();
 
@@ -71,7 +71,7 @@ public class PhotoDao {
 
         try {
             sqlConnection = Storage.getStorage().getConnection();
-            preparedStatement = Storage.getStorage().prepare("UPDATE items_photos SET is_active = 0 WHERE photo_id = ?", sqlConnection);
+            preparedStatement = Storage.getStorage().prepare("DELETE FROM items_photos WHERE photo_id = ?", sqlConnection);
             preparedStatement.setLong(1, photoId);
             preparedStatement.execute();
         } catch (Exception e) {

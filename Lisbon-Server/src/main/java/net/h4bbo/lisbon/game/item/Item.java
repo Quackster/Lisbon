@@ -18,10 +18,14 @@ import net.h4bbo.lisbon.messages.outgoing.rooms.items.SHOWPROGRAM;
 import net.h4bbo.lisbon.messages.outgoing.rooms.items.STUFFDATAUPDATE;
 import net.h4bbo.lisbon.server.netty.streams.NettyResponse;
 import net.h4bbo.lisbon.util.StringUtil;
+import net.h4bbo.lisbon.util.DateUtil;
 import net.h4bbo.lisbon.util.config.GameConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.regex.Pattern;
 
 public class Item {
@@ -79,6 +83,7 @@ public class Item {
         this.rollingData = null;
         this.isHidden = isHidden;
         this.setDefinitionId(this.definitionId);
+        this.customData = this.normaliseCustomData(this.customData);
 
         if (this.hasBehaviour(ItemBehaviour.TELEPORTER)) {
             this.teleporterId = TeleporterDao.getTeleporterId(this.id);
@@ -220,9 +225,13 @@ public class Item {
                 if (player.getRoomUser().getAuthenticateTelporterId() == this.id) {
                     return true;
                 }
+
+                if (player.getRoomUser().getPendingTeleporterId() == this.id) {
+                    return true;
+                }
             }
 
-            return this.customData.equals("TRUE");
+            return this.customData.equalsIgnoreCase("TRUE") || this.customData.equals("1");
         }
 
         if (this.hasBehaviour(ItemBehaviour.GATE)) {
@@ -252,6 +261,10 @@ public class Item {
         Room room = this.getRoom();
 
         if (room != null) {
+            if (this.hasBehaviour(ItemBehaviour.TELEPORTER) || this.hasBehaviour(ItemBehaviour.GATE)) {
+                room.getMapping().regenerateCollisionMap();
+            }
+
             room.send(new STUFFDATAUPDATE(this));
         }
     }
@@ -556,7 +569,77 @@ public class Item {
     }
 
     public void setCustomData(String customData) {
-        this.customData = customData;
+        this.customData = this.normaliseCustomData(customData);
+    }
+
+    private String normaliseCustomData(String customData) {
+        return this.normalisePhotoCustomData(this.normaliseTeleporterCustomData(customData));
+    }
+
+    private String normaliseTeleporterCustomData(String customData) {
+        if (customData == null) {
+            return "";
+        }
+
+        if (!this.hasBehaviour(ItemBehaviour.TELEPORTER)) {
+            return customData;
+        }
+
+        if ("0".equals(customData)) {
+            return "FALSE";
+        }
+
+        if ("1".equals(customData)) {
+            return "TRUE";
+        }
+
+        return customData;
+    }
+
+    private String normalisePhotoCustomData(String customData) {
+        if (customData == null) {
+            return "";
+        }
+
+        if (!"photo".equalsIgnoreCase(this.getDefinition().getSprite())) {
+            return customData;
+        }
+
+        String[] parts = customData.split("\r", 2);
+        String firstLine = parts[0].trim();
+
+        String normalisedTimestamp = this.normalisePhotoTimestamp(firstLine);
+
+        if (normalisedTimestamp != null) {
+            if (parts.length > 1 && !parts[1].isBlank()) {
+                return normalisedTimestamp + "\r" + parts[1];
+            }
+
+            return normalisedTimestamp;
+        }
+
+        return customData;
+    }
+
+    private String normalisePhotoTimestamp(String timestamp) {
+        String[] formats = new String[] {
+                "dd-MM-yyyy HH:mm:ss",
+                "dd-MM-yyyy HH:mm",
+                "dd/MM/yyyy HH:mm:ss",
+                "dd/MM/yyyy HH:mm",
+                "dd/MM/yy HH:mm:ss",
+                "dd/MM/yy HH:mm"
+        };
+
+        for (String format : formats) {
+            try {
+                LocalDateTime parsed = LocalDateTime.parse(timestamp, DateTimeFormatter.ofPattern(format));
+                return parsed.format(DateTimeFormatter.ofPattern(DateUtil.CAMERA_DATE));
+            } catch (DateTimeParseException ignored) {
+            }
+        }
+
+        return null;
     }
 
     public String getCurrentProgramValue() {
@@ -656,4 +739,3 @@ public class Item {
         this.swimTo = swimTo;
     }
 }
-

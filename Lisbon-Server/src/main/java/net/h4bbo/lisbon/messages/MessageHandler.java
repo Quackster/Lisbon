@@ -45,6 +45,7 @@ import net.h4bbo.lisbon.messages.incoming.rooms.moderation.*;
 import net.h4bbo.lisbon.messages.incoming.rooms.pool.*;
 import net.h4bbo.lisbon.messages.incoming.rooms.settings.*;
 import net.h4bbo.lisbon.messages.incoming.rooms.teleporter.GETDOORFLAT;
+import net.h4bbo.lisbon.messages.incoming.rooms.teleporter.INTODOOR;
 import net.h4bbo.lisbon.messages.incoming.rooms.user.*;
 import net.h4bbo.lisbon.messages.incoming.songs.*;
 import net.h4bbo.lisbon.messages.incoming.trade.*;
@@ -216,7 +217,7 @@ public class MessageHandler {
         registerEvent(228, new GET_SOUND_SETTING());
         registerEvent(9, new GETAVAILABLESETS());
         registerEvent(149, new UPDATE_ACCOUNT());
-        //registerEvent(315, new TEST_LATENCY());
+        registerEvent(315, new TEST_LATENCY());
     }
 
     private void registerClubPackets() {
@@ -347,12 +348,7 @@ public class MessageHandler {
      * Register room teleporter packets
      */
     public void registerRoomTeleporterPackets() {
-        /*
         registerEvent(81, new INTODOOR());
-        registerEvent(28, new GETDOORFLAT());
-        registerEvent(82, new DOORGOIN());
-        registerEvent(54, new GOVIADOOR());
-        */
         registerEvent(28, new GETDOORFLAT());
     }
 

@@ -181,31 +181,31 @@ public class RoomEntityManager {
             if (teleporter != null) {
                 player.getRoomUser().setWalkingAllowed(false);
                 entity.getRoomUser().setPosition(teleporter.getPosition().copy());
+                teleporter.setCustomData(TeleportInteractor.TELEPORTER_OPEN);
+                teleporter.updateStatus();
 
                 GameScheduler.getInstance().getService().schedule(() -> {
-                    room.send(new BROADCAST_TELEPORTER(teleporter, player.getDetails().getName(), false));
-                }, 500, TimeUnit.MILLISECONDS);
+                    if (player.getRoomUser().getRoom() != this.room) {
+                        return;
+                    }
+
+                    this.room.send(new BROADCAST_TELEPORTER(teleporter, player.getDetails().getName(), false));
+                }, 100, TimeUnit.MILLISECONDS);
 
                 GameScheduler.getInstance().getService().schedule(() -> {
-                    teleporter.setCustomData(TeleportInteractor.TELEPORTER_OPEN);
-                    teleporter.updateStatus();
+                    if (player.getRoomUser().getRoom() != this.room || player.getRoomUser().getAuthenticateTelporterId() != teleporter.getId()) {
+                        return;
+                    }
 
-                    player.getRoomUser().walkTo(
-                            teleporter.getPosition().getSquareInFront().getX(),
-                            teleporter.getPosition().getSquareInFront().getY());
-                }, 1500, TimeUnit.MILLISECONDS);
-
-                GameScheduler.getInstance().getService().schedule(() -> {
-                    teleporter.setCustomData(TeleportInteractor.TELEPORTER_CLOSE);
-                    teleporter.updateStatus();
-
+                    Position exitSquare = TeleportInteractor.getTeleporterFrontSquare(teleporter);
                     player.getRoomUser().setWalkingAllowed(true);
-                }, 2000, TimeUnit.MILLISECONDS);
+                    player.getRoomUser().walkTo(exitSquare.getX(), exitSquare.getY());
+                }, 600, TimeUnit.MILLISECONDS);
 
 
+            } else {
+                player.getRoomUser().setAuthenticateTelporterId(-1);
             }
-
-            player.getRoomUser().setAuthenticateTelporterId(-1);
         }
 
         player.send(new ROOM_URL());
