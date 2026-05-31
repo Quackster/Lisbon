@@ -2,10 +2,12 @@ package net.h4bbo.lisbon.game.room.tasks;
 
 import net.h4bbo.lisbon.game.entity.Entity;
 import net.h4bbo.lisbon.game.entity.EntityType;
+import net.h4bbo.lisbon.game.infobus.InfobusManager;
 import net.h4bbo.lisbon.game.pathfinder.Position;
 import net.h4bbo.lisbon.game.pets.Pet;
 import net.h4bbo.lisbon.game.player.Player;
 import net.h4bbo.lisbon.game.room.Room;
+import net.h4bbo.lisbon.game.room.RoomManager;
 import net.h4bbo.lisbon.game.room.RoomUserStatus;
 import net.h4bbo.lisbon.messages.outgoing.rooms.user.TYPING_STATUS;
 import net.h4bbo.lisbon.util.DateUtil;
@@ -108,7 +110,13 @@ public class StatusTask implements Runnable {
      * @param player the player to force walking
      */
     public static void processPoolQueue(Player player) {
-        if (player.getDetails().getTickets() == 0 || player.getDetails().getPoolFigure().isEmpty()) {
+        if (player.getRoomUser().getRoom() == null) {
+            return;
+        }
+
+        String roomModel = player.getRoomUser().getRoom().getData().getModel();
+
+        if (roomModel.equals("pool_b") && (player.getDetails().getTickets() == 0 || player.getDetails().getPoolFigure().isEmpty())) {
             return;
         }
 
@@ -124,7 +132,47 @@ public class StatusTask implements Runnable {
 
         if (player.getRoomUser().getCurrentItem() != null) {
             if (player.getRoomUser().getCurrentItem().getDefinition().getSprite().equals("queue_tile2")) {
-                Position front = player.getRoomUser().getCurrentItem().getPosition().getSquareInFront();
+                Position currentPosition = player.getRoomUser().getCurrentItem().getPosition();
+
+                if (roomModel.equals("park_a")) {
+                    if (!InfobusManager.getInstance().isDoorOpen()) {
+                        return;
+                    }
+
+                    if (currentPosition.equals(new Position(28, 5))) {
+                        boolean movedToBusFront = player.getRoomUser().walkTo(28, 4);
+
+                        if (!movedToBusFront) {
+                            Room infobusRoom = RoomManager.getInstance().getRoomByModel("park_b");
+
+                            if (infobusRoom != null) {
+                                infobusRoom.getEntityManager().enterRoom(player, null);
+                            }
+                        }
+
+                        return;
+                    }
+
+                    if (currentPosition.equals(new Position(28, 4))) {
+                        Room infobusRoom = RoomManager.getInstance().getRoomByModel("park_b");
+
+                        if (infobusRoom != null) {
+                            infobusRoom.getEntityManager().enterRoom(player, null);
+                        }
+
+                        return;
+                    }
+
+                    Position nextQueueTile = InfobusManager.getInstance().getNextQueueTile(currentPosition);
+
+                    if (nextQueueTile != null) {
+                        player.getRoomUser().walkTo(nextQueueTile.getX(), nextQueueTile.getY());
+                    }
+
+                    return;
+                }
+
+                Position front = currentPosition.getSquareInFront();
                 player.getRoomUser().walkTo(front.getX(), front.getY());
             }
         }

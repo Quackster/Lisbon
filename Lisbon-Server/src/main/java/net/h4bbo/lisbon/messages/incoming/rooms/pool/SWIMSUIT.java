@@ -33,5 +33,7 @@ public class SWIMSUIT implements MessageEvent {
                 player.getDetails().getFigure(),
                 player.getDetails().getPoolFigure(),
                 player.getDetails().getSex());
+
+        PoolHandler.exitBooth(player);
     }
 }

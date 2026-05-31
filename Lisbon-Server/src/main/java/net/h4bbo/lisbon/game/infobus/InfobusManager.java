@@ -1,14 +1,17 @@
 package net.h4bbo.lisbon.game.infobus;
 import net.h4bbo.lisbon.dao.mysql.InfobusDao;
 import net.h4bbo.lisbon.game.GameScheduler;
+import net.h4bbo.lisbon.game.pathfinder.Position;
 import net.h4bbo.lisbon.game.player.Player;
 import net.h4bbo.lisbon.game.room.RoomManager;
 import net.h4bbo.lisbon.log.Log;
-import net.h4bbo.lisbon.messages.outgoing.infobus.BUS_DOOR;
 import net.h4bbo.lisbon.messages.outgoing.infobus.CANNOT_ENTER_BUS;
 import net.h4bbo.lisbon.messages.outgoing.infobus.POLL_QUESTION;
 import net.h4bbo.lisbon.messages.outgoing.infobus.VOTE_RESULTS;
+import net.h4bbo.lisbon.messages.outgoing.rooms.items.SHOWPROGRAM;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class InfobusManager {
@@ -17,8 +20,11 @@ public class InfobusManager {
     private boolean isDoorOpen;
     private boolean isEventActive;
     private InfobusPoll currentPoll;
+    private final Map<Position, Position> queueRoute;
 
     public InfobusManager() {
+        this.queueRoute = new HashMap<>();
+        this.initialiseQueueRoute();
     }
 
     public void stopEvent() {
@@ -46,8 +52,25 @@ public class InfobusManager {
         var park = RoomManager.getInstance().getRoomByModel("park_a");
 
         if (park != null) {
-            park.send(new BUS_DOOR(this.isDoorOpen));
+            for (var composer : this.getDoorPrograms()) {
+                park.send(composer);
+            }
         }
+    }
+
+    public void sendDoorStatus(Player player) {
+        for (var composer : this.getDoorPrograms()) {
+            player.send(composer);
+        }
+    }
+
+    private SHOWPROGRAM[] getDoorPrograms() {
+        String state = this.isDoorOpen ? "open" : "close";
+
+        return new SHOWPROGRAM[] {
+                new SHOWPROGRAM(new String[] { "bus", state }),
+                new SHOWPROGRAM(new String[] { "busDoor", state })
+        };
     }
 
     /**
@@ -174,6 +197,44 @@ public class InfobusManager {
 
     public int getDoorY() {
         return 4;
+    }
+
+    public int getQueueStartX() {
+        return 19;
+    }
+
+    public int getQueueStartY() {
+        return 6;
+    }
+
+    public Position getNextQueueTile(Position currentPosition) {
+        return this.queueRoute.get(currentPosition);
+    }
+
+    private void initialiseQueueRoute() {
+        this.queueRoute.put(new Position(19, 6), new Position(20, 6));
+        this.queueRoute.put(new Position(20, 6), new Position(21, 6));
+        this.queueRoute.put(new Position(21, 6), new Position(22, 6));
+        this.queueRoute.put(new Position(22, 6), new Position(23, 6));
+        this.queueRoute.put(new Position(23, 6), new Position(24, 6));
+        this.queueRoute.put(new Position(24, 6), new Position(25, 6));
+        this.queueRoute.put(new Position(25, 6), new Position(26, 6));
+        this.queueRoute.put(new Position(26, 6), new Position(26, 7));
+        this.queueRoute.put(new Position(26, 7), new Position(26, 8));
+        this.queueRoute.put(new Position(26, 8), new Position(26, 9));
+        this.queueRoute.put(new Position(26, 9), new Position(26, 10));
+        this.queueRoute.put(new Position(26, 10), new Position(26, 11));
+        this.queueRoute.put(new Position(26, 11), new Position(26, 12));
+        this.queueRoute.put(new Position(26, 12), new Position(27, 12));
+        this.queueRoute.put(new Position(27, 12), new Position(28, 12));
+        this.queueRoute.put(new Position(28, 12), new Position(28, 11));
+        this.queueRoute.put(new Position(28, 11), new Position(28, 10));
+        this.queueRoute.put(new Position(28, 10), new Position(28, 9));
+        this.queueRoute.put(new Position(28, 9), new Position(28, 8));
+        this.queueRoute.put(new Position(28, 8), new Position(28, 7));
+        this.queueRoute.put(new Position(28, 7), new Position(28, 6));
+        this.queueRoute.put(new Position(28, 6), new Position(28, 5));
+        this.queueRoute.put(new Position(28, 5), new Position(28, 4));
     }
 
 }

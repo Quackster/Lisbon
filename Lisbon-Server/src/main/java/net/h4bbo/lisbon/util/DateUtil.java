@@ -11,7 +11,7 @@ import java.util.TimeZone;
 
 public class DateUtil {
     public static final String LONG_DATE = "dd-MM-yyyy HH:mm:ss";
-    public static final String CAMERA_DATE = "dd/MM/yyyy HH:mm:ss";
+    public static final String CAMERA_DATE = "dd/MM/yy HH:mm";
     public static final String SHORT_DATE = "dd-MM-yyyy";
     public static final String SHORT_DATE_TIME = "dd-MM-yyyy hh:mm a";
 

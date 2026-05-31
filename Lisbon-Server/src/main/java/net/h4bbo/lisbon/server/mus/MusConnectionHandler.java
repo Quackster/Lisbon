@@ -144,7 +144,6 @@ public class MusConnectionHandler extends SimpleChannelInboundHandler<MusMessage
 
                 long timeSeconds = DateUtil.getCurrentTimeSeconds();
 
-                String time = message.getContentPropList().getPropAsString("time");
                 Integer cs = message.getContentPropList().getPropAsInt("cs");
                 byte[] image = message.getContentPropList().getPropAsBytes("image");
                 String photoText = client.getPhotoText();
@@ -152,7 +151,13 @@ public class MusConnectionHandler extends SimpleChannelInboundHandler<MusMessage
                 Item photo = new Item();
                 photo.setOwnerId(client.getUserId());
                 photo.setDefinitionId(ItemManager.getInstance().getDefinitionBySprite("photo").getId());
-                photo.setCustomData(DateUtil.getDateAsString(timeSeconds) + "\r" + photoText);
+                String customData = DateUtil.getDate(timeSeconds, DateUtil.CAMERA_DATE);
+
+                if (photoText != null && !photoText.isBlank()) {
+                    customData += "\r" + photoText;
+                }
+
+                photo.setCustomData(customData);
                 ItemDao.newItem(photo);
 
                 PhotoDao.addPhoto(photo.getId(), client.getUserId(), DateUtil.getCurrentTimeSeconds(), image, cs);
@@ -188,7 +193,7 @@ public class MusConnectionHandler extends SimpleChannelInboundHandler<MusMessage
                 reply.setContentType(MusTypes.PropList);
                 reply.setContentPropList(new MusPropList(3));
                 reply.getContentPropList().setPropAsBytes("image", MusTypes.Media, photo.getData());
-                reply.getContentPropList().setPropAsString("time", DateUtil.getDateAsString(photo.getTime()));
+                reply.getContentPropList().setPropAsString("time", DateUtil.getDate(photo.getTime(), DateUtil.CAMERA_DATE));
                 reply.getContentPropList().setPropAsInt("cs", photo.getChecksum());
                 ctx.channel().writeAndFlush(reply);
             }

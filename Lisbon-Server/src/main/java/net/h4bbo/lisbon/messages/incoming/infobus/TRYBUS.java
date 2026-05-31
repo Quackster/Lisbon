@@ -1,6 +1,7 @@
 package net.h4bbo.lisbon.messages.incoming.infobus;
 
 import net.h4bbo.lisbon.game.infobus.InfobusManager;
+import net.h4bbo.lisbon.game.item.Item;
 import net.h4bbo.lisbon.game.player.Player;
 import net.h4bbo.lisbon.messages.outgoing.infobus.CANNOT_ENTER_BUS;
 import net.h4bbo.lisbon.messages.types.MessageEvent;
@@ -23,8 +24,20 @@ public class TRYBUS implements MessageEvent {
             return;
         }
 
+        Item currentItem = player.getRoomUser().getCurrentItem();
+
+        if (currentItem != null && currentItem.getDefinition().getSprite().equals("queue_tile2")) {
+            var nextQueueTile = InfobusManager.getInstance().getNextQueueTile(currentItem.getPosition());
+
+            if (nextQueueTile != null) {
+                player.getRoomUser().walkTo(nextQueueTile.getX(), nextQueueTile.getY());
+            }
+
+            return;
+        }
+
         player.getRoomUser().walkTo(
-                InfobusManager.getInstance().getDoorX(),
-                InfobusManager.getInstance().getDoorY()); // Walk to enter square
+                InfobusManager.getInstance().getQueueStartX(),
+                InfobusManager.getInstance().getQueueStartY()); // Join the queue from the back
     }
 }

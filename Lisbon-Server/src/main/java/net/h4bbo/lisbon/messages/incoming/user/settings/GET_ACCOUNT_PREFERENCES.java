@@ -9,6 +9,9 @@ public class GET_ACCOUNT_PREFERENCES implements MessageEvent {
 
     @Override
     public void handle(Player player, NettyRequest reader) {
-        player.send(new ACCOUNT_PREFERENCES(player.getDetails()));
+        player.send(new ACCOUNT_PREFERENCES(
+                player.getDetails().getSoundSetting(),
+                player.getGuideManager().hasTutorial()
+        ));
     }
 }

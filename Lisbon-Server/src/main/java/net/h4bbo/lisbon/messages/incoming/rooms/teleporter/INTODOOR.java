@@ -1,8 +1,8 @@
 package net.h4bbo.lisbon.messages.incoming.rooms.teleporter;
 
-import net.h4bbo.lisbon.dao.mysql.ItemDao;
 import net.h4bbo.lisbon.game.item.Item;
 import net.h4bbo.lisbon.game.item.base.ItemBehaviour;
+import net.h4bbo.lisbon.game.item.interactors.types.TeleportInteractor;
 import net.h4bbo.lisbon.game.player.Player;
 import net.h4bbo.lisbon.game.room.Room;
 import net.h4bbo.lisbon.messages.types.MessageEvent;
@@ -35,19 +35,11 @@ public class INTODOOR implements MessageEvent {
         }
 
 
-        Item linkedTeleporter = ItemDao.getItem(item.getTeleporterId());
-
-        if (linkedTeleporter == null) {
+        if (!item.getPosition().touches(player.getRoomUser().getPosition())
+                && !item.getPosition().equals(player.getRoomUser().getPosition())) {
             return;
         }
 
-        if (!item.getPosition().getSquareInFront().equals(player.getRoomUser().getPosition())) {
-            return;
-        }
-
-       // player.getRoomUser().setAuthenticateTelporterId(item.getId());
-        player.getRoomUser().setAuthenticateTelporterId(item.getId());
-        player.getRoomUser().walkTo(item.getPosition().getX(), item.getPosition().getY());
-        //player.getRoomUser().setWalkingAllowed(false);
+        new TeleportInteractor().onInteract(player, room, item, 1);
     }
 }

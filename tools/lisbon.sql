@@ -1034,7 +1034,7 @@ CREATE TABLE IF NOT EXISTS `catalogue_pages` (
 -- Dumping data for table kepler.catalogue_pages: ~60 rows (approximately)
 /*!40000 ALTER TABLE `catalogue_pages` DISABLE KEYS */;
 INSERT INTO `catalogue_pages` (`id`, `order_id`, `min_role`, `index_visible`, `is_club_only`, `name_index`, `link_list`, `name`, `layout`, `image_headline`, `image_teasers`, `body`, `label_pick`, `label_extra_s`, `label_extra_t`) VALUES
-	(1, 1, 1, 1, 0, 'Frontpage', '', 'Frontpage', 'ctlg_frontpage2', 'catal_fp_header', 'catal_fp_pic4,catal_fp_pic5,', 'Welcome to the Hotel Catalogue. It\'s packed full of fab things for your room - there\'s something for everyone! Browse the ranges by clicking the tabs on the right.<br><br>Some ranges are seasonal, so check back regularly for new items.<br><br>We regularly', NULL, 'Home sweet home!', '1:You need Credits to buy Furni for your room, click the Purse at the bottom of your screen for more information about Credits.'),
+	(1, 1, 1, 1, 0, 'Frontpage', '', 'Frontpage', 'ctlg_purse', 'catal_fp_header', 'catal_fp_pic4,', 'Need some furni for your Habbo room? Well, you\'re in the right place! This Catalogue is packed FULL of funky Furni, just click the tabs on the right to browse', NULL, NULL, '1:You need Credits to buy Furni for your room, click the Purse at the bottom of your screen for more information about Credits.'),
 	(2, 2, 1, 1, 0, 'Rare', '', 'Rare', 'ctlg_productpage1', 'catalog_rares_headline1', '', 'Okay this thing is fucking epic!\rEnjoy it while it lasts!', NULL, NULL, NULL),
 	(3, 3, 1, 1, 0, 'Spaces', '', 'Spaces', 'ctlg_spaces', 'catalog_spaces_headline1', '', 'Floors, wallpapers, landscapes - get a groovy combination to your room. Use our virtual room preview below to test out the combinations before you buy. Select the design and color you like and click Buy.', NULL, NULL, '1:Wall\r\n2:Floor\r\n3:Pattern\r\n4:Colour\r\n5:Pattern\r\n6:Colour\r\n7:Preview'),
 	(4, 27, 1, 1, 0, 'Habbo Exchange', '', 'Habbo Exchange', 'ctlg_layout2', 'catalog_bank_headline1', 'catalog_bank_teaser,', 'The Habbo Exchange is where you can convert your Habbo Credits into a tradable currency. You can use this tradable currency to exchange Habbo Credits for Furni!', 'Click on the item you want for more information', '1:Refundable      goods!', NULL),
@@ -5905,12 +5905,12 @@ INSERT INTO `public_items` (`id`, `room_model`, `sprite`, `x`, `y`, `z`, `rotati
 	(3450, 'park_a', 'queue_tile2', 28, 12, 0, 0, 0.001, 1, 1, 'extra_parameter,can_stand_on_top', '', NULL, NULL),
 	(3451, 'park_a', 'queue_tile2', 27, 12, 0, 2, 0.001, 1, 1, 'extra_parameter,can_stand_on_top', '', NULL, NULL),
 	(3452, 'park_a', 'queue_tile2', 26, 12, 0, 2, 0.001, 1, 1, 'extra_parameter,can_stand_on_top', '', NULL, NULL),
-	(3453, 'park_a', 'queue_tile2', 26, 11, 0, 0, 0.001, 1, 1, 'extra_parameter,can_stand_on_top', '', NULL, NULL),
-	(3454, 'park_a', 'queue_tile2', 26, 10, 0, 0, 0.001, 1, 1, 'extra_parameter,can_stand_on_top', '', NULL, NULL),
-	(3455, 'park_a', 'queue_tile2', 26, 9, 0, 0, 0.001, 1, 1, 'extra_parameter,can_stand_on_top', '', NULL, NULL),
-	(3456, 'park_a', 'queue_tile2', 26, 8, 0, 0, 0.001, 1, 1, 'extra_parameter,can_stand_on_top', '', NULL, NULL),
-	(3457, 'park_a', 'queue_tile2', 26, 7, 0, 0, 0.001, 1, 1, 'extra_parameter,can_stand_on_top', '', NULL, NULL),
-	(3458, 'park_a', 'queue_tile2', 26, 6, 0, 0, 0.001, 1, 1, 'extra_parameter,can_stand_on_top', '', NULL, NULL),
+	(3453, 'park_a', 'queue_tile2', 26, 11, 0, 4, 0.001, 1, 1, 'extra_parameter,can_stand_on_top', '', NULL, NULL),
+	(3454, 'park_a', 'queue_tile2', 26, 10, 0, 4, 0.001, 1, 1, 'extra_parameter,can_stand_on_top', '', NULL, NULL),
+	(3455, 'park_a', 'queue_tile2', 26, 9, 0, 4, 0.001, 1, 1, 'extra_parameter,can_stand_on_top', '', NULL, NULL),
+	(3456, 'park_a', 'queue_tile2', 26, 8, 0, 4, 0.001, 1, 1, 'extra_parameter,can_stand_on_top', '', NULL, NULL),
+	(3457, 'park_a', 'queue_tile2', 26, 7, 0, 4, 0.001, 1, 1, 'extra_parameter,can_stand_on_top', '', NULL, NULL),
+	(3458, 'park_a', 'queue_tile2', 26, 6, 0, 4, 0.001, 1, 1, 'extra_parameter,can_stand_on_top', '', NULL, NULL),
 	(3459, 'park_a', 'queue_tile2', 25, 6, 0, 2, 0.001, 1, 1, 'extra_parameter,can_stand_on_top', '', NULL, NULL),
 	(3460, 'park_a', 'queue_tile2', 24, 6, 0, 2, 0.001, 1, 1, 'extra_parameter,can_stand_on_top', '', NULL, NULL),
 	(3461, 'park_a', 'queue_tile2', 23, 6, 0, 2, 0.001, 1, 1, 'extra_parameter,can_stand_on_top', '', NULL, NULL),
