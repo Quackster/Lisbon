@@ -9,6 +9,8 @@ import net.h4bbo.lisbon.server.netty.streams.NettyRequest;
 import net.h4bbo.lisbon.util.StringUtil;
 
 public class SETFLATINFO implements MessageEvent {
+    public static final int MAX_ALLOWED_VISITORS = 50;
+
     @Override
     public void handle(Player player, NettyRequest reader) {
         String contents = reader.contents();
@@ -52,7 +54,7 @@ public class SETFLATINFO implements MessageEvent {
             if (key.startsWith("maxvisitors")) {
                 int maxVisitors = Integer.parseInt(value);
 
-                if (maxVisitors < 10 || maxVisitors > 100) {
+                if (maxVisitors < 10 || maxVisitors > SETFLATINFO.MAX_ALLOWED_VISITORS) {
                     maxVisitors = 25;
                 }
 

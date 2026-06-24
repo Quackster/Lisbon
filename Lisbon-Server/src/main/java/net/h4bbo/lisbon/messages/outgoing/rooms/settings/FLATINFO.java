@@ -3,6 +3,7 @@ package net.h4bbo.lisbon.messages.outgoing.rooms.settings;
 import net.h4bbo.lisbon.game.fuserights.Fuseright;
 import net.h4bbo.lisbon.game.player.Player;
 import net.h4bbo.lisbon.game.room.Room;
+import net.h4bbo.lisbon.messages.incoming.rooms.settings.SETFLATINFO;
 import net.h4bbo.lisbon.messages.types.MessageComposer;
 import net.h4bbo.lisbon.server.netty.streams.NettyResponse;
 
@@ -34,7 +35,7 @@ public class FLATINFO extends MessageComposer {
         response.writeBool(this.room.getCategory().hasAllowTrading()); // Allow trading
         response.writeBool(this.room.getCategory() == null);
         response.writeInt(this.room.getData().getVisitorsMax()); // Our current max visitors setting
-        response.writeInt(100); // The actual allowed max visitors, always 100 or less.
+        response.writeInt(SETFLATINFO.MAX_ALLOWED_VISITORS); // The actual allowed max visitors, always 100 or less.
     }
 
     @Override
