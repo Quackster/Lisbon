@@ -52,7 +52,7 @@ public class SETFLATINFO implements MessageEvent {
             if (key.startsWith("maxvisitors")) {
                 int maxVisitors = Integer.parseInt(value);
 
-                if (maxVisitors < 10 || maxVisitors > 50) {
+                if (maxVisitors < 10 || maxVisitors > 100) {
                     maxVisitors = 25;
                 }
 
