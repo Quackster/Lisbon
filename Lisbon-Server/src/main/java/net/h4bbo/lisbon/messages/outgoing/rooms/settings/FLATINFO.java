@@ -7,6 +7,8 @@ import net.h4bbo.lisbon.messages.types.MessageComposer;
 import net.h4bbo.lisbon.server.netty.streams.NettyResponse;
 
 public class FLATINFO extends MessageComposer {
+    private static final int ABSOLUTE_MAX_VISITORS = 50;
+
     private Player player;
     private Room room;
 
@@ -31,10 +33,10 @@ public class FLATINFO extends MessageComposer {
         response.writeString(this.room.getData().getName());
         response.writeString(this.room.getData().getDescription());
         response.writeBool(this.room.getData().showOwnerName());
-        response.writeBool(this.room.getCategory().hasAllowTrading()); // Allow trading
+        response.writeBool(this.room.getCategory().hasAllowTrading());
         response.writeBool(this.room.getCategory() == null);
-        response.writeInt(this.room.getData().getVisitorsNow());
         response.writeInt(this.room.getData().getVisitorsMax());
+        response.writeInt(ABSOLUTE_MAX_VISITORS);
     }
 
     @Override
@@ -42,4 +44,3 @@ public class FLATINFO extends MessageComposer {
         return 54; // "@v"
     }
 }
-
